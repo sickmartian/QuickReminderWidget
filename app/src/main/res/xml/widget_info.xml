@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="@dimen/widget_width"
     android:minHeight="@dimen/widget_height"
+    android:minResizeHeight="@dimen/widget_min_height"
     android:updatePeriodMillis="0"
     android:autoAdvanceViewId="@+id/quick_widget_list"
     android:initialLayout="@layout/quick_widget_layout"
-    android:resizeMode="none" />
+    android:resizeMode="vertical" />

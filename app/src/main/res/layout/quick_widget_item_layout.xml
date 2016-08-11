@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:orientation="horizontal"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/normal_item_height"
     android:layout_width="match_parent"
     android:gravity="center_horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <ImageView
-        android:id="@+id/one"
-        android:background="@android:color/holo_blue_bright"
+    <TextView
+        android:id="@+id/item_text"
+        android:text="10:00 PM"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="match_parent" />
 </LinearLayout>
