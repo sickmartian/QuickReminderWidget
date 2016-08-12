@@ -50,7 +50,7 @@ public class QAWApp extends Application {
     static final int HOUR_MINUTES = 60;
 
     public static LocalDateTime getInitialTime(boolean every30) {
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime = Utils.getNow();
 
         LocalDateTime initialTime;
         if (every30) {

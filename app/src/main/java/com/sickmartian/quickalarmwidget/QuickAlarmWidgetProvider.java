@@ -31,7 +31,6 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Timber.d("onUpdate");
         for (int appWidgetId : appWidgetIds) {
             Intent svcIntent = new Intent(context, QuickAlarmWidgetService.class);
             svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -40,7 +39,6 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
 
             widget.setRemoteAdapter(appWidgetId, R.id.quick_widget_list, svcIntent);
-            Timber.d("Updating Widget Id:" + Integer.toString(appWidgetId));
             appWidgetManager.updateAppWidget(appWidgetId, widget);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.quick_widget_list);
         }

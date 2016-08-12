@@ -45,18 +45,17 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
         }
 
         public void calculateInternalState() {
-            LocalDateTime dateTime = LocalDateTime.now();
-            int minutes = dateTime.getMinuteOfHour();
-
-            rows = hours;
+            initialTime = QAWApp.getInitialTime(every30);
+            LocalDateTime endTime = initialTime.plusHours(hours);
             if (every30) {
-                rows *= 2;
-                if (minutes > QAWApp.HALF_HOUR_MINUTES) {
-                    rows--;
-                }
+                rows = hours * 2 + 1;
+            } else {
+                rows = hours + 1;
             }
 
-            initialTime = QAWApp.getInitialTime(every30);
+            Timber.d("now: " + Utils.getNow().toString());
+            Timber.d("initialTime: " + initialTime.toString());
+            Timber.d("endTime: " + endTime.toString());
         }
 
         @Override
@@ -71,12 +70,22 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int i) {
-            Timber.d("Getting view: " + Integer.toString(i));
             RemoteViews itemView = new RemoteViews(QAWApp.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
-            LocalDateTime time = initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * i);
-            itemView.setTextViewText(R.id.item_text, time.toString(QAWApp.timeFormatter));
+            itemView.setTextViewText(R.id.item_text, getTimeForRow(i).toString(QAWApp.timeFormatter));
             return itemView;
+        }
+
+        public LocalDateTime getTimeForRow(int row) {
+            if (row > 0) {
+                if (every30) {
+                    return initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * row);
+                } else {
+                    return initialTime.plusHours(row);
+                }
+            } else {
+                return initialTime;
+            }
         }
 
         @Override
