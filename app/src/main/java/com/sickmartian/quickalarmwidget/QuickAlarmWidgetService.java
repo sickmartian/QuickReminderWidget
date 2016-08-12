@@ -12,52 +12,51 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import timber.log.Timber;
+
 /**
  * Created by ***REMOVED*** on 8/9/16.
  */
 public class QuickAlarmWidgetService extends RemoteViewsService {
-
-    boolean every30 = true;
     int hours = 4;
+    boolean every30 = true;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new QuickAlarmWidgetViewFactory(getApplicationContext());
+        return new QuickAlarmWidgetViewFactory();
     }
 
     public final class QuickAlarmWidgetViewFactory implements RemoteViewsFactory {
-        private final Context mAppContext;
-        LocalDateTime initialTime;
         int rows;
-        DateTimeFormatter timeFormatter;
+        private LocalDateTime initialTime;
 
-        public QuickAlarmWidgetViewFactory(Context applicationContext) {
-            JodaTimeAndroid.init(applicationContext);
+        public QuickAlarmWidgetViewFactory() {
 
-            mAppContext = applicationContext;
         }
 
         @Override
         public void onCreate() {
-            timeFormatter = DateTimeFormat.shortTime();
+        }
+
+        @Override
+        public void onDataSetChanged() {
+            Timber.d("QAWS onDataSetChanged");
+            calculateInternalState();
+        }
+
+        public void calculateInternalState() {
             LocalDateTime dateTime = LocalDateTime.now();
             int minutes = dateTime.getMinuteOfHour();
 
             rows = hours;
             if (every30) {
                 rows *= 2;
+                if (minutes > QAWApp.HALF_HOUR_MINUTES) {
+                    rows--;
+                }
             }
-            if (minutes > 30) {
-                initialTime = dateTime.minusMinutes(dateTime.getMinuteOfHour() - 30);
-                rows--;
-            } else {
-                initialTime = dateTime.minusMinutes(dateTime.getMinuteOfHour());
-            }
-        }
 
-        @Override
-        public void onDataSetChanged() {
-
+            initialTime = QAWApp.getInitialTime(every30);
         }
 
         @Override
@@ -72,15 +71,11 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int i) {
-            RemoteViews itemView = new RemoteViews(mAppContext.getPackageName(),
+            Timber.d("Getting view: " + Integer.toString(i));
+            RemoteViews itemView = new RemoteViews(QAWApp.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
-            LocalDateTime time;
-            if (i > 0) {
-                time = initialTime.plusMinutes(30 * i);
-            } else {
-                time = initialTime;
-            }
-            itemView.setTextViewText(R.id.item_text, time.toString(timeFormatter));
+            LocalDateTime time = initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * i);
+            itemView.setTextViewText(R.id.item_text, time.toString(QAWApp.timeFormatter));
             return itemView;
         }
 

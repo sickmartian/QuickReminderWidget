@@ -3,10 +3,11 @@
     android:orientation="horizontal"
     android:layout_height="@dimen/normal_item_height"
     android:layout_width="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center_vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
         android:id="@+id/item_text"
+        android:textSize="30dp"
         android:text="10:00 PM"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

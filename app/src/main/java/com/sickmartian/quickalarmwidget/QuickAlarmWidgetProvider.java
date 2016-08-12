@@ -11,33 +11,41 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import timber.log.Timber;
+
 /**
  * Created by ***REMOVED*** on 8/9/16.
  */
 public class QuickAlarmWidgetProvider extends AppWidgetProvider {
+    public static final String WIDGET_IDS_KEY ="WIDGET_IDS_KEY";
+
     @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-        Log.d("QAWP", "onAppWidgetOptionsChanged");
+    public void onReceive(Context context, Intent intent) {
+        if (intent.hasExtra(WIDGET_IDS_KEY)) {
+            int[] ids = intent.getExtras().getIntArray(WIDGET_IDS_KEY);
+            this.onUpdate(context, AppWidgetManager.getInstance(context), ids);
+        } else {
+            super.onReceive(context, intent);
+        }
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d("QAWP", "onUpdate");
-        for (int i=0; i<appWidgetIds.length; i++) {
-
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
+        Timber.d("onUpdate");
+        for (int appWidgetId : appWidgetIds) {
             Intent svcIntent = new Intent(context, QuickAlarmWidgetService.class);
-            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
 
-            widget.setRemoteAdapter(appWidgetIds[i], R.id.quick_widget_list, svcIntent);
-            appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
+            widget.setRemoteAdapter(appWidgetId, R.id.quick_widget_list, svcIntent);
+            Timber.d("Updating Widget Id:" + Integer.toString(appWidgetId));
+            appWidgetManager.updateAppWidget(appWidgetId, widget);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.quick_widget_list);
         }
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
+
 }
