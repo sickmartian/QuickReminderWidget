@@ -45,6 +45,9 @@
         </receiver>
         <service android:name=".CalculateAndScheduleNextAlarmService" />
 
+        <receiver android:name=".NotificationReceiver" />
+        <service android:name=".NotificationService" />
+
         <provider
             android:name=".data.QAWProvider"
             android:label="Provider"

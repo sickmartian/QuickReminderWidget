@@ -36,10 +36,11 @@ public class NotificationService extends IntentService {
             // Calculate next alarm after adjusting them
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
 
-            // Cleanup old alarms we don't care about anymore
-            Alarm.deleteUpTo(lastAlarm.getAlarmTime());
 
             if (lastAlarm != null) {
+                // Cleanup old alarms we don't care about anymore
+                Alarm.deleteUpTo(lastAlarm.getAlarmTime());
+
                 // Start with the notification:
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

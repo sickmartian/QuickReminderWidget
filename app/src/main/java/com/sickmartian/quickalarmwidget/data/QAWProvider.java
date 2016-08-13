@@ -47,7 +47,7 @@ public class QAWProvider extends ContentProvider {
                 + "/" + Alarm.Parameters.ALARM_FROM + "/*";
         uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, nextAlarm, NEXT_ALARM);
 
-        String lastAlarm = Alarm.NEXT_ALARM_PATH
+        String lastAlarm = Alarm.LAST_ALARM_PATH
                 + "/" + Alarm.Parameters.ALARM_TO + "/*";
         uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, lastAlarm, LAST_ALARM);
 
@@ -92,6 +92,12 @@ public class QAWProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    if (cursor.getString(0) == null) {
+                        cursor = null;
+                    }
+                }
                 break;
             }
             case LAST_ALARM: {
@@ -104,6 +110,12 @@ public class QAWProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    if (cursor.getString(0) == null) {
+                        cursor = null;
+                    }
+                }
                 break;
             }
             default: {
@@ -113,7 +125,9 @@ public class QAWProvider extends ContentProvider {
             }
         }
 
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        if (cursor != null) {
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
         return cursor;
     }
 

@@ -38,7 +38,8 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
             Intent notificationIntent = new Intent(this, NotificationReceiver.class);
 
             if (nextAlarm != null) {
-                Timber.d("Next Alarm: " + nextAlarm.getAlarmTime().toDateTime().toString());
+                DateTime alarmTime = nextAlarm.getAlarmTime().toDateTime();
+                Timber.d("Next Alarm: " + alarmTime.toString());
                 PendingIntent notificationPendingIntent =
                         PendingIntent.getBroadcast(this,
                                 CalculateAndScheduleNextAlarmService.REQUEST_CODE,
@@ -46,16 +47,16 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                            nextAlarm.getAlarmTime().toDateTime().getMillis(),
+                            alarmTime.getMillis(),
                             notificationPendingIntent);
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                                nextAlarm.getAlarmTime().toDateTime().getMillis(),
+                                alarmTime.getMillis(),
                                 notificationPendingIntent);
                     } else {
                         alarmManager.set(AlarmManager.RTC_WAKEUP,
-                                nextAlarm.getAlarmTime().toDateTime().getMillis(),
+                                alarmTime.getMillis(),
                                 notificationPendingIntent);
                     }
                 }

@@ -132,7 +132,7 @@ public class Alarm {
             Cursor cursor = QAWApp.getAppContext().getContentResolver()
                     .query(getNextAlarm(now), projection, null, null, null);
             if (cursor != null) {
-                if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
                     do {
                         alarm = new Alarm(cursor);
                     } while (cursor.moveToNext());
@@ -152,7 +152,7 @@ public class Alarm {
             Cursor cursor = QAWApp.getAppContext().getContentResolver()
                     .query(getLastAlarm(now), projection, null, null, null);
             if (cursor != null) {
-                if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
                     do {
                         alarm = new Alarm(cursor);
                     } while (cursor.moveToNext());
