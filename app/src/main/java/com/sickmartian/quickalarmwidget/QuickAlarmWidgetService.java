@@ -1,9 +1,7 @@
 package com.sickmartian.quickalarmwidget;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -59,7 +57,7 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
             Timber.d("initialTime: " + initialTime.toString());
             Timber.d("endTime: " + endTime.toString());
 
-            alarms = Alarm.getBetweenDates(initialTime, endTime);
+            alarms = Alarm.getBetweenDatesSync(initialTime, endTime);
         }
 
         @Override

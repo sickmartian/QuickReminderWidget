@@ -28,4 +28,6 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.4.1'
     compile 'org.parceler:parceler-api:1.0.3'
     apt "org.parceler:parceler:1.0.3"
+
+    compile 'com.facebook.stetho:stetho:1.2.0'
 }

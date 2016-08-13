@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.facebook.stetho.Stetho;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.LocalDateTime;
@@ -33,6 +35,7 @@ public class QAWApp extends Application {
 
         JodaTimeAndroid.init(QAWApp.getAppContext());
         if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
             Timber.plant(new Timber.DebugTree());
         }
 

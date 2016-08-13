@@ -9,8 +9,6 @@ import com.sickmartian.quickalarmwidget.data.model.Alarm;
 import org.joda.time.LocalDateTime;
 import org.parceler.Parcels;
 
-import java.util.UUID;
-
 import timber.log.Timber;
 
 /**
@@ -29,11 +27,14 @@ public class AlarmIntentionReceiver extends BroadcastReceiver {
         Timber.d("Alarm: " + (alarm == null ? "none" : alarm.toString()));
 
         if (alarm == null) {
-
+            Alarm.fromTime(time).saveSync();
+            Timber.d("Alarm created");
         } else {
-
+            alarm.deleteSync();
+            Timber.d("Alarm deleted");
         }
 
         QAWApp.updateAllWidgets();
+        CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
     }
 }

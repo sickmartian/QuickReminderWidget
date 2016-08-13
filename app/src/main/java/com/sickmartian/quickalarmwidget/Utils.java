@@ -1,5 +1,7 @@
 package com.sickmartian.quickalarmwidget;
 
+import android.os.Build;
+
 import org.joda.time.LocalDateTime;
 
 /**
@@ -8,5 +10,13 @@ import org.joda.time.LocalDateTime;
 public class Utils {
     public static LocalDateTime getNow() {
         return LocalDateTime.now();
+    }
+
+    public static int getAppSmallIcon() {
+        int smallIcon = R.drawable.ic_alarm_on_black_24dp;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            smallIcon = R.drawable.notification_lp;
+//        }
+        return smallIcon;
     }
 }
