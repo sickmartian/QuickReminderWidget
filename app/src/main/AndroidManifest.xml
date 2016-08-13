@@ -33,6 +33,15 @@
         </receiver>
         <service android:name=".TimeSyncService" />
 
+        <receiver android:name=".AlarmIntentionReceiver"/>
+
+        <provider
+            android:name=".data.QAWProvider"
+            android:label="Provider"
+            android:authorities="com.sickmartian.quickalarmwidget"
+            android:exported="false"
+            android:syncable="false" />
+
     </application>
 
 </manifest>

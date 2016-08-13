@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/clickeable_row"
     android:orientation="horizontal"
     android:layout_height="@dimen/normal_item_height"
     android:layout_width="match_parent"

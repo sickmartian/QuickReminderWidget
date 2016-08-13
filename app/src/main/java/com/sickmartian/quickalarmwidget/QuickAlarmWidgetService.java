@@ -1,17 +1,18 @@
 package com.sickmartian.quickalarmwidget;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import net.danlew.android.joda.JodaTimeAndroid;
+import com.sickmartian.quickalarmwidget.data.model.Alarm;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.parceler.Parcels;
 
+import java.util.List;
 import timber.log.Timber;
 
 /**
@@ -29,6 +30,7 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
     public final class QuickAlarmWidgetViewFactory implements RemoteViewsFactory {
         int rows;
         private LocalDateTime initialTime;
+        private List<Alarm> alarms;
 
         public QuickAlarmWidgetViewFactory() {
 
@@ -56,6 +58,8 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
             Timber.d("now: " + Utils.getNow().toString());
             Timber.d("initialTime: " + initialTime.toString());
             Timber.d("endTime: " + endTime.toString());
+
+            alarms = Alarm.getBetweenDates(initialTime, endTime);
         }
 
         @Override
@@ -72,8 +76,35 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
         public RemoteViews getViewAt(int i) {
             RemoteViews itemView = new RemoteViews(QAWApp.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
-            itemView.setTextViewText(R.id.item_text, getTimeForRow(i).toString(QAWApp.timeFormatter));
+
+            LocalDateTime timeForRow = getTimeForRow(i);
+
+            itemView.setTextViewText(R.id.item_text, timeForRow.toString(QAWApp.timeFormatter));
+            Alarm alarm = getAlarmForTime(timeForRow);
+            if (alarm != null) {
+                itemView.setTextColor(R.id.item_text, getColor(R.color.colorAccent));
+            } else {
+                itemView.setTextColor(R.id.item_text, getColor(android.R.color.white));
+            }
+
+            Intent intent = new Intent();
+            Bundle extras = new Bundle();
+
+            extras.putSerializable(AlarmIntentionReceiver.ALARM_TIME, timeForRow);
+            extras.putParcelable(AlarmIntentionReceiver.ALARM, Parcels.wrap(alarm));
+            intent.putExtras(extras);
+            itemView.setOnClickFillInIntent(R.id.clickeable_row, intent);
+
             return itemView;
+        }
+
+        private Alarm getAlarmForTime(LocalDateTime timeForRow) {
+            for (Alarm alarm : alarms) {
+                if (alarm.getAlarmTime().equals(timeForRow)) {
+                    return alarm;
+                }
+            }
+            return null;
         }
 
         public LocalDateTime getTimeForRow(int row) {

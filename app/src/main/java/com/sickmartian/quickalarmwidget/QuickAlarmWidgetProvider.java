@@ -1,17 +1,12 @@
 package com.sickmartian.quickalarmwidget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
-
-import timber.log.Timber;
 
 /**
  * Created by ***REMOVED*** on 8/9/16.
@@ -39,6 +34,11 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
 
             widget.setRemoteAdapter(appWidgetId, R.id.quick_widget_list, svcIntent);
+            Intent clickIntent = new Intent(context, AlarmIntentionReceiver.class);
+            PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
+                    clickIntent, 0);
+            widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
+
             appWidgetManager.updateAppWidget(appWidgetId, widget);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.quick_widget_list);
         }

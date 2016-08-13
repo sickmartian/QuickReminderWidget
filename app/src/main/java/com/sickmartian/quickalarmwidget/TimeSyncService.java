@@ -44,14 +44,7 @@ public class TimeSyncService extends IntentService {
                     timeSyncIntentPI);
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {
-                Context appContext = QAWApp.getAppContext();
-                AppWidgetManager man = AppWidgetManager.getInstance(appContext);
-                int[] ids = man.getAppWidgetIds(
-                        new ComponentName(appContext, QuickAlarmWidgetProvider.class));
-                Intent updateIntent = new Intent();
-                updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                updateIntent.putExtra(QuickAlarmWidgetProvider.WIDGET_IDS_KEY, ids);
-                appContext.sendBroadcast(updateIntent);
+                QAWApp.updateAllWidgets();
             }
         } finally {
             Timber.d("TimeSyncService ending");

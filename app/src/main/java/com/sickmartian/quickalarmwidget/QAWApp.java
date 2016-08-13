@@ -1,7 +1,10 @@
 package com.sickmartian.quickalarmwidget;
 
 import android.app.Application;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -42,6 +45,11 @@ public class QAWApp extends Application {
         }
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
+
     public static Context getAppContext() {
         return QAWApp.context;
     }
@@ -74,5 +82,16 @@ public class QAWApp extends Application {
         }
 
         return initialTime;
+    }
+
+    public static void updateAllWidgets() {
+        Context appContext = QAWApp.getAppContext();
+        AppWidgetManager man = AppWidgetManager.getInstance(appContext);
+        int[] ids = man.getAppWidgetIds(
+                new ComponentName(appContext, QuickAlarmWidgetProvider.class));
+        Intent updateIntent = new Intent();
+        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        updateIntent.putExtra(QuickAlarmWidgetProvider.WIDGET_IDS_KEY, ids);
+        appContext.sendBroadcast(updateIntent);
     }
 }
