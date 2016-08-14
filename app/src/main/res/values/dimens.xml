@@ -4,5 +4,11 @@
     <dimen name="widget_width">80dp</dimen>
     <dimen name="widget_height">300dp</dimen>
     <dimen name="widget_min_height">120dp</dimen>
-    <dimen name="normal_item_height">40dp</dimen>
+
+    <dimen name="normal_item_height">60dp</dimen>
+    <dimen name="normal_item_vertical_padding">8dp</dimen>
+    <dimen name="normal_item_horizontal_padding">4dp</dimen>
+
+    <dimen name="widget_row_text_size">30sp</dimen>
+    <dimen name="widget_custom_time_text_size">24sp</dimen>
 </resources>
