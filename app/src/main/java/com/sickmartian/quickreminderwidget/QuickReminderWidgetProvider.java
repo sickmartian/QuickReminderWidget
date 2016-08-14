@@ -21,6 +21,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public static final String CUSTOM_TIME_3 = "CUSTOM_TIME_3";
     public static final String EVERY_30 = "EVERY_30";
     public static final String HOURS = "HOURS";
+    public static final String POSSIBILITY_TO_ADD_NOTE = "POSSIBILITY_TO_ADD_NOTE";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -76,8 +77,11 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             if (every30 && !QAWApp.isThereOneEvery30) {
                 QAWApp.isThereOneEvery30 = true;
             }
+
             int hours = sharedPreferences.getInt(HOURS, 4);
             svcIntent.putExtra(HOURS, hours);
+            boolean possibilityToAddNotes = sharedPreferences.getBoolean(POSSIBILITY_TO_ADD_NOTE, true);
+            svcIntent.putExtra(POSSIBILITY_TO_ADD_NOTE, possibilityToAddNotes);
 
             svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
             widget.setRemoteAdapter(R.id.quick_widget_list, svcIntent);

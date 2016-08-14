@@ -48,7 +48,7 @@ public class QAWProvider extends ContentProvider {
                 + "/" + Alarm.Parameters.ALARM_FROM + "/*";
         uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, nextAlarm, NEXT_ALARM);
 
-        String lastAlarm = Alarm.LAST_ALARM_PATH
+        String lastAlarm = Alarm.LAST_ALARMS_PATH
                 + "/" + Alarm.Parameters.ALARM_TO + "/*";
         uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, lastAlarm, LAST_ALARM);
 
@@ -75,13 +75,13 @@ public class QAWProvider extends ContentProvider {
                 String dateTo = segments.get(4);
                 cursor = db.query(Alarm.TABLE_NAME,
                         projection,
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") >= datetime(?) AND " +
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") <= datetime(?) ",
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") >= datetime(?) AND " +
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") <= datetime(?) ",
                         new String[]{dateFrom, dateTo},
                         null,
                         null,
                         sortOrder == null ?
-                                Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_TIME + " asc" :
+                                Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_DATE_TIME + " asc" :
                                 sortOrder);
                 break;
             }
@@ -89,16 +89,25 @@ public class QAWProvider extends ContentProvider {
                 List<String> segments = uri.getPathSegments();
                 String dateFrom = segments.get(2);
                 cursor = db.query(Alarm.TABLE_NAME,
-                        new String[]{"MIN( " + Alarm.Fields.ALARM_TIME + " ) "},
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") > datetime(?) ",
+                        new String[]{"MIN( " + Alarm.Fields.ALARM_DATE_TIME + " ) "},
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") > datetime(?) ",
                         new String[]{dateFrom},
                         null,
                         null,
-                        sortOrder);
+                        null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
-                    if (cursor.getString(0) == null) {
+                    String alarmTime = cursor.getString(0);
+                    if (alarmTime == null) {
                         cursor = null;
+                    } else {
+                        cursor = db.query(Alarm.TABLE_NAME,
+                            projection,
+                            "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") = datetime(?) ",
+                            new String[]{alarmTime},
+                            null,
+                            null,
+                            null);
                     }
                 }
                 break;
@@ -107,18 +116,12 @@ public class QAWProvider extends ContentProvider {
                 List<String> segments = uri.getPathSegments();
                 String dateTo = segments.get(2);
                 cursor = db.query(Alarm.TABLE_NAME,
-                        new String[]{"MAX( " + Alarm.Fields.ALARM_TIME + " ) "},
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") <= datetime(?) ",
+                        projection,
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") <= datetime(?) ",
                         new String[]{dateTo},
                         null,
                         null,
-                        sortOrder);
-                if (cursor != null && cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    if (cursor.getString(0) == null) {
-                        cursor = null;
-                    }
-                }
+                        null);
                 break;
             }
             default: {
@@ -179,14 +182,14 @@ public class QAWProvider extends ContentProvider {
             case ALARM_BY_TIME: {
                 String time = uri.getPathSegments().get(2);
                 rowsUpdated = db.delete(Alarm.TABLE_NAME,
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") = datetime(?)",
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") = datetime(?)",
                         new String[]{time});
                 break;
             }
             case ALARMS_UP_TO: {
                 String time = uri.getPathSegments().get(2);
                 rowsUpdated = db.delete(Alarm.TABLE_NAME,
-                        "datetime(" + Alarm.Fields.ALARM_TIME + ") <= datetime(?)",
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") <= datetime(?)",
                         new String[]{time});
                 break;
             }
@@ -201,7 +204,26 @@ public class QAWProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = DBHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+
+        switch (match) {
+            case ALARM_BY_TIME: {
+                String time = uri.getPathSegments().get(2);
+                rowsUpdated = db.update(Alarm.TABLE_NAME, values,
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") = datetime(?)",
+                        new String[]{time});
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 }

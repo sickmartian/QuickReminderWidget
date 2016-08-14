@@ -7,9 +7,11 @@
     <dimen name="widget_min_height">180dp</dimen>
 
     <dimen name="normal_item_height">60dp</dimen>
-    <dimen name="normal_item_vertical_padding">8dp</dimen>
+    <dimen name="normal_item_vertical_padding">16dp</dimen>
     <dimen name="normal_item_horizontal_padding">4dp</dimen>
+    <dimen name="normal_icon_height">48dp</dimen>
 
     <dimen name="widget_row_text_size">18sp</dimen>
     <dimen name="widget_custom_time_text_size">24sp</dimen>
+    <dimen name="navigation_bar_height">48dp</dimen>
 </resources>

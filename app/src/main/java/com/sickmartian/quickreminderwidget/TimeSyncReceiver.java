@@ -15,16 +15,17 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.getAction() != null) {
             Timber.d("TimeSync called via: " + intent.getAction());
+            Timber.d("areThereWidgets:" + Boolean.toString(QAWApp.areThereWidgets()));
         }
         Intent service = new Intent(context, TimeSyncService.class);
         if (intent != null) {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS,
                     intent.getBooleanExtra(TimeSyncService.AND_UPDATE_WIDGETS, true));
             service.putExtra(TimeSyncService.AND_DISABLE,
-                    intent.getBooleanExtra(TimeSyncService.AND_DISABLE, QAWApp.areThereWidgets()));
+                    intent.getBooleanExtra(TimeSyncService.AND_DISABLE, !QAWApp.areThereWidgets()));
         } else {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
-            service.putExtra(TimeSyncService.AND_DISABLE, QAWApp.areThereWidgets());
+            service.putExtra(TimeSyncService.AND_DISABLE, !QAWApp.areThereWidgets());
         }
         startWakefulService(context, service);
     }

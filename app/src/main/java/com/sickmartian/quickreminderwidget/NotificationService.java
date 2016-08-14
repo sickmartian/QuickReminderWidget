@@ -11,6 +11,9 @@ import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.LocalDateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 /**
@@ -18,7 +21,6 @@ import timber.log.Timber;
  */
 public class NotificationService extends IntentService {
     public static final String NOTIFICATION = "ALARM_NOTIFICATION";
-    private static final int REMINDER_NOTIFICATION_ID = 7777;
 
     public NotificationService() {
         super(NotificationService.class.toString());
@@ -31,19 +33,22 @@ public class NotificationService extends IntentService {
             LocalDateTime now = LocalDateTime.now();
 
             // Check that there is an alarm for the notification
-            Alarm lastAlarm = Alarm.getLastSync(now);
+            List<Alarm> currentAlarms = Alarm.getLastsSync(now);
 
             // Calculate next alarm after adjusting them
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
 
-            if (lastAlarm != null) {
+            if (currentAlarms.size() > 0) {
                 // Cleanup old alarms we don't care about anymore
-                Alarm.deleteUpTo(lastAlarm.getAlarmTime());
+                Alarm.deleteUpTo(currentAlarms.get(currentAlarms.size() - 1).getDateTime());
 
                 // Update widget if we just removed a custom alarm
                 // because the TimeSync is not gonna run for us
-                if (lastAlarm.isCustomTime(QAWApp.isThereOneEvery30)) {
-                    QAWApp.updateAllWidgets();
+                for (Alarm currentAlarm : currentAlarms) {
+                    if (currentAlarm.isCustomDateTime(QAWApp.isThereOneEvery30)) {
+                        QAWApp.updateAllWidgets();
+                        break;
+                    }
                 }
 
                 // Start with the notification:
@@ -55,13 +60,25 @@ public class NotificationService extends IntentService {
                 setupCustomNotification(this, notificationBuilder);
 
                 notificationBuilder.setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.app_name))
                         .setSmallIcon(smallIcon)
                         .setColor(getResources().getColor(R.color.colorPrimary))
                         .setAutoCancel(true)
+                        .setGroup("QAWNotificationGroup")
                         .setCategory(Notification.CATEGORY_REMINDER);
+
+                StringBuilder sb = new StringBuilder();
+                for (Alarm alarm : currentAlarms) {
+                    sb.append(alarm.getCreationDateTime())
+                            .append("\n");
+                    if (alarm.getNote() != null) {
+                        sb.append(alarm.getNote())
+                                .append("\n");
+                    }
+                }
+                notificationBuilder.setContentText(sb.toString());
+
                 Notification notification = notificationBuilder.build();
-                notificationManager.notify(NOTIFICATION, REMINDER_NOTIFICATION_ID, notification);
+                notificationManager.notify(NOTIFICATION, QAWApp.getNewNotificationId(), notification);
             }
         } finally {
             Timber.d("NotificationService ending");

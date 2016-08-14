@@ -9,6 +9,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
  */
 public class AlarmIntentionReceiver extends WakefulBroadcastReceiver {
     public static final String ALARM_INTENTION_DATA = "ALARM_INTENTION_DATA";
+    public static final String AND_OFFER_EDITION = "AND_OFFER_EDITION";
 
     @Override
     public void onReceive(Context context, Intent intent) {

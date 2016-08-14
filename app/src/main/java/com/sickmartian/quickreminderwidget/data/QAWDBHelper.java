@@ -21,7 +21,10 @@ public class QAWDBHelper extends SQLiteOpenHelper {
         db.execSQL("PRAGMA foreign_keys = ON;");
 
         final String SQL_CREATE_ALARM_TABLE = "CREATE TABLE " + Alarm.TABLE_NAME + " (" +
-                Alarm.Fields.ALARM_TIME + " TEXT NOT NULL UNIQUE );";
+                Alarm.Fields.ALARM_DATE_TIME + " TEXT NOT NULL UNIQUE, " +
+                Alarm.Fields.ALARM_CREATION_DATE_TIME + " TEXT NOT NULL, " +
+                Alarm.Fields.ALARM_NOTE + " TEXT " +
+                ");";
 
         db.execSQL(SQL_CREATE_ALARM_TABLE);
     }

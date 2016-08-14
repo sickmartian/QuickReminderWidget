@@ -4,4 +4,10 @@
     <string name="app_name">Quick Reminder Widget</string>
     <string name="alarm_created_for">Reminder set for %1$s</string>
     <string name="alarm_deleted_for">Reminder for %1$s was deleted</string>
+
+    <string name="alarm_edition_save">Save</string>
+    <string name="alarm_edition_cancel">Cancel</string>
+    <string name="alarm_note_field">Note</string>
+    <string name="alarm_edition_title">Edit Alarm</string>
+    <string name="alarm_couldnt_be_created">Reminder couldn\'t be created</string>
 </resources>

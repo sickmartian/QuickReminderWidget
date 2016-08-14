@@ -24,11 +24,15 @@ import timber.log.Timber;
 public class QAWApp extends Application {
 
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
+    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+    private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
     private static Context context;
     public static DateTimeFormatter timeFormatter;
     public static DateTimeFormatter dateTimeFormatter;
     public static boolean isThereOneEvery30 = false;
-    private static boolean areThereWidgets = false;
+    public static int activeColor = -1;
+    public static int inactiveColor = -1;
+    public static SharedPreferences sharedPreferences = null;
 
     @Override
     public void onCreate() {
@@ -45,18 +49,24 @@ public class QAWApp extends Application {
         timeFormatter = DateTimeFormat.shortTime();
         dateTimeFormatter = DateTimeFormat.shortDateTime();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        areThereWidgets = sharedPreferences.getBoolean(ARE_THERE_WIDGETS, false);
+        activeColor = QAWApp.getAppContext().getResources().getColor(R.color.activeColor);
+        inactiveColor = QAWApp.getAppContext().getResources().getColor(R.color.inactiveColor);
     }
 
     public static boolean areThereWidgets() {
-        return areThereWidgets;
+        return getSharedPreferences().getBoolean(ARE_THERE_WIDGETS, false);
     }
-    public static void setWidgetExist(boolean atLeastOneWidgetExists) {
-        areThereWidgets = atLeastOneWidgetExists;
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(QAWApp.getAppContext());
-        sharedPreferences.edit().putBoolean(ARE_THERE_WIDGETS, atLeastOneWidgetExists).apply();
+    private static SharedPreferences getSharedPreferences() {
+        if (sharedPreferences == null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(QAWApp.getAppContext());
+        }
+        return sharedPreferences;
+    }
+
+    public static void setWidgetExist(boolean atLeastOneWidgetExists) {
+        Timber.i("setWidgetExist:" + Boolean.toString(atLeastOneWidgetExists));
+        getSharedPreferences().edit().putBoolean(ARE_THERE_WIDGETS, atLeastOneWidgetExists).apply();
     }
 
     public static Context getAppContext() {
@@ -102,5 +112,14 @@ public class QAWApp extends Application {
         updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
         updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
+    }
+
+    public static int getNewNotificationId() {
+        int notificationId = getSharedPreferences().getInt(NOTIFICATION_ID, NOTIFICATION_ID_INITIAL_VALUE);
+        if (notificationId == Integer.MAX_VALUE) {
+            notificationId = NOTIFICATION_ID_INITIAL_VALUE;
+        }
+        getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
+        return notificationId;
     }
 }

@@ -2,6 +2,8 @@ package com.sickmartian.quickreminderwidget;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -24,6 +26,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
         return new QuickReminderWidgetViewFactory(
                 intent.getBooleanExtra(QuickReminderWidgetProvider.EVERY_30, true),
                 intent.getIntExtra(QuickReminderWidgetProvider.HOURS, 4),
+                intent.getBooleanExtra(QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE, true),
                 intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_1, -1),
                 intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_2, -1),
                 intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_3, -1));
@@ -35,14 +38,16 @@ public class QuickReminderWidgetService extends RemoteViewsService {
         int customValue1;
         int customValue2;
         int customValue3;
+        boolean possibilityToAddNote;
 
         private LocalDateTime initialTime;
         private List<AlarmIntentionData> alarmIntentionData;
 
-        public QuickReminderWidgetViewFactory(boolean every30, int hours,
+        public QuickReminderWidgetViewFactory(boolean every30, int hours, boolean possibilityToAddNote,
                                               int customValue1, int customValue2, int customValue3) {
             this.every30 = every30;
             this.hours = hours;
+            this.possibilityToAddNote = possibilityToAddNote;
             this.customValue1 = customValue1;
             this.customValue2 = customValue2;
             this.customValue3 = customValue3;
@@ -98,15 +103,15 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 for (alarmIndex = alarmWeLeftOff; alarmIndex < alarms.size(); alarmIndex++) {
                     alarmWeLeftOff = alarmIndex;
                     Alarm alarm = alarms.get(alarmIndex);
-                    if (alarm.getAlarmTime().isEqual(timeForTimeRow)) {
+                    if (alarm.getDateTime().isEqual(timeForTimeRow)) {
                         // Normally set alarm
                         alarmIntentionData.add(new AlarmIntentionData(timeForTimeRow, alarm));
                         alarmWeLeftOff = alarmIndex + 1;
                         timeWasAdded = true;
                         break;
-                    } else if (alarm.getAlarmTime().isBefore(timeForTimeRow)) {
+                    } else if (alarm.getDateTime().isBefore(timeForTimeRow)) {
                         // Alarm set via custom value
-                        alarmIntentionData.add(new AlarmIntentionData(alarm.getAlarmTime(), alarm));
+                        alarmIntentionData.add(new AlarmIntentionData(alarm.getDateTime(), alarm));
                         alarmWeLeftOff = alarmIndex + 1;
                     } else {
                         // This alarm will be set later
@@ -160,21 +165,35 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 itemView.setTextViewText(R.id.item_text,
                         currentAlarmIntentionData.getTime().toString(QAWApp.timeFormatter));
                 if (currentAlarmIntentionData.getAlarm() != null) {
-                    itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(R.color.colorAccent));
+                    itemView.setTextColor(R.id.item_text, QAWApp.activeColor);
+                    if (currentAlarmIntentionData.getAlarm().getNote() != null) {
+                        itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.activeColor);
+                    } else {
+                        itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.inactiveColor);
+                    }
                 } else {
-                    itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(android.R.color.white));
+                    itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
+                    itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.inactiveColor);
+                }
+                if (possibilityToAddNote) {
+                    itemView.setViewVisibility(R.id.note_link, View.VISIBLE);
+                } else {
+                    itemView.setViewVisibility(R.id.note_link, View.GONE);
                 }
             } else if (currentAlarmIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
                         Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\'");
-                itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(android.R.color.white));
+                itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
+                itemView.setViewVisibility(R.id.note_link, View.GONE);
             }
 
             Intent intent = new Intent();
             extras.putParcelable(AlarmIntentionReceiver.ALARM_INTENTION_DATA,
                     Parcels.wrap(currentAlarmIntentionData));
+            extras.putBoolean(AlarmIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
             intent.putExtras(extras);
-            itemView.setOnClickFillInIntent(R.id.clickeable_row, intent);
+            itemView.setOnClickFillInIntent(R.id.clickeable_row,
+                    intent);
 
             return itemView;
         }

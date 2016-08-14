@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/clickeable_row"
+<RelativeLayout android:id="@+id/clickeable_row"
     android:orientation="horizontal"
-    tools:layout_width="80dp"
+    tools:layout_width="@dimen/widget_min_width"
     android:layout_height="@dimen/normal_item_height"
     android:layout_width="match_parent"
     android:gravity="center_vertical"
     android:layout_gravity="center_vertical"
+    android:paddingLeft="@dimen/normal_item_vertical_padding"
+    android:paddingStart="@dimen/normal_item_vertical_padding"
+    android:paddingRight="@dimen/normal_item_vertical_padding"
+    android:paddingEnd="@dimen/normal_item_vertical_padding"
+    android:paddingTop="@dimen/normal_item_horizontal_padding"
+    android:paddingBottom="@dimen/normal_item_horizontal_padding"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <TextView
@@ -13,12 +19,14 @@
         android:gravity="center_vertical"
         android:textSize="@dimen/widget_row_text_size"
         android:text="10:00 PM"
-        android:paddingLeft="@dimen/normal_item_vertical_padding"
-        android:paddingStart="@dimen/normal_item_vertical_padding"
-        android:paddingRight="@dimen/normal_item_vertical_padding"
-        android:paddingEnd="@dimen/normal_item_vertical_padding"
-        android:paddingTop="@dimen/normal_item_horizontal_padding"
-        android:paddingBottom="@dimen/normal_item_horizontal_padding"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent" />
-</LinearLayout>
+    <ImageView
+        android:id="@+id/note_link"
+        android:src="@drawable/ic_event_note_black_24dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:tint="@color/inactiveColor"
+        android:layout_height="@dimen/normal_icon_height" />
+</RelativeLayout>

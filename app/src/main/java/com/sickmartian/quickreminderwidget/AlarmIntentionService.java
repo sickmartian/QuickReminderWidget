@@ -39,36 +39,24 @@ public class AlarmIntentionService extends IntentService {
                             .withMillisOfSecond(0);
                 }
                 assert alarmTime != null; // Either a duration or a time, if none something is really fishy
-                Alarm.fromTime(alarmTime).saveSync();
+                Alarm newAlarm = Alarm.fromDateTime(alarmTime);
+                boolean created = newAlarm.createSync();
 
-                // Toast needs to be run on the main thread
-                Handler handler = new Handler(Looper.getMainLooper());
-                final LocalDateTime finalAlarmTime = alarmTime;
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(QAWApp.getAppContext(),
-                                String.format(QAWApp.getAppContext().getString(R.string.alarm_created_for),
-                                        finalAlarmTime.toString(QAWApp.dateTimeFormatter)),
-                                Toast.LENGTH_LONG)
-                                .show();
+                if (created) {
+                    if (intent.getBooleanExtra(AlarmIntentionReceiver.AND_OFFER_EDITION, false)) {
+                        startActivity(AlarmEditionActivity.getIntentForEdition(newAlarm));
+                    } else {
+                        final LocalDateTime finalAlarmTime = alarmTime;
+                        toastTo(String.format(QAWApp.getAppContext().getString(R.string.alarm_created_for),
+                                finalAlarmTime.toString(QAWApp.dateTimeFormatter)));
                     }
-                });
+                } else {
+                    toastTo(QAWApp.getAppContext().getString(R.string.alarm_couldnt_be_created));
+                }
             } else {
                 intentionData.getAlarm().deleteSync();
-
-                // Toast needs to be run on the main thread
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                     @Override
-                     public void run() {
-                         Toast.makeText(QAWApp.getAppContext(),
-                                 String.format(QAWApp.getAppContext().getString(R.string.alarm_deleted_for),
-                                         intentionData.getTime().toString(QAWApp.dateTimeFormatter)),
-                                 Toast.LENGTH_LONG)
-                                 .show();
-                     }
-                 });
+                toastTo(String.format(QAWApp.getAppContext().getString(R.string.alarm_deleted_for),
+                        intentionData.getTime().toString(QAWApp.dateTimeFormatter)));
             }
 
             QAWApp.updateAllWidgets();
@@ -76,5 +64,20 @@ public class AlarmIntentionService extends IntentService {
         } finally {
             AlarmIntentionReceiver.completeWakefulIntent(intent);
         }
+
     }
+
+    public void toastTo(final String toastMessage) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(QAWApp.getAppContext(),
+                        toastMessage,
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+    }
+
 }

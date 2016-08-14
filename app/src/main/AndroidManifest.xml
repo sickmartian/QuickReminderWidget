@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".AlarmEditionActivity"
+            android:theme="@style/AppTheme.HiddenActivityForPopup" />
+
         <receiver android:name="com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider">
             <intent-filter>
                 <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE" />

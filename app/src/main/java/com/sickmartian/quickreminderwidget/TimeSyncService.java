@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 
 import org.joda.time.LocalDateTime;
 
@@ -33,14 +34,21 @@ public class TimeSyncService extends IntentService {
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
                     TimeSyncService.REQUEST_CODE, timeSyncIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             // If we are disabling, disable
-            if (intent.getBooleanExtra(AND_DISABLE, false)) {
+            if (intent.getBooleanExtra(AND_DISABLE, !QAWApp.areThereWidgets())) {
                 Timber.i("Disabling TimeSync");
                 alarmManager.cancel(timeSyncIntentPI);
             } else {
                 // If not, we schedule the next call to this service
                 Timber.i("Placing TimeSync alarm for: " + nextTime.toString());
-                alarmManager.set(AlarmManager.RTC, nextTime.toDateTime().getMillis(),
-                        timeSyncIntentPI);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.RTC,
+                            nextTime.toDateTime().getMillis(),
+                            timeSyncIntentPI);
+                } else {
+                    alarmManager.set(AlarmManager.RTC,
+                            nextTime.toDateTime().getMillis(),
+                            timeSyncIntentPI);
+                }
             }
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {

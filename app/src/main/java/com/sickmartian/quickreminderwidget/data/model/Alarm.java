@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Binder;
 
 import com.sickmartian.quickreminderwidget.QAWApp;
+import com.sickmartian.quickreminderwidget.Utils;
 
 import org.joda.time.LocalDateTime;
 import org.parceler.Parcel;
@@ -23,27 +24,35 @@ public class Alarm {
     // DB
     public static final String TABLE_NAME = "alarms";
     public Alarm(Cursor cursor) {
-        alarmTime = LocalDateTime.parse(cursor.getString(0));
+        dateTime = LocalDateTime.parse(cursor.getString(0));
+        creationDateTime =LocalDateTime.parse(cursor.getString(1));
+        note = cursor.getString(2);
     }
 
     public class Fields {
-        public static final String ALARM_TIME = "alarmTime";
+        public static final String ALARM_DATE_TIME = "dateTime";
+        public static final String ALARM_NOTE= "alarmNote";
+        public static final String ALARM_CREATION_DATE_TIME = "creationDateTime";
     }
-    static String[] projection = {TABLE_NAME + "." + Fields.ALARM_TIME};
+    static String[] projection = {
+            TABLE_NAME + "." + Fields.ALARM_DATE_TIME,
+            TABLE_NAME + "." + Fields.ALARM_CREATION_DATE_TIME,
+            TABLE_NAME + "." + Fields.ALARM_NOTE
+    };
 
     // Content Provider
     public static final String BASE_PATH = "alarms";
     public static final String NEXT_ALARM_PATH = "nextAlarm";
-    public static final String LAST_ALARM_PATH = "lastAlarm";
+    public static final String LAST_ALARMS_PATH = "lastAlarms";
     public static final String CONTENT_AUTHORITY = "com.sickmartian.quickreminderwidget";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(BASE_PATH).build();
     public static final Uri NEXT_ALARM_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(NEXT_ALARM_PATH).build();
-    public static final Uri LAST_ALARM_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(LAST_ALARM_PATH).build();
+    public static final Uri LAST_ALARMS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(LAST_ALARMS_PATH).build();
     public class Parameters {
         public static final String ALARM_FROM = "alarmFrom";
         public static final String ALARM_TO = "alarmTo";
-        public static final String ALARM_TIME = "alarmTime";
+        public static final String ALARM_TIME = "dateTime";
     }
 
 
@@ -63,8 +72,8 @@ public class Alarm {
                 .build();
     }
 
-    public static Uri getLastAlarm(LocalDateTime now) {
-        return LAST_ALARM_CONTENT_URI.buildUpon()
+    public static Uri getLatestsAlarms(LocalDateTime now) {
+        return LAST_ALARMS_CONTENT_URI.buildUpon()
                 .appendPath(Parameters.ALARM_TO).appendPath(now.toString())
                 .build();
     }
@@ -84,30 +93,42 @@ public class Alarm {
 
     // Data
     Alarm() {}
-    LocalDateTime alarmTime;
-    public LocalDateTime getAlarmTime() {
-        return alarmTime;
+    LocalDateTime dateTime;
+    LocalDateTime creationDateTime;
+    String note;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
-    public void setAlarmTime(LocalDateTime alarmTime) {
-        this.alarmTime = alarmTime;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
-    public boolean isCustomTime(boolean every30) {
+    public String getNote() {
+        return note;
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public LocalDateTime getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public boolean isCustomDateTime(boolean every30) {
         if (every30) {
-            return alarmTime.getMinuteOfHour() != 0 && alarmTime.getMinuteOfHour() != 30;
+            return dateTime.getMinuteOfHour() != 0 && dateTime.getMinuteOfHour() != 30;
         } else {
-            return alarmTime.getMinuteOfHour() != 0;
+            return dateTime.getMinuteOfHour() != 0;
         }
     }
-    public static Alarm fromTime(LocalDateTime localDateTime) {
+    public static Alarm fromDateTime(LocalDateTime localDateTime) {
         Alarm alarm = new Alarm();
-        alarm.setAlarmTime(localDateTime);
+        alarm.setDateTime(localDateTime);
         return alarm;
     }
 
     @Override
     public String toString() {
         return "Alarm{" +
-                "alarmTime=" + alarmTime +
+                "dateTime=" + dateTime +
                 '}';
     }
 
@@ -152,16 +173,16 @@ public class Alarm {
         return alarm;
     }
 
-    public static Alarm getLastSync(LocalDateTime now) {
-        Alarm alarm = null;
+    public static List<Alarm> getLastsSync(LocalDateTime now) {
+        ArrayList<Alarm> result = new ArrayList<Alarm>();
         final long token = Binder.clearCallingIdentity();
         try {
             Cursor cursor = QAWApp.getAppContext().getContentResolver()
-                    .query(getLastAlarm(now), projection, null, null, null);
+                    .query(getLatestsAlarms(now), projection, null, null, null);
             if (cursor != null) {
-                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     do {
-                        alarm = new Alarm(cursor);
+                        result.add(new Alarm(cursor));
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
@@ -169,26 +190,47 @@ public class Alarm {
         } finally {
             Binder.restoreCallingIdentity(token);
         }
-        return alarm;
+        return result;
     }
 
-    public void saveSync() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Fields.ALARM_TIME, alarmTime.toString());
+    public boolean createSync() {
+        Uri newUri = null;
         final long token = Binder.clearCallingIdentity();
         try {
-            QAWApp.getAppContext().getContentResolver()
-                    .insert(getAlarmByTime(alarmTime), contentValues);
+            newUri = QAWApp.getAppContext().getContentResolver()
+                    .insert(getAlarmByTime(dateTime), getContentValues());
         } finally {
             Binder.restoreCallingIdentity(token);
         }
+        return newUri != null;
+    }
+
+    public void modifySync() {
+        final long token = Binder.clearCallingIdentity();
+        try {
+            QAWApp.getAppContext().getContentResolver()
+                    .update(getAlarmByTime(dateTime), getContentValues(), null, null);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
+    }
+
+    private ContentValues getContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Fields.ALARM_DATE_TIME, dateTime.toString());
+        contentValues.put(Fields.ALARM_NOTE, note);
+        if (creationDateTime == null) {
+            creationDateTime = Utils.getNow();
+        }
+        contentValues.put(Fields.ALARM_CREATION_DATE_TIME, creationDateTime.toString());
+        return contentValues;
     }
 
     public void deleteSync() {
         final long token = Binder.clearCallingIdentity();
         try {
             QAWApp.getAppContext().getContentResolver()
-                    .delete(getAlarmByTime(alarmTime), null, null);
+                    .delete(getAlarmByTime(dateTime), null, null);
         } finally {
             Binder.restoreCallingIdentity(token);
         }
