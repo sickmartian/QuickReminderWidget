@@ -1,18 +1,16 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
@@ -20,18 +18,18 @@ import timber.log.Timber;
 /**
  * Created by ***REMOVED*** on 8/9/16.
  */
-public class QuickAlarmWidgetService extends RemoteViewsService {
+public class QuickReminderWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new QuickAlarmWidgetViewFactory(
-                intent.getBooleanExtra(QuickAlarmWidgetProvider.EVERY_30, true),
-                intent.getIntExtra(QuickAlarmWidgetProvider.HOURS, 4),
-                intent.getIntExtra(QuickAlarmWidgetProvider.CUSTOM_TIME_1, -1),
-                intent.getIntExtra(QuickAlarmWidgetProvider.CUSTOM_TIME_2, -1),
-                intent.getIntExtra(QuickAlarmWidgetProvider.CUSTOM_TIME_3, -1));
+        return new QuickReminderWidgetViewFactory(
+                intent.getBooleanExtra(QuickReminderWidgetProvider.EVERY_30, true),
+                intent.getIntExtra(QuickReminderWidgetProvider.HOURS, 4),
+                intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_1, -1),
+                intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_2, -1),
+                intent.getIntExtra(QuickReminderWidgetProvider.CUSTOM_TIME_3, -1));
     }
 
-    public final class QuickAlarmWidgetViewFactory implements RemoteViewsFactory {
+    public final class QuickReminderWidgetViewFactory implements RemoteViewsFactory {
         int hours;
         boolean every30;
         int customValue1;
@@ -41,8 +39,8 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
         private LocalDateTime initialTime;
         private List<AlarmIntentionData> alarmIntentionData;
 
-        public QuickAlarmWidgetViewFactory(boolean every30, int hours,
-                                           int customValue1, int customValue2, int customValue3) {
+        public QuickReminderWidgetViewFactory(boolean every30, int hours,
+                                              int customValue1, int customValue2, int customValue3) {
             this.every30 = every30;
             this.hours = hours;
             this.customValue1 = customValue1;
@@ -162,14 +160,14 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
                 itemView.setTextViewText(R.id.item_text,
                         currentAlarmIntentionData.getTime().toString(QAWApp.timeFormatter));
                 if (currentAlarmIntentionData.getAlarm() != null) {
-                    itemView.setTextColor(R.id.item_text, getColor(R.color.colorAccent));
+                    itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(R.color.colorAccent));
                 } else {
-                    itemView.setTextColor(R.id.item_text, getColor(android.R.color.white));
+                    itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(android.R.color.white));
                 }
             } else if (currentAlarmIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
-                        Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\"");
-                itemView.setTextColor(R.id.item_text, getColor(android.R.color.white));
+                        Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\'");
+                itemView.setTextColor(R.id.item_text, QAWApp.getAppContext().getResources().getColor(android.R.color.white));
             }
 
             Intent intent = new Intent();

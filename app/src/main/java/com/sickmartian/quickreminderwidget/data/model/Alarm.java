@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget.data.model;
+package com.sickmartian.quickreminderwidget.data.model;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 
-import com.sickmartian.quickalarmwidget.QAWApp;
+import com.sickmartian.quickreminderwidget.QAWApp;
 
 import org.joda.time.LocalDateTime;
 import org.parceler.Parcel;
@@ -35,7 +35,7 @@ public class Alarm {
     public static final String BASE_PATH = "alarms";
     public static final String NEXT_ALARM_PATH = "nextAlarm";
     public static final String LAST_ALARM_PATH = "lastAlarm";
-    public static final String CONTENT_AUTHORITY = "com.sickmartian.quickalarmwidget";
+    public static final String CONTENT_AUTHORITY = "com.sickmartian.quickreminderwidget";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(BASE_PATH).build();
     public static final Uri NEXT_ALARM_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(NEXT_ALARM_PATH).build();

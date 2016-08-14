@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.LocalDateTime;
 

@@ -1,10 +1,10 @@
-package com.sickmartian.quickalarmwidget.data;
+package com.sickmartian.quickreminderwidget.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 /**
  * Created by ***REMOVED*** on 8/12/16.

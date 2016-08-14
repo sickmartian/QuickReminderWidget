@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
@@ -23,10 +23,12 @@ import timber.log.Timber;
  */
 public class QAWApp extends Application {
 
+    private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static Context context;
     public static DateTimeFormatter timeFormatter;
     public static DateTimeFormatter dateTimeFormatter;
     public static boolean isThereOneEvery30 = false;
+    private static boolean areThereWidgets = false;
 
     @Override
     public void onCreate() {
@@ -42,11 +44,19 @@ public class QAWApp extends Application {
 
         timeFormatter = DateTimeFormat.shortTime();
         dateTimeFormatter = DateTimeFormat.shortDateTime();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        areThereWidgets = sharedPreferences.getBoolean(ARE_THERE_WIDGETS, false);
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
+    public static boolean areThereWidgets() {
+        return areThereWidgets;
+    }
+    public static void setWidgetExist(boolean atLeastOneWidgetExists) {
+        areThereWidgets = atLeastOneWidgetExists;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(QAWApp.getAppContext());
+        sharedPreferences.edit().putBoolean(ARE_THERE_WIDGETS, atLeastOneWidgetExists).apply();
     }
 
     public static Context getAppContext() {
@@ -87,10 +97,10 @@ public class QAWApp extends Application {
         Context appContext = QAWApp.getAppContext();
         AppWidgetManager man = AppWidgetManager.getInstance(appContext);
         int[] ids = man.getAppWidgetIds(
-                new ComponentName(appContext, QuickAlarmWidgetProvider.class));
+                new ComponentName(appContext, QuickReminderWidgetProvider.class));
         Intent updateIntent = new Intent();
-        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        updateIntent.putExtra(QuickAlarmWidgetProvider.WIDGET_IDS_KEY, ids);
+        updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
+        updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
     }
 }

@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.RemoteViews;
 
 import timber.log.Timber;
@@ -16,7 +14,7 @@ import timber.log.Timber;
 /**
  * Created by ***REMOVED*** on 8/9/16.
  */
-public class QuickAlarmWidgetProvider extends AppWidgetProvider {
+public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_IDS_KEY ="WIDGET_IDS_KEY";
     public static final String CUSTOM_TIME_1 = "CUSTOM_TIME_1";
     public static final String CUSTOM_TIME_2 = "CUSTOM_TIME_2";
@@ -38,6 +36,7 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         Timber.d("TimeSync starting because of first widget enabled");
+        QAWApp.setWidgetExist(true);
         TimeSyncReceiver.sendBroadcast(false, false);
     }
 
@@ -45,19 +44,19 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         Timber.d("TimeSync starting because of all widgets disabled");
+        QAWApp.setWidgetExist(false);
         TimeSyncReceiver.sendBroadcast(false, true);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         QAWApp.isThereOneEvery30 = false;
-
         for (int appWidgetId : appWidgetIds) {
             // Get a widget
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
 
             // Intent for the service that updates the list
-            Intent svcIntent = new Intent(context, QuickAlarmWidgetService.class);
+            Intent svcIntent = new Intent(context, QuickReminderWidgetService.class);
             svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
             // Get preferences for the widget

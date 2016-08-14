@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget.data;
+package com.sickmartian.quickreminderwidget.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import java.util.List;
 

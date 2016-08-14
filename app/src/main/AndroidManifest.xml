@@ -1,29 +1,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sickmartian.quickalarmwidget">
+    package="com.sickmartian.quickreminderwidget">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".QAWApp"
+        android:name="com.sickmartian.quickreminderwidget.QAWApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name="QuickAlarmWidgetProvider">
+        <receiver android:name="com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider">
             <intent-filter>
+                <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_info" />
         </receiver>
 
-        <service android:name="QuickAlarmWidgetService"
+        <service android:name="com.sickmartian.quickreminderwidget.QuickReminderWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name=".TimeSyncReceiver">
+        <receiver android:name="com.sickmartian.quickreminderwidget.TimeSyncReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.TIME_SET" />
@@ -31,11 +32,12 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <service android:name=".TimeSyncService" />
+        <service android:name="com.sickmartian.quickreminderwidget.TimeSyncService" />
 
-        <receiver android:name=".AlarmIntentionReceiver"/>
+        <receiver android:name="com.sickmartian.quickreminderwidget.AlarmIntentionReceiver"/>
+        <service android:name="com.sickmartian.quickreminderwidget.AlarmIntentionService" />
 
-        <receiver android:name=".CalculateAndScheduleNextAlarmReceiver">
+        <receiver android:name="com.sickmartian.quickreminderwidget.CalculateAndScheduleNextAlarmReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.TIME_SET" />
@@ -43,15 +45,15 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <service android:name=".CalculateAndScheduleNextAlarmService" />
+        <service android:name="com.sickmartian.quickreminderwidget.CalculateAndScheduleNextAlarmService" />
 
-        <receiver android:name=".NotificationReceiver" />
-        <service android:name=".NotificationService" />
+        <receiver android:name="com.sickmartian.quickreminderwidget.NotificationReceiver" />
+        <service android:name="com.sickmartian.quickreminderwidget.NotificationService" />
 
         <provider
-            android:name=".data.QAWProvider"
+            android:name="com.sickmartian.quickreminderwidget.data.QAWProvider"
             android:label="Provider"
-            android:authorities="com.sickmartian.quickalarmwidget"
+            android:authorities="com.sickmartian.quickreminderwidget"
             android:exported="false"
             android:syncable="false" />
 

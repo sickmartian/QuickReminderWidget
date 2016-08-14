@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.content.Context;
 import android.content.Intent;

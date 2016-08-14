@@ -1,6 +1,4 @@
-package com.sickmartian.quickalarmwidget;
-
-import android.os.Build;
+package com.sickmartian.quickreminderwidget;
 
 import org.joda.time.LocalDateTime;
 

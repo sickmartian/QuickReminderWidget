@@ -1,4 +1,4 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +20,11 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
         if (intent != null) {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS,
                     intent.getBooleanExtra(TimeSyncService.AND_UPDATE_WIDGETS, true));
+            service.putExtra(TimeSyncService.AND_DISABLE,
+                    intent.getBooleanExtra(TimeSyncService.AND_DISABLE, QAWApp.areThereWidgets()));
         } else {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
+            service.putExtra(TimeSyncService.AND_DISABLE, QAWApp.areThereWidgets());
         }
         startWakefulService(context, service);
     }

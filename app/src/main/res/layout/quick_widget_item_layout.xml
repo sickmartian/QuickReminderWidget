@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/clickeable_row"
+<LinearLayout android:id="@+id/clickeable_row"
     android:orientation="horizontal"
+    tools:layout_width="80dp"
     android:layout_height="@dimen/normal_item_height"
     android:layout_width="match_parent"
     android:gravity="center_vertical"
     android:layout_gravity="center_vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <TextView
         android:id="@+id/item_text"
         android:gravity="center_vertical"

@@ -1,6 +1,6 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;

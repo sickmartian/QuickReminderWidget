@@ -1,17 +1,10 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import timber.log.Timber;
@@ -39,14 +32,15 @@ public class TimeSyncService extends IntentService {
             timeSyncIntent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
                     TimeSyncService.REQUEST_CODE, timeSyncIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            // If we are not disabling, we get next one
-            if (!intent.getBooleanExtra(AND_DISABLE, false)) {
+            // If we are disabling, disable
+            if (intent.getBooleanExtra(AND_DISABLE, false)) {
+                Timber.i("Disabling TimeSync");
+                alarmManager.cancel(timeSyncIntentPI);
+            } else {
+                // If not, we schedule the next call to this service
                 Timber.i("Placing TimeSync alarm for: " + nextTime.toString());
                 alarmManager.set(AlarmManager.RTC, nextTime.toDateTime().getMillis(),
                         timeSyncIntentPI);
-            } else {
-                Timber.i("Disabling TimeSync");
-                alarmManager.cancel(timeSyncIntentPI);
             }
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {

@@ -1,16 +1,14 @@
-package com.sickmartian.quickalarmwidget;
+package com.sickmartian.quickreminderwidget;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 
-import com.sickmartian.quickalarmwidget.data.model.Alarm;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import timber.log.Timber;
 

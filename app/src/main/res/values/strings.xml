@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Quick Alarm Widget</string>
-    <string name="alarm_created_for">Alarm set for %1$s</string>
-    <string name="alarm_deleted_for">Alarm at %1$s was deleted</string>
+    <string translatable="false" name="custom_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE</string>
+
+    <string name="app_name">Quick Reminder Widget</string>
+    <string name="alarm_created_for">Reminder set for %1$s</string>
+    <string name="alarm_deleted_for">Reminder for %1$s was deleted</string>
 </resources>

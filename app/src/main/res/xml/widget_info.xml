@@ -4,7 +4,8 @@
     android:minWidth="@dimen/widget_width"
     android:minHeight="@dimen/widget_height"
     android:minResizeHeight="@dimen/widget_min_height"
+    android:minResizeWidth="@dimen/widget_min_width"
     android:updatePeriodMillis="0"
     android:autoAdvanceViewId="@+id/quick_widget_list"
     android:initialLayout="@layout/quick_widget_layout"
-    android:resizeMode="vertical" />
+    android:resizeMode="vertical|horizontal" />
