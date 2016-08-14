@@ -9,9 +9,11 @@ import com.sickmartian.quickalarmwidget.data.model.Alarm;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
@@ -36,10 +38,8 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
         int customValue2;
         int customValue3;
 
-        int rows;
         private LocalDateTime initialTime;
-        private List<Alarm> alarms;
-        private int customValues;
+        private List<AlarmIntentionData> alarmIntentionData;
 
         public QuickAlarmWidgetViewFactory(boolean every30, int hours,
                                            int customValue1, int customValue2, int customValue3) {
@@ -48,6 +48,8 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
             this.customValue1 = customValue1;
             this.customValue2 = customValue2;
             this.customValue3 = customValue3;
+
+            alarmIntentionData = new ArrayList<AlarmIntentionData>();
         }
 
         @Override
@@ -56,45 +58,85 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            Timber.d("QAWS onDataSetChanged");
             calculateInternalState();
         }
 
         public void calculateInternalState() {
+            Timber.d("Calculating Widget Initial State");
+            int rowsForHour;
+            List<Alarm> alarms;
+
+            alarmIntentionData.clear();
+
             initialTime = QAWApp.getInitialTime(every30);
             LocalDateTime endTime = initialTime.plusHours(hours);
             if (every30) {
-                rows = hours * 2 + 1;
+                rowsForHour = hours * 2 + 1;
             } else {
-                rows = hours + 1;
+                rowsForHour = hours + 1;
             }
 
-            // Add rows for custom values (10 minutes from now, 30 minutes from now, etc)
-            customValues = 0;
+            // Add rows for custom values first (10 minutes from now, 30 minutes from now, etc)
             if (customValue1 > 0) {
-                rows++;
-                customValues++;
+                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue1), null));
             }
             if (customValue2 > 0) {
-                rows++;
-                customValues++;
+                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue2), null));
             }
             if (customValue3 > 0) {
-                rows++;
-                customValues++;
+                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue3), null));
             }
 
-            Timber.d("now: " + Utils.getNow().toString());
-            Timber.d("initialTime: " + initialTime.toString());
-            Timber.d("endTime: " + endTime.toString());
-
-            alarms = Alarm.getBetweenDatesSync(initialTime, endTime);
-            // Add rows for alarms set for the custom values
-            for (Alarm alarm : alarms) {
-                int minutes = alarm.getAlarmTime().getMinuteOfHour();
-                if (minutes != 0 && minutes != 30) {
-                    rows++;
+            LocalDateTime now = Utils.getNow();
+            alarms = Alarm.getBetweenDatesSync(now, endTime);
+            int alarmWeLeftOff = 0;
+            int alarmIndex;
+            // Normal times and custom set alarms
+            // (There shouldn't be alarms after the normal times, as we are
+            // filtering by those times)
+            for (int timeRowIndex = 0; timeRowIndex < rowsForHour; timeRowIndex++) {
+                LocalDateTime timeForTimeRow = getTimeForTimeRow(timeRowIndex);
+                boolean timeWasAdded = false;
+                for (alarmIndex = alarmWeLeftOff; alarmIndex < alarms.size(); alarmIndex++) {
+                    alarmWeLeftOff = alarmIndex;
+                    Alarm alarm = alarms.get(alarmIndex);
+                    if (alarm.getAlarmTime().isEqual(timeForTimeRow)) {
+                        // Normally set alarm
+                        alarmIntentionData.add(new AlarmIntentionData(timeForTimeRow, alarm));
+                        alarmWeLeftOff = alarmIndex + 1;
+                        timeWasAdded = true;
+                        break;
+                    } else if (alarm.getAlarmTime().isBefore(timeForTimeRow)) {
+                        // Alarm set via custom value
+                        alarmIntentionData.add(new AlarmIntentionData(alarm.getAlarmTime(), alarm));
+                        alarmWeLeftOff = alarmIndex + 1;
+                    } else {
+                        // This alarm will be set later
+                        break;
+                    }
                 }
+                if (!timeWasAdded) {
+                    alarmIntentionData.add(new AlarmIntentionData(timeForTimeRow, null));
+                }
+            }
+
+            for (AlarmIntentionData aid : alarmIntentionData) {
+                Timber.i(aid.toString());
+            }
+        }
+
+        public LocalDateTime getTimeForTimeRow(int timeRow) {
+            // If we are over the custom values
+            if (timeRow > 0) {
+                // Return the time
+                if (every30) {
+                    return initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * (timeRow));
+                } else {
+                    return initialTime.plusHours(timeRow );
+                }
+            } else {
+                // Return the initial time
+                return initialTime;
             }
         }
 
@@ -105,75 +147,38 @@ public class QuickAlarmWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            return rows;
+            return alarmIntentionData.size();
         }
 
         @Override
-        public RemoteViews getViewAt(int i) {
+        public RemoteViews getViewAt(int row) {
             RemoteViews itemView = new RemoteViews(QAWApp.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
 
-            Serializable timeObjectForRow = getTimeObjectForRow(i);
+            AlarmIntentionData currentAlarmIntentionData = alarmIntentionData.get(row);
 
             Bundle extras = new Bundle();
-            if (timeObjectForRow instanceof LocalDateTime) {
-                LocalDateTime timeForRow = (LocalDateTime) timeObjectForRow;
-                Alarm alarm = getAlarmForTime(timeForRow);
-                extras.putParcelable(AlarmIntentionReceiver.ALARM, Parcels.wrap(alarm));
-
-                itemView.setTextViewText(R.id.item_text, timeForRow.toString(QAWApp.timeFormatter));
-                if (alarm != null) {
+            if (currentAlarmIntentionData.getTime() != null) {
+                itemView.setTextViewText(R.id.item_text,
+                        currentAlarmIntentionData.getTime().toString(QAWApp.timeFormatter));
+                if (currentAlarmIntentionData.getAlarm() != null) {
                     itemView.setTextColor(R.id.item_text, getColor(R.color.colorAccent));
                 } else {
                     itemView.setTextColor(R.id.item_text, getColor(android.R.color.white));
                 }
-            } else if (timeObjectForRow instanceof Duration) {
-                Duration duration = (Duration) timeObjectForRow;
-                itemView.setTextViewText(R.id.item_text, Long.toString(duration.getStandardMinutes()) + "\"");
+            } else if (currentAlarmIntentionData.getDuration() != null) {
+                itemView.setTextViewText(R.id.item_text,
+                        Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\"");
+                itemView.setTextColor(R.id.item_text, getColor(android.R.color.white));
             }
 
             Intent intent = new Intent();
-            extras.putSerializable(AlarmIntentionReceiver.ALARM_TIME_OBJECT, timeObjectForRow);
+            extras.putParcelable(AlarmIntentionReceiver.ALARM_INTENTION_DATA,
+                    Parcels.wrap(currentAlarmIntentionData));
             intent.putExtras(extras);
             itemView.setOnClickFillInIntent(R.id.clickeable_row, intent);
 
             return itemView;
-        }
-
-        public Serializable getTimeObjectForRow(int row) {
-            // Return custom durations (assumes customValue2 is never filled
-            // without customValue1 and so on)
-            if (row == 0 && customValues > 0) {
-                return Duration.standardMinutes(customValue1);
-            }
-            if (row == 1 && customValues > 1) {
-                return Duration.standardMinutes(customValue2);
-            }
-            if (row == 2 && customValues > 2) {
-                return Duration.standardMinutes(customValue3);
-            }
-
-            // If we are over the custom values
-            if (row > customValues) {
-                // Return the time
-                if (every30) {
-                    return initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * (row - customValues));
-                } else {
-                    return initialTime.plusHours(row - customValues);
-                }
-            } else {
-                // Return the initial time
-                return initialTime;
-            }
-        }
-
-        private Alarm getAlarmForTime(LocalDateTime timeForRow) {
-            for (Alarm alarm : alarms) {
-                if (alarm.getAlarmTime().equals(timeForRow)) {
-                    return alarm;
-                }
-            }
-            return null;
         }
 
         @Override

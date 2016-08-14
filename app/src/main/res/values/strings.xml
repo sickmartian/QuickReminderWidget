@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Quick Alarm Widget</string>
+    <string name="alarm_created_for">Alarm set for %1$s</string>
+    <string name="alarm_deleted_for">Alarm at %1$s was deleted</string>
 </resources>

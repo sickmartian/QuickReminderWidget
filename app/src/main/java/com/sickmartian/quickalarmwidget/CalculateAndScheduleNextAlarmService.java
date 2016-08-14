@@ -29,7 +29,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         try {
-            Timber.i("CalculateAndScheduleNextAlarmService starting");
+            Timber.d("CalculateAndScheduleNextAlarmService starting");
 
             // Calculate next alarm
             Alarm nextAlarm = Alarm.getNextSync(Utils.getNow());
@@ -39,7 +39,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
 
             if (nextAlarm != null) {
                 DateTime alarmTime = nextAlarm.getAlarmTime().toDateTime();
-                Timber.d("Next Alarm: " + alarmTime.toString());
+                Timber.i("Next Alarm: " + alarmTime.toString());
                 PendingIntent notificationPendingIntent =
                         PendingIntent.getBroadcast(this,
                                 CalculateAndScheduleNextAlarmService.REQUEST_CODE,
@@ -61,7 +61,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
                     }
                 }
             } else {
-                Timber.d("Next Alarm set to none");
+                Timber.i("Next Alarm set to none");
                 PendingIntent notificationPendingIntent =
                         PendingIntent.getBroadcast(this,
                                 CalculateAndScheduleNextAlarmService.REQUEST_CODE,
@@ -70,7 +70,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
                 alarmManager.cancel(notificationPendingIntent);
             }
         } finally {
-            Timber.i("CalculateAndScheduleNextAlarmService ending");
+            Timber.d("CalculateAndScheduleNextAlarmService ending");
             if (intent != null) {
                 CalculateAndScheduleNextAlarmReceiver.completeWakefulIntent(intent);
             }

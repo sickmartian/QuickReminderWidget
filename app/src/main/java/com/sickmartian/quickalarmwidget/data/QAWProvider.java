@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -79,7 +80,9 @@ public class QAWProvider extends ContentProvider {
                         new String[]{dateFrom, dateTo},
                         null,
                         null,
-                        sortOrder);
+                        sortOrder == null ?
+                                Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_TIME + " asc" :
+                                sortOrder);
                 break;
             }
             case NEXT_ALARM: {
@@ -146,9 +149,15 @@ public class QAWProvider extends ContentProvider {
 
         switch (match) {
             case ALARM_BY_TIME: {
-                long id = db.insert(Alarm.TABLE_NAME, null, values);
-                if ( id > 0 ) {
-                    newUri = Alarm.getAlarmById((int) id);
+                try {
+                    long id = db.insert(Alarm.TABLE_NAME, null, values);
+                    if ( id > 0 ) {
+                        newUri = Alarm.getAlarmById((int) id);
+                    } else {
+                        Timber.i("Tried to add an existing alarm! Ignoring...");
+                    }
+                } catch (SQLiteConstraintException e) {
+                    Timber.i("Tried to add an existing alarm! Ignoring...");
                 }
                 break;
             }

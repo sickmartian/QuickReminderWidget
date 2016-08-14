@@ -3,15 +3,12 @@ package com.sickmartian.quickalarmwidget;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.sickmartian.quickalarmwidget.data.model.Alarm;
 
-import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
-import org.joda.time.ReadableDuration;
 import org.parceler.Parcels;
-
-import java.io.Serializable;
 
 import timber.log.Timber;
 
@@ -19,27 +16,38 @@ import timber.log.Timber;
  * Created by ***REMOVED*** on 8/12/16.
  */
 public class AlarmIntentionReceiver extends BroadcastReceiver {
-    public static final String ALARM_TIME_OBJECT = "ALARM_TIME_OBJECT";
-    public static final String ALARM = "EXISTING_ALARM";
+    public static final String ALARM_INTENTION_DATA = "ALARM_INTENTION_DATA";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final Serializable timeObject = intent.getSerializableExtra(ALARM_TIME_OBJECT);
-        Alarm alarm = Parcels.unwrap(intent.getParcelableExtra(ALARM));
+        final AlarmIntentionData intentionData =
+                Parcels.unwrap(intent.getParcelableExtra(ALARM_INTENTION_DATA));
 
-        Timber.d("Alarm intention for: " + timeObject.toString());
-        Timber.d("Alarm: " + (alarm == null ? "none" : alarm.toString()));
+        Timber.d("Received alarm intention: " + intentionData.toString());
 
-        if (alarm == null) {
-            if (timeObject instanceof LocalDateTime) {
-                Alarm.fromTime((LocalDateTime) timeObject).saveSync();
-            } else if (timeObject instanceof Duration) {
-                Alarm.fromTime(Utils.getNow().plus((ReadableDuration) timeObject)).saveSync();
+        if (intentionData.getAlarm() == null) {
+            LocalDateTime alarmTime = null;
+            if (intentionData.getTime() != null) {
+                alarmTime = intentionData.getTime();
+            } else if (intentionData.getDuration() != null) {
+                alarmTime = Utils.getNow().plus(intentionData.getDuration())
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0);
             }
-            Timber.d("Alarm created");
+            assert alarmTime != null; // Either a duration or a time, if none something is really fishy
+            Alarm.fromTime(alarmTime).saveSync();
+            Toast.makeText(QAWApp.getAppContext(),
+                    String.format(QAWApp.getAppContext().getString(R.string.alarm_created_for),
+                            alarmTime.toString(QAWApp.dateTimeFormatter)),
+                    Toast.LENGTH_LONG)
+                    .show();
         } else {
-            alarm.deleteSync();
-            Timber.d("Alarm deleted");
+            intentionData.getAlarm().deleteSync();
+            Toast.makeText(QAWApp.getAppContext(),
+                    String.format(QAWApp.getAppContext().getString(R.string.alarm_deleted_for),
+                            intentionData.getTime().toString(QAWApp.dateTimeFormatter)),
+                    Toast.LENGTH_LONG)
+                    .show();
         }
 
         QAWApp.updateAllWidgets();

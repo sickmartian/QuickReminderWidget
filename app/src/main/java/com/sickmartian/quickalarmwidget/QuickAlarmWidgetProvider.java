@@ -11,6 +11,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import timber.log.Timber;
+
 /**
  * Created by ***REMOVED*** on 8/9/16.
  */
@@ -33,7 +35,23 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        Timber.d("TimeSync starting because of first widget enabled");
+        TimeSyncReceiver.sendBroadcast(false, false);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+        Timber.d("TimeSync starting because of all widgets disabled");
+        TimeSyncReceiver.sendBroadcast(false, true);
+    }
+
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        QAWApp.isThereOneEvery30 = false;
+
         for (int appWidgetId : appWidgetIds) {
             // Get a widget
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
@@ -51,8 +69,14 @@ public class QuickAlarmWidgetProvider extends AppWidgetProvider {
             customTime = sharedPreferences.getInt(CUSTOM_TIME_3, 30);
             svcIntent.putExtra(CUSTOM_TIME_3, customTime);
 
+            // Set if there is at least one widget set to every30
+            // so we know what a normal or custom alarm is and when we have
+            // to manually update widgets
             boolean every30 = sharedPreferences.getBoolean(EVERY_30, true);
             svcIntent.putExtra(EVERY_30, every30);
+            if (every30 && !QAWApp.isThereOneEvery30) {
+                QAWApp.isThereOneEvery30 = true;
+            }
             int hours = sharedPreferences.getInt(HOURS, 4);
             svcIntent.putExtra(HOURS, hours);
 

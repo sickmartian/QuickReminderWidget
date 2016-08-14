@@ -27,7 +27,7 @@ public class NotificationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            Timber.i("NotificationService starting");
+            Timber.d("NotificationService starting");
             LocalDateTime now = LocalDateTime.now();
 
             // Check that there is an alarm for the notification
@@ -36,10 +36,15 @@ public class NotificationService extends IntentService {
             // Calculate next alarm after adjusting them
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
 
-
             if (lastAlarm != null) {
                 // Cleanup old alarms we don't care about anymore
                 Alarm.deleteUpTo(lastAlarm.getAlarmTime());
+
+                // Update widget if we just removed a custom alarm
+                // because the TimeSync is not gonna run for us
+                if (lastAlarm.isCustomTime(QAWApp.isThereOneEvery30)) {
+                    QAWApp.updateAllWidgets();
+                }
 
                 // Start with the notification:
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
@@ -59,7 +64,7 @@ public class NotificationService extends IntentService {
                 notificationManager.notify(NOTIFICATION, REMINDER_NOTIFICATION_ID, notification);
             }
         } finally {
-            Timber.i("NotificationService ending");
+            Timber.d("NotificationService ending");
             NotificationReceiver.completeWakefulIntent(intent);
         }
     }

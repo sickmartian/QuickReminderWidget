@@ -14,7 +14,7 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.getAction() != null) {
-            Timber.d("Called via: " + intent.getAction());
+            Timber.d("TimeSync called via: " + intent.getAction());
         }
         Intent service = new Intent(context, TimeSyncService.class);
         if (intent != null) {
@@ -26,9 +26,10 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
         startWakefulService(context, service);
     }
 
-    public static void sendBroadcast(boolean andUpdateWidgets) {
+    public static void sendBroadcast(boolean andUpdateWidgets, boolean andDisable) {
         Intent intent = new Intent(QAWApp.getAppContext(), TimeSyncReceiver.class);
         intent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, andUpdateWidgets);
+        intent.putExtra(TimeSyncService.AND_DISABLE, andDisable);
         QAWApp.getAppContext().sendBroadcast(intent);
     }
 

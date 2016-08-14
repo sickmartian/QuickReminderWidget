@@ -91,6 +91,13 @@ public class Alarm {
     public void setAlarmTime(LocalDateTime alarmTime) {
         this.alarmTime = alarmTime;
     }
+    public boolean isCustomTime(boolean every30) {
+        if (every30) {
+            return alarmTime.getMinuteOfHour() != 0 && alarmTime.getMinuteOfHour() != 30;
+        } else {
+            return alarmTime.getMinuteOfHour() != 0;
+        }
+    }
     public static Alarm fromTime(LocalDateTime localDateTime) {
         Alarm alarm = new Alarm();
         alarm.setAlarmTime(localDateTime);

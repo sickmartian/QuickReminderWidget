@@ -22,6 +22,7 @@ import timber.log.Timber;
 public class TimeSyncService extends IntentService {
     private static final int REQUEST_CODE = 5656;
     public static final String AND_UPDATE_WIDGETS = "AND_UPDATE_WIDGETS";
+    public static final String AND_DISABLE = "AND_DISABLE";
 
     public TimeSyncService() {
         super(TimeSyncService.class.toString());
@@ -31,19 +32,25 @@ public class TimeSyncService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             Timber.d("TimeSyncService starting");
-
-            LocalDateTime nextTime = QAWApp.getInitialTime(true);
-            Timber.d("Placing TimeSync alarm for: " + nextTime.toString());
+            LocalDateTime nextTime = QAWApp.getInitialTime(QAWApp.isThereOneEvery30);
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent timeSyncIntent = new Intent(this, TimeSyncReceiver.class);
             timeSyncIntent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
                     TimeSyncService.REQUEST_CODE, timeSyncIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.set(AlarmManager.RTC, nextTime.toDateTime().getMillis(),
-                    timeSyncIntentPI);
+            // If we are not disabling, we get next one
+            if (!intent.getBooleanExtra(AND_DISABLE, false)) {
+                Timber.i("Placing TimeSync alarm for: " + nextTime.toString());
+                alarmManager.set(AlarmManager.RTC, nextTime.toDateTime().getMillis(),
+                        timeSyncIntentPI);
+            } else {
+                Timber.i("Disabling TimeSync");
+                alarmManager.cancel(timeSyncIntentPI);
+            }
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {
+                Timber.i("Updating Widgets");
                 QAWApp.updateAllWidgets();
             }
         } finally {

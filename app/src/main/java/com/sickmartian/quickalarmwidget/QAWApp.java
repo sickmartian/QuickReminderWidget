@@ -24,8 +24,9 @@ import timber.log.Timber;
 public class QAWApp extends Application {
 
     private static Context context;
-    public static final String TIME_CHANGED_ALARM_SET = "TIME_CHANGED_ALARM_SET";
     public static DateTimeFormatter timeFormatter;
+    public static DateTimeFormatter dateTimeFormatter;
+    public static boolean isThereOneEvery30 = false;
 
     @Override
     public void onCreate() {
@@ -40,12 +41,7 @@ public class QAWApp extends Application {
         }
 
         timeFormatter = DateTimeFormat.shortTime();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!(sharedPreferences.getBoolean(TIME_CHANGED_ALARM_SET, false))) {
-            Timber.d("Trying to set time sync alarm");
-            TimeSyncReceiver.sendBroadcast(false);
-        }
+        dateTimeFormatter = DateTimeFormat.shortDateTime();
     }
 
     @Override
