@@ -26,7 +26,7 @@ public class TimeSyncService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             Timber.d("TimeSyncService starting");
-            LocalDateTime nextTime = QAWApp.getInitialTime(QAWApp.isThereOneEvery30);
+            LocalDateTime nextTime = QAWApp.getInitialTime(QAWApp.isThereOneEvery30());
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent timeSyncIntent = new Intent(this, TimeSyncReceiver.class);

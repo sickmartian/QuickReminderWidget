@@ -11,7 +11,6 @@ import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.LocalDateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -45,7 +44,7 @@ public class NotificationService extends IntentService {
                 // Update widget if we just removed a custom alarm
                 // because the TimeSync is not gonna run for us
                 for (Alarm currentAlarm : currentAlarms) {
-                    if (currentAlarm.isCustomDateTime(QAWApp.isThereOneEvery30)) {
+                    if (currentAlarm.isCustomDateTime(QAWApp.isThereOneEvery30())) {
                         QAWApp.updateAllWidgets();
                         break;
                     }
@@ -66,16 +65,23 @@ public class NotificationService extends IntentService {
                         .setGroup("QAWNotificationGroup")
                         .setCategory(Notification.CATEGORY_REMINDER);
 
+                // Set note(s)
                 StringBuilder sb = new StringBuilder();
+                if (currentAlarms.size() > 1) {
+                    sb.append(getString(R.string.alarm_notification_notes_label));
+                } else {
+                    sb.append(getString(R.string.alarm_notification_note_label));
+                }
+                boolean foundOne = false;
                 for (Alarm alarm : currentAlarms) {
-                    sb.append(alarm.getCreationDateTime())
-                            .append("\n");
                     if (alarm.getNote() != null) {
-                        sb.append(alarm.getNote())
-                                .append("\n");
+                        sb.append(alarm.getNote());
+                        foundOne = true;
                     }
                 }
-                notificationBuilder.setContentText(sb.toString());
+                if (foundOne) {
+                    notificationBuilder.setContentText(sb.toString());
+                }
 
                 Notification notification = notificationBuilder.build();
                 notificationManager.notify(NOTIFICATION, QAWApp.getNewNotificationId(), notification);

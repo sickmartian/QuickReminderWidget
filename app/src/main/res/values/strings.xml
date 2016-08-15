@@ -10,4 +10,6 @@
     <string name="alarm_note_field">Note</string>
     <string name="alarm_edition_title">Edit Alarm</string>
     <string name="alarm_couldnt_be_created">Reminder couldn\'t be created</string>
+    <string name="alarm_notification_notes_label">Notes: </string>
+    <string name="alarm_notification_note_label">Note: </string>
 </resources>

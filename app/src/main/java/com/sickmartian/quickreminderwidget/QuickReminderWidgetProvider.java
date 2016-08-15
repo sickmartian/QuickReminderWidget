@@ -51,7 +51,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        QAWApp.isThereOneEvery30 = false;
+        boolean oneEvery30 = false;
         for (int appWidgetId : appWidgetIds) {
             // Get a widget
             RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.quick_widget_layout);
@@ -62,11 +62,11 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
 
             // Get preferences for the widget
             SharedPreferences sharedPreferences = getWidgetSharedPref(appWidgetId);
-            int customTime = sharedPreferences.getInt(CUSTOM_TIME_1, 10);
+            int customTime = sharedPreferences.getInt(CUSTOM_TIME_1, 1);
             svcIntent.putExtra(CUSTOM_TIME_1, customTime);
-            customTime = sharedPreferences.getInt(CUSTOM_TIME_2, 15);
+            customTime = sharedPreferences.getInt(CUSTOM_TIME_2, 5);
             svcIntent.putExtra(CUSTOM_TIME_2, customTime);
-            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, 30);
+            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, 10);
             svcIntent.putExtra(CUSTOM_TIME_3, customTime);
 
             // Set if there is at least one widget set to every30
@@ -74,8 +74,8 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             // to manually update widgets
             boolean every30 = sharedPreferences.getBoolean(EVERY_30, true);
             svcIntent.putExtra(EVERY_30, every30);
-            if (every30 && !QAWApp.isThereOneEvery30) {
-                QAWApp.isThereOneEvery30 = true;
+            if (every30) {
+                oneEvery30 = true;
             }
 
             int hours = sharedPreferences.getInt(HOURS, 4);
@@ -94,6 +94,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);
         }
+        QAWApp.setOneEvery30(oneEvery30);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.quick_widget_list);
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);

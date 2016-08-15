@@ -26,10 +26,10 @@ public class QAWApp extends Application {
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
+    private static final String ARE_THERE_30M_WIDGETS = "ARE_THERE_30M_WIDGETS";
     private static Context context;
     public static DateTimeFormatter timeFormatter;
     public static DateTimeFormatter dateTimeFormatter;
-    public static boolean isThereOneEvery30 = false;
     public static int activeColor = -1;
     public static int inactiveColor = -1;
     public static SharedPreferences sharedPreferences = null;
@@ -65,8 +65,17 @@ public class QAWApp extends Application {
     }
 
     public static void setWidgetExist(boolean atLeastOneWidgetExists) {
-        Timber.i("setWidgetExist:" + Boolean.toString(atLeastOneWidgetExists));
-        getSharedPreferences().edit().putBoolean(ARE_THERE_WIDGETS, atLeastOneWidgetExists).apply();
+        Timber.d("setWidgetExist:" + Boolean.toString(atLeastOneWidgetExists));
+        getSharedPreferences().edit().putBoolean(ARE_THERE_WIDGETS, atLeastOneWidgetExists).commit();
+    }
+
+    public static boolean isThereOneEvery30() {
+        return getSharedPreferences().getBoolean(ARE_THERE_30M_WIDGETS, false);
+    }
+
+    public static void setOneEvery30(boolean oneEvery30) {
+        Timber.d("setOneEvery30:" + Boolean.toString(oneEvery30));
+        getSharedPreferences().edit().putBoolean(ARE_THERE_30M_WIDGETS, oneEvery30).commit();
     }
 
     public static Context getAppContext() {

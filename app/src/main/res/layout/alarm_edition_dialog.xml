@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:minWidth="300dp"
+    android:minHeight="160dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <EditText
@@ -9,11 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:minLines="5"
         android:gravity="top"
+        android:inputType="textMultiLine"
         android:hint="@string/alarm_note_field" />
+    <android.support.v4.widget.Space
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
     <LinearLayout
         android:orientation="horizontal"
-        android:gravity="end|right"
+        android:gravity="end|right|bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
