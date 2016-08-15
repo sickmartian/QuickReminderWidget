@@ -180,11 +180,20 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 } else {
                     itemView.setViewVisibility(R.id.note_link, View.GONE);
                 }
+                // First row and each row for new dates get the date printed
+                if (currentAlarmIntentionData.getTime().getMillisOfDay() == 0 ||
+                        currentAlarmIntentionData.getTime().equals(initialTime)) {
+                    itemView.setViewVisibility(R.id.date_row, View.VISIBLE);
+                    itemView.setTextViewText(R.id.date_row, currentAlarmIntentionData.getTime().toString(QAWApp.dateFormatter));
+                } else {
+                    itemView.setViewVisibility(R.id.date_row, View.GONE);
+                }
             } else if (currentAlarmIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
                         Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\'");
                 itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
                 itemView.setViewVisibility(R.id.note_link, View.GONE);
+                itemView.setViewVisibility(R.id.date_row, View.GONE);
             }
 
             Intent intent = new Intent();

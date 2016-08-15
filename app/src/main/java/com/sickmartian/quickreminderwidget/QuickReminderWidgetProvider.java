@@ -66,7 +66,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             svcIntent.putExtra(CUSTOM_TIME_1, customTime);
             customTime = sharedPreferences.getInt(CUSTOM_TIME_2, 5);
             svcIntent.putExtra(CUSTOM_TIME_2, customTime);
-            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, 10);
+            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, -1);
             svcIntent.putExtra(CUSTOM_TIME_3, customTime);
 
             // Set if there is at least one widget set to every30
@@ -78,7 +78,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
                 oneEvery30 = true;
             }
 
-            int hours = sharedPreferences.getInt(HOURS, 4);
+            int hours = sharedPreferences.getInt(HOURS, 6);
             svcIntent.putExtra(HOURS, hours);
             boolean possibilityToAddNotes = sharedPreferences.getBoolean(POSSIBILITY_TO_ADD_NOTE, true);
             svcIntent.putExtra(POSSIBILITY_TO_ADD_NOTE, possibilityToAddNotes);

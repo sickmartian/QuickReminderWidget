@@ -29,6 +29,7 @@ public class QAWApp extends Application {
     private static final String ARE_THERE_30M_WIDGETS = "ARE_THERE_30M_WIDGETS";
     private static Context context;
     public static DateTimeFormatter timeFormatter;
+    public static DateTimeFormatter dateFormatter;
     public static DateTimeFormatter dateTimeFormatter;
     public static int activeColor = -1;
     public static int inactiveColor = -1;
@@ -46,6 +47,7 @@ public class QAWApp extends Application {
             Timber.plant(new Timber.DebugTree());
         }
 
+        dateFormatter = DateTimeFormat.mediumDate();
         timeFormatter = DateTimeFormat.shortTime();
         dateTimeFormatter = DateTimeFormat.shortDateTime();
 
