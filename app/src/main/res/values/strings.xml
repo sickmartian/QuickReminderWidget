@@ -21,12 +21,18 @@
     <string name="custom_values_1_label">1 Minute</string>
     <string name="custom_values_5_label">5 Minutes</string>
     <string name="custom_values_15_label">15 Minutes</string>
-    <string name="custom_values_30_label">Half an hour</string>
+    <string name="custom_values_30_label">30 Minutes</string>
     <string name="custom_values_45_label">45 Minutes</string>
     <string name="custom_values_60_label">1 Hour</string>
-    <string name="custom_values_90_label">1.5 hours</string>
+    <string name="custom_values_90_label">90 Minutes</string>
     <string name="widget_configuration_title">Widget Settings</string>
     <string name="widget_configuration_hour_missing">Enter a value for the hours</string>
     <string name="widget_configuration_hour_invalid">Enter a valid number of hours</string>
     <string name="widget_configuration_hour_above_max">The value for hours is too big. Select up to 168 hours.</string>
+    <string name="custom_value_format">In %1$s\'</string>
+    <string name="notification_label">Notifications</string>
+    <string name="notification_vibrate_label">Vibrate:</string>
+    <string name="notification_custom_label">Use custom notification:</string>
+    <string name="notification_light_label">Use lights:</string>
+    <string name="notification_sound_label">Custom Tone</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.sickmartian.quickreminderwidget;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +41,8 @@ public class AlarmIntentionService extends IntentService {
                 }
                 assert alarmTime != null; // Either a duration or a time, if none something is really fishy
                 Alarm newAlarm = Alarm.fromDateTime(alarmTime);
+                int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                newAlarm.setSourceWidgetId(widgetId);
                 boolean created = newAlarm.createSync();
 
                 if (created) {

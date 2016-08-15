@@ -6,4 +6,6 @@
 
     <color name="inactiveColor">#FFFFFF</color>
     <color name="activeColor">@color/colorAccent</color>
+
+    <color name="colorToolbarItems">#FFFFFF</color>
 </resources>

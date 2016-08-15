@@ -23,21 +23,25 @@ public class Alarm {
 
     // DB
     public static final String TABLE_NAME = "alarms";
+
     public Alarm(Cursor cursor) {
         dateTime = LocalDateTime.parse(cursor.getString(0));
         creationDateTime =LocalDateTime.parse(cursor.getString(1));
         note = cursor.getString(2);
+        sourceWidgetId = cursor.getInt(3);
     }
 
     public class Fields {
         public static final String ALARM_DATE_TIME = "dateTime";
         public static final String ALARM_NOTE= "alarmNote";
         public static final String ALARM_CREATION_DATE_TIME = "creationDateTime";
+        public static final String SOURCE_WIDGET_ID = "sourceWidgetId";
     }
     static String[] projection = {
             TABLE_NAME + "." + Fields.ALARM_DATE_TIME,
             TABLE_NAME + "." + Fields.ALARM_CREATION_DATE_TIME,
-            TABLE_NAME + "." + Fields.ALARM_NOTE
+            TABLE_NAME + "." + Fields.ALARM_NOTE,
+            TABLE_NAME + "." + Fields.SOURCE_WIDGET_ID
     };
 
     // Content Provider
@@ -96,6 +100,7 @@ public class Alarm {
     LocalDateTime dateTime;
     LocalDateTime creationDateTime;
     String note;
+    int sourceWidgetId;
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -110,6 +115,12 @@ public class Alarm {
     }
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
+    }
+    public int getSourceWidgetId() {
+        return sourceWidgetId;
+    }
+    public void setSourceWidgetId(int sourceWidgetId) {
+        this.sourceWidgetId = sourceWidgetId;
     }
 
     public boolean isCustomDateTime(boolean every30) {
@@ -129,6 +140,9 @@ public class Alarm {
     public String toString() {
         return "Alarm{" +
                 "dateTime=" + dateTime +
+                ", creationDateTime=" + creationDateTime +
+                ", note='" + note + '\'' +
+                ", sourceWidgetId=" + sourceWidgetId +
                 '}';
     }
 
@@ -223,6 +237,7 @@ public class Alarm {
             creationDateTime = Utils.getNow();
         }
         contentValues.put(Fields.ALARM_CREATION_DATE_TIME, creationDateTime.toString());
+        contentValues.put(Fields.SOURCE_WIDGET_ID, sourceWidgetId);
         return contentValues;
     }
 

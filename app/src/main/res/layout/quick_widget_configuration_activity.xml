@@ -25,128 +25,210 @@
                 android:background="?attr/colorPrimary"
                 app:contentInsetLeft="@dimen/toolbarInset"
                 app:contentInsetStart="@dimen/toolbarInset"
-                app:layout_scrollFlags="scroll|enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:theme="@style/Toolbar"
+                app:popupTheme="@style/ToolbarPopup">
 
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 
-        <RelativeLayout
+        <ScrollView
             style="@style/MaterialContainer"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp">
-
-            <TextView
-                android:id="@+id/general_settings_label"
-                android:text="@string/general_settings_label"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
-                android:id="@+id/hour_container"
-                android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
-                android:orientation="horizontal"
-                android:layout_below="@id/general_settings_label"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
-                    android:text="@string/widget_edition_hours_label"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:id="@+id/general_settings_label"
+                    android:text="@string/general_settings_label"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-                <EditText
-                    android:id="@+id/hours"
-                    android:inputType="number"
-                    android:minWidth="40dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/every_30_container"
-                android:layout_marginTop="@dimen/sibling_horizontal_margin"
-                android:layout_below="@id/hour_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text="@string/widget_edition_every30_label"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
-                <Switch
-                    android:id="@+id/every_30"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/hour_container"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/general_settings_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/widget_edition_hours_label"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:id="@+id/hours"
+                        android:inputType="number"
+                        android:minWidth="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/notes_container"
-                android:layout_marginTop="@dimen/sibling_horizontal_margin"
-                android:layout_below="@id/every_30_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text="@string/widget_edition_notes_label"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
-                <Switch
-                    android:id="@+id/notes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/custom_values_label"
-                android:text="@string/custom_values_label"
-                android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
-                android:textSize="16sp"
-                android:layout_below="@id/notes_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <android.support.percent.PercentRelativeLayout
-                android:layout_below="@id/custom_values_label"
-                android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/custom_value_1_button"
-                    app:layout_widthPercent="80%"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/custom_value_2_button"
-                    app:layout_widthPercent="80%"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/custom_value_1_button"
+                <LinearLayout
+                    android:id="@+id/every_30_container"
                     android:layout_marginTop="@dimen/sibling_horizontal_margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/custom_value_3_button"
-                    app:layout_widthPercent="80%"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/custom_value_2_button"
+                    android:layout_below="@id/hour_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/widget_edition_every30_label"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/every_30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notes_container"
                     android:layout_marginTop="@dimen/sibling_horizontal_margin"
-                    android:layout_width="wrap_content"
+                    android:layout_below="@id/every_30_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/widget_edition_notes_label"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/notes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/custom_values_label"
+                    android:text="@string/custom_values_label"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:textSize="16sp"
+                    android:layout_below="@id/notes_container"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </android.support.percent.PercentRelativeLayout>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/save_and_close"
-                android:src="@drawable/ic_save_black_24dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
+                <android.support.percent.PercentRelativeLayout
+                    android:id="@+id/custom_values_container"
+                    android:layout_below="@id/custom_values_label"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/custom_value_1_button"
+                        app:layout_widthPercent="80%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:id="@+id/custom_value_2_button"
+                        app:layout_widthPercent="80%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/custom_value_1_button"
+                        android:layout_marginTop="@dimen/sibling_horizontal_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:id="@+id/custom_value_3_button"
+                        app:layout_widthPercent="80%"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/custom_value_2_button"
+                        android:layout_marginTop="@dimen/sibling_horizontal_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </android.support.percent.PercentRelativeLayout>
 
+                <TextView
+                    android:id="@+id/notification_label"
+                    android:text="@string/notification_label"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:textSize="16sp"
+                    android:layout_below="@id/custom_values_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/notification_custom"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:layout_below="@id/notification_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/notification_custom_label"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notification_vibrate"
+                    android:layout_marginTop="@dimen/sibling_horizontal_margin"
+                    android:layout_below="@id/notification_custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/notification_vibrate_label"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/vibrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notification_light"
+                    android:layout_marginTop="@dimen/sibling_horizontal_margin"
+                    android:layout_below="@id/notification_vibrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/notification_light_label"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <android.support.percent.PercentRelativeLayout
+                    android:id="@+id/notification_sound"
+                    android:layout_marginTop="@dimen/sibling_horizontal_margin"
+                    android:layout_below="@id/notification_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/sound"
+                        android:text="@string/notification_sound_label"
+                        android:layout_centerHorizontal="true"
+                        app:layout_widthPercent="80%"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </android.support.percent.PercentRelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/save_and_close"
+            android:layout_marginBottom="@dimen/normal_item_vertical_padding"
+            android:layout_marginRight="@dimen/normal_item_vertical_padding"
+            android:layout_marginEnd="@dimen/normal_item_vertical_padding"
+            android:layout_gravity="end|right"
+            android:src="@drawable/ic_save_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

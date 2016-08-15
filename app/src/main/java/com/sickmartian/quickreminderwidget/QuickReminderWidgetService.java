@@ -1,8 +1,10 @@
 package com.sickmartian.quickreminderwidget;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -24,6 +26,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new QuickReminderWidgetViewFactory(
+                intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
                 intent.getBooleanExtra(QuickReminderWidgetProvider.EVERY_30, true),
                 intent.getIntExtra(QuickReminderWidgetProvider.HOURS, 4),
                 intent.getBooleanExtra(QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE, true),
@@ -33,6 +36,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
     }
 
     public final class QuickReminderWidgetViewFactory implements RemoteViewsFactory {
+        int appWidgetId;
         int hours;
         boolean every30;
         int customValue1;
@@ -44,8 +48,10 @@ public class QuickReminderWidgetService extends RemoteViewsService {
         private LocalDateTime initialTime;
         private List<AlarmIntentionData> alarmIntentionData;
 
-        public QuickReminderWidgetViewFactory(boolean every30, int hours, boolean possibilityToAddNote,
+        public QuickReminderWidgetViewFactory(int appWidgetId,
+                                              boolean every30, int hours, boolean possibilityToAddNote,
                                               int customValue1, int customValue2, int customValue3) {
+            this.appWidgetId = appWidgetId;
             this.every30 = every30;
             this.hours = hours;
             this.possibilityToAddNote = possibilityToAddNote;
@@ -195,7 +201,8 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 }
             } else if (currentAlarmIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
-                        Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes()) + "\'");
+                        String.format(getString(R.string.custom_value_format),
+                                Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes())));
                 itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
                 itemView.setViewVisibility(R.id.note_link, View.GONE);
                 itemView.setViewVisibility(R.id.date_row, View.GONE);
@@ -205,6 +212,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             extras.putParcelable(AlarmIntentionReceiver.ALARM_INTENTION_DATA,
                     Parcels.wrap(currentAlarmIntentionData));
             extras.putBoolean(AlarmIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
+            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.putExtras(extras);
             itemView.setOnClickFillInIntent(R.id.clickeable_row,
                     intent);

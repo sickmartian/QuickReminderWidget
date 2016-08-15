@@ -29,4 +29,12 @@
         <item name="android:paddingTop">@dimen/item_material_top_padding</item>
         <item name="android:paddingBottom">@dimen/item_material_bottom_padding</item>
     </style>
+
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/colorToolbarItems</item>
+    </style>
+
+    <style name="ToolbarPopup" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:colorBackground">@color/colorToolbarItems</item>
+    </style>
 </resources>

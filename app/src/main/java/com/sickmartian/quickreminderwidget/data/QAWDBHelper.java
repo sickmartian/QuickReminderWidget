@@ -23,7 +23,8 @@ public class QAWDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_ALARM_TABLE = "CREATE TABLE " + Alarm.TABLE_NAME + " (" +
                 Alarm.Fields.ALARM_DATE_TIME + " TEXT NOT NULL UNIQUE, " +
                 Alarm.Fields.ALARM_CREATION_DATE_TIME + " TEXT NOT NULL, " +
-                Alarm.Fields.ALARM_NOTE + " TEXT " +
+                Alarm.Fields.ALARM_NOTE + " TEXT, " +
+                Alarm.Fields.SOURCE_WIDGET_ID + " INTEGER " +
                 ");";
 
         db.execSQL(SQL_CREATE_ALARM_TABLE);

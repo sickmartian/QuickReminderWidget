@@ -16,20 +16,29 @@ import timber.log.Timber;
  */
 public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_IDS_KEY ="WIDGET_IDS_KEY";
+    // Settings
     public static final String CUSTOM_TIME_1 = "CUSTOM_TIME_1";
     public static final String CUSTOM_TIME_2 = "CUSTOM_TIME_2";
     public static final String CUSTOM_TIME_3 = "CUSTOM_TIME_3";
     public static final String EVERY_30 = "EVERY_30";
     public static final String HOURS = "HOURS";
     public static final String POSSIBILITY_TO_ADD_NOTE = "POSSIBILITY_TO_ADD_NOTE";
-
+    // Custom notification settings
+    public static final String CUSTOM_NOTIFICATION = "CUSTOM_NOTIFICATION";
+    public static final String CUSTOM_NOTIFICATION_VIBRATE = "CUSTOM_NOTIFICATION_VIBRATE";
+    public static final String CUSTOM_NOTIFICATION_LIGHTS = "CUSTOM_NOTIFICATION_LIGHTS";
+    public static final String CUSTOM_NOTIFICATION_SOUND = "CUSTOM_NOTIFICATION_SOUND";
+    // Default values
     public static final boolean DEFAULT_EVERY_30 = true;
     public static final int DISABLED_CUSTOM_TIME = -1;
     public static final int DEFAULT_CUSTOM_TIME_1 = 5;
     public static final int DEFAULT_CUSTOM_TIME_2 = 15;
     public static final int DEFAULT_CUSTOM_TIME_3 = DISABLED_CUSTOM_TIME;
     public static final boolean DEFAULT_POSSIBILITY_TO_ADD_NOTE = true;
-    public static final int DEFAULT_HOURS = 6;
+    public static final int DEFAULT_HOURS = 24;
+    public static final boolean DEFAULT_CUSTOM_NOTIFICATION = false;
+    public static final boolean DEFAULT_VIBRATE = true;
+    public static final boolean DEFAULT_LIGHT = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {
