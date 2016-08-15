@@ -23,6 +23,14 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public static final String HOURS = "HOURS";
     public static final String POSSIBILITY_TO_ADD_NOTE = "POSSIBILITY_TO_ADD_NOTE";
 
+    public static final boolean DEFAULT_EVERY_30 = true;
+    public static final int DISABLED_CUSTOM_TIME = -1;
+    public static final int DEFAULT_CUSTOM_TIME_1 = 5;
+    public static final int DEFAULT_CUSTOM_TIME_2 = 15;
+    public static final int DEFAULT_CUSTOM_TIME_3 = DISABLED_CUSTOM_TIME;
+    public static final boolean DEFAULT_POSSIBILITY_TO_ADD_NOTE = true;
+    public static final int DEFAULT_HOURS = 6;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra(WIDGET_IDS_KEY)) {
@@ -62,25 +70,25 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
 
             // Get preferences for the widget
             SharedPreferences sharedPreferences = getWidgetSharedPref(appWidgetId);
-            int customTime = sharedPreferences.getInt(CUSTOM_TIME_1, 1);
+            int customTime = sharedPreferences.getInt(CUSTOM_TIME_1, DEFAULT_CUSTOM_TIME_1);
             svcIntent.putExtra(CUSTOM_TIME_1, customTime);
-            customTime = sharedPreferences.getInt(CUSTOM_TIME_2, 5);
+            customTime = sharedPreferences.getInt(CUSTOM_TIME_2, DEFAULT_CUSTOM_TIME_2);
             svcIntent.putExtra(CUSTOM_TIME_2, customTime);
-            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, -1);
+            customTime = sharedPreferences.getInt(CUSTOM_TIME_3, DEFAULT_CUSTOM_TIME_3);
             svcIntent.putExtra(CUSTOM_TIME_3, customTime);
 
             // Set if there is at least one widget set to every30
             // so we know what a normal or custom alarm is and when we have
             // to manually update widgets
-            boolean every30 = sharedPreferences.getBoolean(EVERY_30, true);
+            boolean every30 = sharedPreferences.getBoolean(EVERY_30, DEFAULT_EVERY_30);
             svcIntent.putExtra(EVERY_30, every30);
             if (every30) {
                 oneEvery30 = true;
             }
 
-            int hours = sharedPreferences.getInt(HOURS, 6);
+            int hours = sharedPreferences.getInt(HOURS, DEFAULT_HOURS);
             svcIntent.putExtra(HOURS, hours);
-            boolean possibilityToAddNotes = sharedPreferences.getBoolean(POSSIBILITY_TO_ADD_NOTE, true);
+            boolean possibilityToAddNotes = sharedPreferences.getBoolean(POSSIBILITY_TO_ADD_NOTE, DEFAULT_POSSIBILITY_TO_ADD_NOTE);
             svcIntent.putExtra(POSSIBILITY_TO_ADD_NOTE, possibilityToAddNotes);
 
             svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -100,7 +108,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
-    private static SharedPreferences getWidgetSharedPref(int appWidgetId) {
+    public static SharedPreferences getWidgetSharedPref(int appWidgetId) {
         return QAWApp.getAppContext().getSharedPreferences("WIDGET_" + appWidgetId,
                 Context.MODE_APPEND);
     }

@@ -21,4 +21,12 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
+    <style name="MaterialContainer">
+        <item name="android:paddingLeft">@dimen/item_material_left_padding</item>
+        <item name="android:paddingStart">@dimen/item_material_left_padding</item>
+        <item name="android:paddingRight">@dimen/item_material_left_padding</item>
+        <item name="android:paddingEnd">@dimen/item_material_left_padding</item>
+        <item name="android:paddingTop">@dimen/item_material_top_padding</item>
+        <item name="android:paddingBottom">@dimen/item_material_bottom_padding</item>
+    </style>
 </resources>

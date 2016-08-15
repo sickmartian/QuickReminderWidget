@@ -12,4 +12,21 @@
     <string name="alarm_couldnt_be_created">Reminder couldn\'t be created</string>
     <string name="alarm_notification_notes_label">Notes: </string>
     <string name="alarm_notification_note_label">Note: </string>
+    <string name="widget_edition_hours_label">Hours to show in widget:</string>
+    <string name="widget_edition_every30_label">Use 30 minute increments:</string>
+    <string name="widget_edition_notes_label">Ask for note after creation:</string>
+    <string name="custom_values_label">Custom times</string>
+    <string name="general_settings_label">General Settings</string>
+    <string name="custom_values_disabled_label">Disable</string>
+    <string name="custom_values_1_label">1 Minute</string>
+    <string name="custom_values_5_label">5 Minutes</string>
+    <string name="custom_values_15_label">15 Minutes</string>
+    <string name="custom_values_30_label">Half an hour</string>
+    <string name="custom_values_45_label">45 Minutes</string>
+    <string name="custom_values_60_label">1 Hour</string>
+    <string name="custom_values_90_label">1.5 hours</string>
+    <string name="widget_configuration_title">Widget Settings</string>
+    <string name="widget_configuration_hour_missing">Enter a value for the hours</string>
+    <string name="widget_configuration_hour_invalid">Enter a valid number of hours</string>
+    <string name="widget_configuration_hour_above_max">The value for hours is too big. Select up to 168 hours.</string>
 </resources>

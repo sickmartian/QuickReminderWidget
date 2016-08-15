@@ -40,6 +40,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
         int customValue3;
         boolean possibilityToAddNote;
 
+        private int firstTimeRow;
         private LocalDateTime initialTime;
         private List<AlarmIntentionData> alarmIntentionData;
 
@@ -80,13 +81,17 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             }
 
             // Add rows for custom values first (10 minutes from now, 30 minutes from now, etc)
+            firstTimeRow = 0;
             if (customValue1 > 0) {
+                firstTimeRow++;
                 alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue1), null));
             }
             if (customValue2 > 0) {
+                firstTimeRow++;
                 alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue2), null));
             }
             if (customValue3 > 0) {
+                firstTimeRow++;
                 alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue3), null));
             }
 
@@ -182,7 +187,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 }
                 // First row and each row for new dates get the date printed
                 if (currentAlarmIntentionData.getTime().getMillisOfDay() == 0 ||
-                        currentAlarmIntentionData.getTime().equals(initialTime)) {
+                        row == firstTimeRow) {
                     itemView.setViewVisibility(R.id.date_row, View.VISIBLE);
                     itemView.setTextViewText(R.id.date_row, currentAlarmIntentionData.getTime().toString(QAWApp.dateFormatter));
                 } else {

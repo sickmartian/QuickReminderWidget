@@ -14,4 +14,14 @@
     <dimen name="widget_row_text_size">18sp</dimen>
     <dimen name="widget_custom_time_text_size">24sp</dimen>
     <dimen name="navigation_bar_height">48dp</dimen>
+    <dimen name="toolbarInset">72dp</dimen>
+
+    <dimen name="item_material_left_padding">16dp</dimen>
+    <dimen name="item_material_top_header_padding">16dp</dimen>
+    <dimen name="item_material_bottom_header_padding">16dp</dimen>
+    <dimen name="item_material_top_padding">16dp</dimen>
+    <dimen name="item_material_bottom_padding">16dp</dimen>
+
+    <dimen name="sibling_horizontal_margin">8dp</dimen>
+    <dimen name="sibling_big_horizontal_margin">16dp</dimen>
 </resources>
