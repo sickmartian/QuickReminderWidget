@@ -43,7 +43,8 @@ public class NotificationService extends IntentService {
 
             if (currentAlarms.size() > 0) {
                 // Cleanup old alarms we don't care about anymore
-                Alarm.deleteUpTo(currentAlarms.get(currentAlarms.size() - 1).getDateTime());
+                Alarm lastAlarm = currentAlarms.get(currentAlarms.size() - 1);
+                Alarm.deleteUpTo(lastAlarm.getDateTime());
 
                 // Update widget if we just removed a custom alarm
                 // because the TimeSync is not gonna run for us
@@ -54,7 +55,7 @@ public class NotificationService extends IntentService {
                     }
                 }
 
-                // Start with the notification:
+                // Start with the notification, one for each alarm
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -70,26 +71,24 @@ public class NotificationService extends IntentService {
                         .setGroup("QAWNotificationGroup")
                         .setCategory(Notification.CATEGORY_REMINDER);
 
-                // Set note(s)
-                StringBuilder sb = new StringBuilder();
-                if (currentAlarms.size() > 1) {
-                    sb.append(getString(R.string.alarm_notification_notes_label));
-                } else {
-                    sb.append(getString(R.string.alarm_notification_note_label));
-                }
-                boolean foundOne = false;
+                // Customize with note or creation date for each
                 for (Alarm alarm : currentAlarms) {
                     if (alarm.getNote() != null) {
-                        sb.append(alarm.getNote());
-                        foundOne = true;
+                        notificationBuilder.setContentText(
+                                String.format(getString(R.string.alarm_content_note_title),
+                                        alarm.getNote())
+                        );
+                    } else {
+                        notificationBuilder.setContentText(
+                                String.format(getString(R.string.alarm_content_creation_title),
+                                        alarm.getCreationDateTime().toString(QAWApp.dateTimeFormatter))
+                        );
                     }
-                }
-                if (foundOne) {
-                    notificationBuilder.setContentText(sb.toString());
-                }
 
-                Notification notification = notificationBuilder.build();
-                notificationManager.notify(NOTIFICATION, QAWApp.getNewNotificationId(), notification);
+                    // Trigger notification
+                    Notification notification = notificationBuilder.build();
+                    notificationManager.notify(NOTIFICATION, QAWApp.getNewNotificationId(), notification);
+                }
             }
         } finally {
             Timber.d("NotificationService ending");

@@ -17,4 +17,8 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
         startWakefulService(context, service);
     }
 
+    public static void sendBroadcast() {
+        Intent intent = new Intent(QAWApp.getAppContext(), NotificationReceiver.class);
+        QAWApp.getAppContext().sendBroadcast(intent);
+    }
 }

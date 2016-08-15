@@ -10,8 +10,6 @@
     <string name="alarm_note_field">Note</string>
     <string name="alarm_edition_title">Edit Alarm</string>
     <string name="alarm_couldnt_be_created">Reminder couldn\'t be created</string>
-    <string name="alarm_notification_notes_label">Notes: </string>
-    <string name="alarm_notification_note_label">Note: </string>
     <string name="widget_edition_hours_label">Hours to show in widget:</string>
     <string name="widget_edition_every30_label">Use 30 minute increments:</string>
     <string name="widget_edition_notes_label">Ask for note after creation:</string>
@@ -35,4 +33,6 @@
     <string name="notification_custom_label">Use custom notification:</string>
     <string name="notification_light_label">Use lights:</string>
     <string name="notification_sound_label">Custom Tone</string>
+    <string name="alarm_content_note_title">Note: %1$s</string>
+    <string name="alarm_content_creation_title">Scheduled: %1$s</string>
 </resources>

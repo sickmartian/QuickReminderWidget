@@ -136,11 +136,11 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
             }
         });
 
-        changeText(customValue1Button, R.string.custom_values_5_label);
+        customValue1Button.setText(R.string.custom_values_5_label);
         customValue1.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1);
-        changeText(customValue2Button, R.string.custom_values_15_label);
+        customValue2Button.setText(R.string.custom_values_15_label);
         customValue2.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2);
-        changeText(customValue3Button, R.string.custom_values_disabled_label);
+        customValue3Button.setText(R.string.custom_values_disabled_label);
         customValue3.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3);
         showOrHideButtons();
         customValue1Button.setOnClickListener(new ValueButtonClickHandler(this, customValue1Button, customValue1));
@@ -298,14 +298,6 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
         }
     }
 
-    public void changeText(TextView textView, int textId) {
-        if (textId == R.string.alarm_notification_note_label) {
-            textView.setText(R.string.alarm_notification_note_label);
-        } else {
-            textView.setText(textId);
-        }
-    }
-
     private class ValueChooserDialogHandler implements DialogInterface.OnClickListener {
         private final ValueHolder valueToChange;
         private final TextView textToChange;
@@ -316,7 +308,7 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
         }
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            changeText(textToChange, customValueCorrespondingNames[which]);
+            textToChange.setText(customValueCorrespondingNames[which]);
             valueToChange.setValue(customValueCorrespondingValues[which]);
 
             showOrHideButtons();
