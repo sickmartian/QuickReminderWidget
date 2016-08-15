@@ -7,9 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 
+import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.LocalDateTime;
@@ -45,6 +49,9 @@ public class QAWApp extends Application {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this);
             Timber.plant(new Timber.DebugTree());
+        } else {
+            Fabric.with(QAWApp.getAppContext(), new Crashlytics());
+            Timber.plant(new CrashlyticsTree());
         }
 
         dateFormatter = DateTimeFormat.mediumDate();
@@ -53,6 +60,38 @@ public class QAWApp extends Application {
 
         activeColor = QAWApp.getAppContext().getResources().getColor(R.color.activeColor);
         inactiveColor = QAWApp.getAppContext().getResources().getColor(R.color.inactiveColor);
+    }
+
+    public class CrashlyticsTree extends Timber.Tree {
+        private static final String CRASHLYTICS_KEY_PRIORITY = "priority";
+        private static final String CRASHLYTICS_KEY_TAG = "tag";
+        private static final String CRASHLYTICS_KEY_MESSAGE = "message";
+
+        @Override
+        protected void log(int priority, @Nullable String tag, @Nullable String message, @Nullable Throwable t) {
+            // Only for DEV
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+                return;
+            }
+
+            // Only add it as information so we have more context in case we get an error later.
+            if ((priority == Log.INFO) && message != null) {
+                Crashlytics.log(message);
+                return;
+            }
+
+            // Errors, warnings, etc... might get more context still in the future
+            Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority);
+            Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag);
+            Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message);
+
+            // Log crash as exception
+            if (t == null) {
+                Crashlytics.logException(new Exception(message));
+            } else {
+                Crashlytics.logException(t);
+            }
+        }
     }
 
     public static boolean areThereWidgets() {

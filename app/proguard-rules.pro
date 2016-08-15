@@ -15,3 +15,22 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# Parcelable:
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+-keep interface org.parceler.Parcel
+-keep @org.parceler.Parcel class * { *; }
+-keep class **$$Parcelable { *; }
+-keep class org.parceler.Parceler$$Parcels
+-keep interface org.parceler.**
+
+# Google Analytics:
+-keep public class com.google.** {*;}
+
+# Apache opencsv
+-dontwarn com.opencsv.bean.**
+
+# Animations
+-keep class com.sickmartian.calendartracker.animations.* {*;}
