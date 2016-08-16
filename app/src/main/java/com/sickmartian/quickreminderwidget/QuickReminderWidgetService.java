@@ -101,8 +101,14 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue3), null));
             }
 
-            LocalDateTime now = Utils.getNow();
-            alarms = Alarm.getBetweenDatesSync(now, endTime);
+            // The base of the range for the alarms is set to 1 minute in the future
+            // so in case that the TimeSync Service runs before the Notification Service
+            // we don't get the alarm that the Notification Service is supposed to clear
+            LocalDateTime alarmBase = Utils.getNow()
+                    .plusMinutes(1)
+                    .withSecondOfMinute(0)
+                    .withMillisOfSecond(0);
+            alarms = Alarm.getBetweenDatesSync(alarmBase, endTime);
             int alarmWeLeftOff = 0;
             int alarmIndex;
             // Normal times and custom set alarms
