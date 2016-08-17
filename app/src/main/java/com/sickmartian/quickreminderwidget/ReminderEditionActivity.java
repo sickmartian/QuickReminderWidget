@@ -23,7 +23,7 @@ import org.parceler.Parcels;
 /**
  * Created by ***REMOVED*** on 8/14/16.
  */
-public class AlarmEditionActivity extends AppCompatActivity {
+public class ReminderEditionActivity extends AppCompatActivity {
 
     private static final String ALARM = "ALARM";
     private boolean imDismissingIt;
@@ -31,7 +31,7 @@ public class AlarmEditionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.alarm_edition_activity);
+        setContentView(R.layout.reminder_edition_activity);
 
         final Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra(ALARM));
         findViewById(R.id.status_bar_space).setVisibility(
@@ -41,7 +41,7 @@ public class AlarmEditionActivity extends AppCompatActivity {
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
         assert rootLayout != null;
         final Snackbar snackbar = Snackbar.make(rootLayout,
-                String.format(getString(R.string.alarm_created_for), alarm.getDateTime().toString(QAWApp.dateTimeFormatter)),
+                String.format(getString(R.string.alarm_created_for), alarm.getDateTime().toString(QRWApp.dateTimeFormatter)),
                 Snackbar.LENGTH_SHORT);
         imDismissingIt = false;
         snackbar.setAction("Edit", new View.OnClickListener() {
@@ -50,7 +50,7 @@ public class AlarmEditionActivity extends AppCompatActivity {
                         imDismissingIt = true;
                         snackbar.dismiss();
 
-                        ContextThemeWrapper wrappedContext = new ContextThemeWrapper(AlarmEditionActivity.this,
+                        ContextThemeWrapper wrappedContext = new ContextThemeWrapper(ReminderEditionActivity.this,
                                 R.style.AppTheme);
                         final AlarmEditionDialog editionDialog = new AlarmEditionDialog(wrappedContext, alarm);
                         editionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -82,9 +82,9 @@ public class AlarmEditionActivity extends AppCompatActivity {
     }
 
     public static Intent getIntentForEdition(Alarm alarm) {
-        Intent intent = new Intent(QAWApp.getAppContext(), AlarmEditionActivity.class);
+        Intent intent = new Intent(QRWApp.getAppContext(), ReminderEditionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(AlarmEditionActivity.ALARM, Parcels.wrap(alarm));
+        intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         return intent;
     }
 
@@ -102,7 +102,7 @@ public class AlarmEditionActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.alarm_edition_dialog);
+            setContentView(R.layout.reminder_edition_dialog);
             setTitle(R.string.alarm_edition_title);
 
             alarmNote = (EditText) findViewById(R.id.alarm_note);
@@ -142,7 +142,7 @@ public class AlarmEditionActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             alarm.modifySync();
-            QAWApp.updateAllWidgets();
+            QRWApp.updateAllWidgets();
             return null;
         }
     }

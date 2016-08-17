@@ -4,8 +4,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -46,7 +44,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
 
         private int firstTimeRow;
         private LocalDateTime initialTime;
-        private List<AlarmIntentionData> alarmIntentionData;
+        private List<ReminderIntentionData> reminderIntentionData;
 
         public QuickReminderWidgetViewFactory(int appWidgetId,
                                               boolean every30, int hours, boolean possibilityToAddNote,
@@ -59,7 +57,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             this.customValue2 = customValue2;
             this.customValue3 = customValue3;
 
-            alarmIntentionData = new ArrayList<AlarmIntentionData>();
+            reminderIntentionData = new ArrayList<ReminderIntentionData>();
         }
 
         @Override
@@ -76,9 +74,9 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             int rowsForHour;
             List<Alarm> alarms;
 
-            alarmIntentionData.clear();
+            reminderIntentionData.clear();
 
-            initialTime = QAWApp.getInitialTime(every30);
+            initialTime = QRWApp.getInitialTime(every30);
             LocalDateTime endTime = initialTime.plusHours(hours);
             if (every30) {
                 rowsForHour = hours * 2 + 1;
@@ -90,15 +88,15 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             firstTimeRow = 0;
             if (customValue1 > 0) {
                 firstTimeRow++;
-                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue1), null));
+                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue1), null));
             }
             if (customValue2 > 0) {
                 firstTimeRow++;
-                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue2), null));
+                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue2), null));
             }
             if (customValue3 > 0) {
                 firstTimeRow++;
-                alarmIntentionData.add(new AlarmIntentionData(Duration.standardMinutes(customValue3), null));
+                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue3), null));
             }
 
             // The base of the range for the alarms is set to 1 minute in the future
@@ -122,13 +120,13 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                     Alarm alarm = alarms.get(alarmIndex);
                     if (alarm.getDateTime().isEqual(timeForTimeRow)) {
                         // Normally set alarm
-                        alarmIntentionData.add(new AlarmIntentionData(timeForTimeRow, alarm));
+                        reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, alarm));
                         alarmWeLeftOff = alarmIndex + 1;
                         timeWasAdded = true;
                         break;
                     } else if (alarm.getDateTime().isBefore(timeForTimeRow)) {
                         // Alarm set via custom value
-                        alarmIntentionData.add(new AlarmIntentionData(alarm.getDateTime(), alarm));
+                        reminderIntentionData.add(new ReminderIntentionData(alarm.getDateTime(), alarm));
                         alarmWeLeftOff = alarmIndex + 1;
                     } else {
                         // This alarm will be set later
@@ -136,11 +134,11 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                     }
                 }
                 if (!timeWasAdded) {
-                    alarmIntentionData.add(new AlarmIntentionData(timeForTimeRow, null));
+                    reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, null));
                 }
             }
 
-            for (AlarmIntentionData aid : alarmIntentionData) {
+            for (ReminderIntentionData aid : reminderIntentionData) {
                 Timber.i(aid.toString());
             }
         }
@@ -150,7 +148,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             if (timeRow > 0) {
                 // Return the time
                 if (every30) {
-                    return initialTime.plusMinutes(QAWApp.HALF_HOUR_MINUTES * (timeRow));
+                    return initialTime.plusMinutes(QRWApp.HALF_HOUR_MINUTES * (timeRow));
                 } else {
                     return initialTime.plusHours(timeRow );
                 }
@@ -167,30 +165,30 @@ public class QuickReminderWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            return alarmIntentionData.size();
+            return reminderIntentionData.size();
         }
 
         @Override
         public RemoteViews getViewAt(int row) {
-            RemoteViews itemView = new RemoteViews(QAWApp.getAppContext().getPackageName(),
+            RemoteViews itemView = new RemoteViews(QRWApp.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
 
-            AlarmIntentionData currentAlarmIntentionData = alarmIntentionData.get(row);
+            ReminderIntentionData currentReminderIntentionData = reminderIntentionData.get(row);
 
             Bundle extras = new Bundle();
-            if (currentAlarmIntentionData.getTime() != null) {
+            if (currentReminderIntentionData.getTime() != null) {
                 itemView.setTextViewText(R.id.item_text,
-                        currentAlarmIntentionData.getTime().toString(QAWApp.timeFormatter));
-                if (currentAlarmIntentionData.getAlarm() != null) {
-                    itemView.setTextColor(R.id.item_text, QAWApp.activeColor);
-                    if (currentAlarmIntentionData.getAlarm().getNote() != null) {
-                        itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.activeColor);
+                        currentReminderIntentionData.getTime().toString(QRWApp.timeFormatter));
+                if (currentReminderIntentionData.getAlarm() != null) {
+                    itemView.setTextColor(R.id.item_text, QRWApp.activeColor);
+                    if (currentReminderIntentionData.getAlarm().getNote() != null) {
+                        itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.activeColor);
                     } else {
-                        itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.inactiveColor);
+                        itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.inactiveColor);
                     }
                 } else {
-                    itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
-                    itemView.setInt(R.id.note_link, "setColorFilter", QAWApp.inactiveColor);
+                    itemView.setTextColor(R.id.item_text, QRWApp.inactiveColor);
+                    itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.inactiveColor);
                 }
                 if (possibilityToAddNote) {
                     itemView.setViewVisibility(R.id.note_link, View.VISIBLE);
@@ -198,26 +196,26 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                     itemView.setViewVisibility(R.id.note_link, View.GONE);
                 }
                 // First row and each row for new dates get the date printed
-                if (currentAlarmIntentionData.getTime().getMillisOfDay() == 0 ||
+                if (currentReminderIntentionData.getTime().getMillisOfDay() == 0 ||
                         row == firstTimeRow) {
                     itemView.setViewVisibility(R.id.date_row, View.VISIBLE);
-                    itemView.setTextViewText(R.id.date_row, currentAlarmIntentionData.getTime().toString(QAWApp.dateFormatter));
+                    itemView.setTextViewText(R.id.date_row, currentReminderIntentionData.getTime().toString(QRWApp.dateFormatter));
                 } else {
                     itemView.setViewVisibility(R.id.date_row, View.GONE);
                 }
-            } else if (currentAlarmIntentionData.getDuration() != null) {
+            } else if (currentReminderIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
                         String.format(getString(R.string.custom_value_format),
-                                Long.toString(currentAlarmIntentionData.getDuration().getStandardMinutes())));
-                itemView.setTextColor(R.id.item_text, QAWApp.inactiveColor);
+                                Long.toString(currentReminderIntentionData.getDuration().getStandardMinutes())));
+                itemView.setTextColor(R.id.item_text, QRWApp.inactiveColor);
                 itemView.setViewVisibility(R.id.note_link, View.GONE);
                 itemView.setViewVisibility(R.id.date_row, View.GONE);
             }
 
             Intent intent = new Intent();
-            extras.putParcelable(AlarmIntentionReceiver.ALARM_INTENTION_DATA,
-                    Parcels.wrap(currentAlarmIntentionData));
-            extras.putBoolean(AlarmIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
+            extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
+                    Parcels.wrap(currentReminderIntentionData));
+            extras.putBoolean(ReminderIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.putExtras(extras);
             itemView.setOnClickFillInIntent(R.id.clickeable_row,

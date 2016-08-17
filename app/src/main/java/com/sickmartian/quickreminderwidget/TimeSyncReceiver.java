@@ -15,26 +15,26 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.getAction() != null) {
             Timber.d("TimeSync called via: " + intent.getAction());
-            Timber.d("areThereWidgets:" + Boolean.toString(QAWApp.areThereWidgets()));
+            Timber.d("areThereWidgets:" + Boolean.toString(QRWApp.areThereWidgets()));
         }
         Intent service = new Intent(context, TimeSyncService.class);
         if (intent != null) {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS,
                     intent.getBooleanExtra(TimeSyncService.AND_UPDATE_WIDGETS, true));
             service.putExtra(TimeSyncService.AND_DISABLE,
-                    intent.getBooleanExtra(TimeSyncService.AND_DISABLE, !QAWApp.areThereWidgets()));
+                    intent.getBooleanExtra(TimeSyncService.AND_DISABLE, !QRWApp.areThereWidgets()));
         } else {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
-            service.putExtra(TimeSyncService.AND_DISABLE, !QAWApp.areThereWidgets());
+            service.putExtra(TimeSyncService.AND_DISABLE, !QRWApp.areThereWidgets());
         }
         startWakefulService(context, service);
     }
 
     public static void sendBroadcast(boolean andUpdateWidgets, boolean andDisable) {
-        Intent intent = new Intent(QAWApp.getAppContext(), TimeSyncReceiver.class);
+        Intent intent = new Intent(QRWApp.getAppContext(), TimeSyncReceiver.class);
         intent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, andUpdateWidgets);
         intent.putExtra(TimeSyncService.AND_DISABLE, andDisable);
-        QAWApp.getAppContext().sendBroadcast(intent);
+        QRWApp.getAppContext().sendBroadcast(intent);
     }
 
 }

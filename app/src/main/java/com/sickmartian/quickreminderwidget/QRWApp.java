@@ -25,7 +25,7 @@ import timber.log.Timber;
 /**
  * Created by ***REMOVED*** on 8/11/16.
  */
-public class QAWApp extends Application {
+public class QRWApp extends Application {
 
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
@@ -45,12 +45,12 @@ public class QAWApp extends Application {
 
         context = getApplicationContext();
 
-        JodaTimeAndroid.init(QAWApp.getAppContext());
+        JodaTimeAndroid.init(QRWApp.getAppContext());
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this);
             Timber.plant(new Timber.DebugTree());
         } else {
-            Fabric.with(QAWApp.getAppContext(), new Crashlytics());
+            Fabric.with(QRWApp.getAppContext(), new Crashlytics());
             Timber.plant(new CrashlyticsTree());
         }
 
@@ -58,8 +58,8 @@ public class QAWApp extends Application {
         timeFormatter = DateTimeFormat.shortTime();
         dateTimeFormatter = DateTimeFormat.shortDateTime();
 
-        activeColor = QAWApp.getAppContext().getResources().getColor(R.color.activeColor);
-        inactiveColor = QAWApp.getAppContext().getResources().getColor(R.color.inactiveColor);
+        activeColor = QRWApp.getAppContext().getResources().getColor(R.color.activeColor);
+        inactiveColor = QRWApp.getAppContext().getResources().getColor(R.color.inactiveColor);
     }
 
     public class CrashlyticsTree extends Timber.Tree {
@@ -100,7 +100,7 @@ public class QAWApp extends Application {
 
     private static SharedPreferences getSharedPreferences() {
         if (sharedPreferences == null) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(QAWApp.getAppContext());
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(QRWApp.getAppContext());
         }
         return sharedPreferences;
     }
@@ -120,7 +120,7 @@ public class QAWApp extends Application {
     }
 
     public static Context getAppContext() {
-        return QAWApp.context;
+        return QRWApp.context;
     }
 
     static final int HALF_HOUR_MINUTES = 30;
@@ -154,7 +154,7 @@ public class QAWApp extends Application {
     }
 
     public static void updateAllWidgets() {
-        Context appContext = QAWApp.getAppContext();
+        Context appContext = QRWApp.getAppContext();
         AppWidgetManager man = AppWidgetManager.getInstance(appContext);
         int[] ids = man.getAppWidgetIds(
                 new ComponentName(appContext, QuickReminderWidgetProvider.class));

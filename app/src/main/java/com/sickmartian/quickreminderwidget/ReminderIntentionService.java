@@ -17,16 +17,16 @@ import timber.log.Timber;
 /**
  * Created by ***REMOVED*** on 8/14/16.
  */
-public class AlarmIntentionService extends IntentService {
-    public AlarmIntentionService() {
-        super(AlarmIntentionService.class.toString());
+public class ReminderIntentionService extends IntentService {
+    public ReminderIntentionService() {
+        super(ReminderIntentionService.class.toString());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            final AlarmIntentionData intentionData =
-                    Parcels.unwrap(intent.getParcelableExtra(AlarmIntentionReceiver.ALARM_INTENTION_DATA));
+            final ReminderIntentionData intentionData =
+                    Parcels.unwrap(intent.getParcelableExtra(ReminderIntentionReceiver.ALARM_INTENTION_DATA));
 
             Timber.d("Received alarm intention: " + intentionData.toString());
 
@@ -46,26 +46,26 @@ public class AlarmIntentionService extends IntentService {
                 boolean created = newAlarm.createSync();
 
                 if (created) {
-                    if (intent.getBooleanExtra(AlarmIntentionReceiver.AND_OFFER_EDITION, false)) {
-                        startActivity(AlarmEditionActivity.getIntentForEdition(newAlarm));
+                    if (intent.getBooleanExtra(ReminderIntentionReceiver.AND_OFFER_EDITION, false)) {
+                        startActivity(ReminderEditionActivity.getIntentForEdition(newAlarm));
                     } else {
                         final LocalDateTime finalAlarmTime = alarmTime;
-                        toastTo(String.format(QAWApp.getAppContext().getString(R.string.alarm_created_for),
-                                finalAlarmTime.toString(QAWApp.dateTimeFormatter)));
+                        toastTo(String.format(QRWApp.getAppContext().getString(R.string.alarm_created_for),
+                                finalAlarmTime.toString(QRWApp.dateTimeFormatter)));
                     }
                 } else {
-                    toastTo(QAWApp.getAppContext().getString(R.string.alarm_couldnt_be_created));
+                    toastTo(QRWApp.getAppContext().getString(R.string.alarm_couldnt_be_created));
                 }
             } else {
                 intentionData.getAlarm().deleteSync();
-                toastTo(String.format(QAWApp.getAppContext().getString(R.string.alarm_deleted_for),
-                        intentionData.getTime().toString(QAWApp.dateTimeFormatter)));
+                toastTo(String.format(QRWApp.getAppContext().getString(R.string.alarm_deleted_for),
+                        intentionData.getTime().toString(QRWApp.dateTimeFormatter)));
             }
 
-            QAWApp.updateAllWidgets();
+            QRWApp.updateAllWidgets();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
         } finally {
-            AlarmIntentionReceiver.completeWakefulIntent(intent);
+            ReminderIntentionReceiver.completeWakefulIntent(intent);
         }
 
     }
@@ -75,7 +75,7 @@ public class AlarmIntentionService extends IntentService {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(QAWApp.getAppContext(),
+                Toast.makeText(QRWApp.getAppContext(),
                         toastMessage,
                         Toast.LENGTH_LONG)
                         .show();

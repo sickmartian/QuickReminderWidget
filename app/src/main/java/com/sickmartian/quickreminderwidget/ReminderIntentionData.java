@@ -12,13 +12,13 @@ import java.io.Serializable;
  * Created by ***REMOVED*** on 8/13/16.
  */
 @Parcel
-public class AlarmIntentionData {
+public class ReminderIntentionData {
     Serializable timeObject;
     Alarm alarm;
 
-    public AlarmIntentionData() { }
+    public ReminderIntentionData() { }
 
-    public AlarmIntentionData(Serializable timeObject, Alarm alarm) {
+    public ReminderIntentionData(Serializable timeObject, Alarm alarm) {
         this.timeObject = timeObject;
         this.alarm = alarm;
     }
@@ -41,7 +41,7 @@ public class AlarmIntentionData {
 
     @Override
     public String toString() {
-        return "AlarmIntentionData{" +
+        return "ReminderIntentionData{" +
                 "timeObject=" + timeObject +
                 ", alarm=" + alarm +
                 '}';

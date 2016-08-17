@@ -182,10 +182,10 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
                         .commit();
 
                 // Update widget
-                QAWApp.updateAllWidgets();
+                QRWApp.updateAllWidgets();
 
                 // Say the widget was created
-                Intent resultValue = new Intent(QAWApp.getAppContext(), QuickReminderWidgetProvider.class);
+                Intent resultValue = new Intent(QRWApp.getAppContext(), QuickReminderWidgetProvider.class);
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 setResult(RESULT_OK, resultValue);
                 finish();

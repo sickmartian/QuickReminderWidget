@@ -54,7 +54,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         Timber.d("TimeSync starting because of first widget enabled");
-        QAWApp.setWidgetExist(true);
+        QRWApp.setWidgetExist(true);
         TimeSyncReceiver.sendBroadcast(false, false);
     }
 
@@ -62,7 +62,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         Timber.d("TimeSync starting because of all widgets disabled");
-        QAWApp.setWidgetExist(false);
+        QRWApp.setWidgetExist(false);
         TimeSyncReceiver.sendBroadcast(false, true);
     }
 
@@ -104,21 +104,21 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             widget.setRemoteAdapter(R.id.quick_widget_list, svcIntent);
 
             // Each row when pressed sends an alarm intention
-            Intent clickIntent = new Intent(context, AlarmIntentionReceiver.class);
+            Intent clickIntent = new Intent(context, ReminderIntentionReceiver.class);
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
                     clickIntent, 0);
             widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);
         }
-        QAWApp.setOneEvery30(oneEvery30);
+        QRWApp.setOneEvery30(oneEvery30);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.quick_widget_list);
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     public static SharedPreferences getWidgetSharedPref(int appWidgetId) {
-        return QAWApp.getAppContext().getSharedPreferences("WIDGET_" + appWidgetId,
+        return QRWApp.getAppContext().getSharedPreferences("WIDGET_" + appWidgetId,
                 Context.MODE_APPEND);
     }
 
