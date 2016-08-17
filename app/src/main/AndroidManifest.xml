@@ -13,8 +13,10 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".AlarmEditionActivity"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.HiddenActivityForPopup" />
-        <activity android:name=".QuickReminderWidgetConfigurationActivity">
+        <activity android:name=".QuickReminderWidgetConfigurationActivity"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
