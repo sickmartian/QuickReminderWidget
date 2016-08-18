@@ -7,5 +7,6 @@
     <color name="inactiveColor">#FFFFFF</color>
     <color name="activeColor">#18FFFF</color>
 
+    <color name="dividerColor">#BDBDBD</color>
     <color name="colorToolbarItems">#FFFFFF</color>
 </resources>

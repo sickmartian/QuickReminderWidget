@@ -15,6 +15,7 @@
     <TextView
         android:id="@+id/date_row"
         tools:text="Sat 20 2016"
+        android:textColor="@color/dividerColor"
         android:layout_width="match_parent"
         android:layout_height="20dp" />
     <RelativeLayout
