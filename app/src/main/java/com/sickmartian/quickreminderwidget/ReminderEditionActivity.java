@@ -15,6 +15,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
@@ -40,6 +41,13 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
         assert rootLayout != null;
+        rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         final Snackbar snackbar = Snackbar.make(rootLayout,
                 String.format(getString(R.string.alarm_created_for), alarm.getDateTime().toString(QRWApp.dateTimeFormatter)),
                 Snackbar.LENGTH_SHORT);
@@ -72,6 +80,15 @@ public class ReminderEditionActivity extends AppCompatActivity {
             }
         });
         snackbar.show();
+
+
+        LinearLayout baseLayout = (LinearLayout) findViewById(R.id.base_layout);
+        baseLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 
