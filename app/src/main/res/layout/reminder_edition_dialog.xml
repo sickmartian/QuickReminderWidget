@@ -45,24 +45,30 @@
         android:layout_height="0dp" />
     <LinearLayout
         android:orientation="horizontal"
-        android:gravity="end|right|bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:layout_gravity="end|right"
+            android:id="@+id/delete_button"
+            android:textColor="@color/dangerousActionColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:text="@string/alarm_edition_delete"/>
+        <android.support.v4.widget.Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="?attr/colorPrimary"
             android:text="@string/alarm_edition_cancel"/>
         <Button
-            android:layout_gravity="end|right"
             android:id="@+id/done_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="?attr/colorPrimary"
             android:text="@string/alarm_edition_save"/>
     </LinearLayout>
 </LinearLayout>

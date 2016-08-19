@@ -158,8 +158,6 @@ public class ReminderEditionActivity extends AppCompatActivity {
     public static class AlarmEditionDialog extends Dialog {
         private Alarm alarm;
         private EditText alarmNote;
-        private Button save;
-        private Button cancel;
         private DateFieldHandler alarmDateVH;
         private TimeFieldHandler alarmTimeVH;
 
@@ -175,7 +173,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
             setTitle(R.string.alarm_edition_title);
 
             alarmNote = (EditText) findViewById(R.id.alarm_note);
-            save = (Button) findViewById(R.id.done_button);
+            Button save = (Button) findViewById(R.id.done_button);
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -213,13 +211,26 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     dismiss();
                 }
             });
-            cancel = (Button) findViewById(R.id.cancel_button);
+            Button cancel = (Button) findViewById(R.id.cancel_button);
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     dismiss();
                 }
             });
+            Button delete = (Button) findViewById(R.id.delete_button);
+            if (alarm != null) {
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new DeleteAndUpdateWidgetAsyncTask(alarm).execute();
+                        dismiss();
+                    }
+                });
+            } else {
+                delete.setVisibility(View.GONE);
+            }
+
             TextView date = (TextView) findViewById(R.id.alarm_date);
             TextView time = (TextView) findViewById(R.id.alarm_time);
 
@@ -262,6 +273,22 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
                 }
             }
+            QRWApp.updateAllWidgets();
+            return null;
+        }
+    }
+
+    private static class DeleteAndUpdateWidgetAsyncTask extends AsyncTask<Void, Void, Void>{
+        Alarm alarm;
+
+        public DeleteAndUpdateWidgetAsyncTask(@NonNull Alarm alarm) {
+            this.alarm = alarm;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            alarm.deleteSync();
+            CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
             QRWApp.updateAllWidgets();
             return null;
         }

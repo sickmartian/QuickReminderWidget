@@ -9,4 +9,6 @@
 
     <color name="dividerColor">#BDBDBD</color>
     <color name="colorToolbarItems">#FFFFFF</color>
+
+    <color name="dangerousActionColor">#FF5555</color>
 </resources>
