@@ -24,8 +24,9 @@ public class QAWProvider extends ContentProvider {
     private static final int ALARM_BY_TIME = 1;
     private static final int ALARMS_BETWEEN_TIMES = 2;
     private static final int NEXT_ALARM = 3;
-    private static final int LAST_ALARM = 4;
-    private static final int ALARMS_UP_TO = 5;
+    private static final int NEXT_ALARMS = 4;
+    private static final int LAST_ALARMS = 5;
+    private static final int ALARMS_UP_TO = 6;
     private QAWDBHelper DBHelper;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static UriMatcher buildUriMatcher() {
@@ -48,9 +49,13 @@ public class QAWProvider extends ContentProvider {
                 + "/" + Alarm.Parameters.ALARM_FROM + "/*";
         uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, nextAlarm, NEXT_ALARM);
 
+        String nextAlarms = Alarm.NEXT_ALARMS_PATH
+                + "/" + Alarm.Parameters.ALARM_FROM + "/*";
+        uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, nextAlarms, NEXT_ALARMS);
+
         String lastAlarm = Alarm.LAST_ALARMS_PATH
                 + "/" + Alarm.Parameters.ALARM_TO + "/*";
-        uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, lastAlarm, LAST_ALARM);
+        uriMatcher.addURI(Alarm.CONTENT_AUTHORITY, lastAlarm, LAST_ALARMS);
 
         return uriMatcher;
     }
@@ -112,7 +117,21 @@ public class QAWProvider extends ContentProvider {
                 }
                 break;
             }
-            case LAST_ALARM: {
+            case NEXT_ALARMS: {
+                List<String> segments = uri.getPathSegments();
+                String dateFrom = segments.get(2);
+                cursor = db.query(Alarm.TABLE_NAME,
+                        projection,
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") >= datetime(?) ",
+                        new String[]{dateFrom},
+                        null,
+                        null,
+                        sortOrder == null ?
+                                Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_DATE_TIME + " asc" :
+                                sortOrder);
+                break;
+            }
+            case LAST_ALARMS: {
                 List<String> segments = uri.getPathSegments();
                 String dateTo = segments.get(2);
                 cursor = db.query(Alarm.TABLE_NAME,

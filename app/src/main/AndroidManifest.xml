@@ -44,6 +44,7 @@
         </receiver>
         <service android:name="com.sickmartian.quickreminderwidget.TimeSyncService" />
 
+        <receiver android:name=".EditionModeToggleReceiver"/>
         <receiver android:name=".ReminderIntentionReceiver"/>
         <service android:name=".ReminderIntentionService" />
 

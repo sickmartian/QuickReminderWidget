@@ -47,7 +47,7 @@ public class ReminderIntentionService extends IntentService {
 
                 if (created) {
                     if (intent.getBooleanExtra(ReminderIntentionReceiver.AND_OFFER_EDITION, false)) {
-                        startActivity(ReminderEditionActivity.getIntentForEdition(newAlarm));
+                        startActivity(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
                     } else {
                         final LocalDateTime finalAlarmTime = alarmTime;
                         toastTo(String.format(QRWApp.getAppContext().getString(R.string.alarm_created_for),

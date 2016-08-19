@@ -35,4 +35,5 @@
     <string name="notification_sound_label">Custom Tone</string>
     <string name="alarm_content_note_title">Note: %1$s</string>
     <string name="alarm_content_creation_title">Scheduled: %1$s</string>
+    <string name="reminder_in_the_past">This reminder is in the past, can\'t be saved</string>
 </resources>

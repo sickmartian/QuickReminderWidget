@@ -40,6 +40,8 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
     public static final boolean DEFAULT_VIBRATE = true;
     public static final boolean DEFAULT_LIGHT = true;
 
+    public static final String EDITION_MODE = "EDITION_MODE";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra(WIDGET_IDS_KEY)) {
@@ -103,11 +105,25 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
             widget.setRemoteAdapter(R.id.quick_widget_list, svcIntent);
 
-            // Each row when pressed sends an alarm intention
-            Intent clickIntent = new Intent(context, ReminderIntentionReceiver.class);
-            PendingIntent clickPI = PendingIntent.getBroadcast(context, 0,
-                    clickIntent, 0);
-            widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
+            // Edition mode
+            boolean editionMode = sharedPreferences.getBoolean(EDITION_MODE, false);
+            if (!editionMode) {
+                // Each row when pressed sends an alarm intention
+                Intent clickIntent = new Intent(context, ReminderIntentionReceiver.class);
+                PendingIntent clickPI = PendingIntent.getBroadcast(context, 6666,
+                        clickIntent, 0);
+                widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
+            } else {
+                // Each row triggers edition
+                PendingIntent clickPI = PendingIntent.getActivity(context, 7777,
+                        ReminderEditionActivity.getIntentForEditionPart1(context), 0);
+                widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
+            }
+
+            widget.setOnClickPendingIntent(R.id.add_custom_reminder, PendingIntent.getActivity(context,
+                    0, ReminderEditionActivity.getIntentForCreation(), 0));
+            widget.setOnClickPendingIntent(R.id.toggle_edit_mode, PendingIntent.getBroadcast(context,
+                    0, EditionModeToggleReceiver.getIntent(appWidgetId, editionMode), PendingIntent.FLAG_CANCEL_CURRENT));
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);
         }

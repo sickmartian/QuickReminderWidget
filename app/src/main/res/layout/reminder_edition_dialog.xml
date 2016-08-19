@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/MaterialContainer"
     android:orientation="vertical"
     android:minWidth="300dp"
@@ -15,8 +16,31 @@
         android:gravity="top"
         android:inputType="textMultiLine"
         android:hint="@string/alarm_note_field" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/sibling_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/alarm_date"
+            android:textColor="?colorAccent"
+            tools:text="25/10/1928"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v4.widget.Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/alarm_time"
+            android:textColor="?colorAccent"
+            tools:text="10:10:10 PM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <android.support.v4.widget.Space
         android:layout_weight="1"
+        android:layout_marginTop="@dimen/sibling_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
     <LinearLayout

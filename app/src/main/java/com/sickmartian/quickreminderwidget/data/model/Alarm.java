@@ -47,11 +47,13 @@ public class Alarm {
     // Content Provider
     public static final String BASE_PATH = "alarms";
     public static final String NEXT_ALARM_PATH = "nextAlarm";
+    public static final String NEXT_ALARMS_PATH = "nextAlarms";
     public static final String LAST_ALARMS_PATH = "lastAlarms";
     public static final String CONTENT_AUTHORITY = "com.sickmartian.quickreminderwidget";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(BASE_PATH).build();
     public static final Uri NEXT_ALARM_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(NEXT_ALARM_PATH).build();
+    public static final Uri NEXT_ALARMS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(NEXT_ALARMS_PATH).build();
     public static final Uri LAST_ALARMS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(LAST_ALARMS_PATH).build();
     public class Parameters {
         public static final String ALARM_FROM = "alarmFrom";
@@ -72,6 +74,12 @@ public class Alarm {
 
     public static Uri getNextAlarm(LocalDateTime now) {
         return NEXT_ALARM_CONTENT_URI.buildUpon()
+                .appendPath(Parameters.ALARM_FROM).appendPath(now.toString())
+                .build();
+    }
+
+    public static Uri getNextAlarms(LocalDateTime now) {
+        return NEXT_ALARMS_CONTENT_URI.buildUpon()
                 .appendPath(Parameters.ALARM_FROM).appendPath(now.toString())
                 .build();
     }
@@ -187,6 +195,26 @@ public class Alarm {
         return alarm;
     }
 
+    public static List<Alarm> getNextsSync(LocalDateTime now) {
+        ArrayList<Alarm> result = new ArrayList<Alarm>();
+        final long token = Binder.clearCallingIdentity();
+        try {
+            Cursor cursor = QRWApp.getAppContext().getContentResolver()
+                    .query(getNextAlarms(now), projection, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        result.add(new Alarm(cursor));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
+        return result;
+    }
+
     public static List<Alarm> getLastsSync(LocalDateTime now) {
         ArrayList<Alarm> result = new ArrayList<Alarm>();
         final long token = Binder.clearCallingIdentity();
@@ -241,14 +269,18 @@ public class Alarm {
         return contentValues;
     }
 
-    public void deleteSync() {
+    public void deleteSync(LocalDateTime localDateTime) {
         final long token = Binder.clearCallingIdentity();
         try {
             QRWApp.getAppContext().getContentResolver()
-                    .delete(getAlarmByTime(dateTime), null, null);
+                    .delete(getAlarmByTime(localDateTime), null, null);
         } finally {
             Binder.restoreCallingIdentity(token);
         }
+    }
+
+    public void deleteSync() {
+        deleteSync(dateTime);
     }
 
     public static void deleteUpTo(LocalDateTime alarmTime) {

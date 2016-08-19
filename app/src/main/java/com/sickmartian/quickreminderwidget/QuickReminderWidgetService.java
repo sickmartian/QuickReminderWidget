@@ -42,6 +42,8 @@ public class QuickReminderWidgetService extends RemoteViewsService {
         int customValue3;
         boolean possibilityToAddNote;
 
+        boolean editionMode;
+
         private int firstTimeRow;
         private LocalDateTime initialTime;
         private List<ReminderIntentionData> reminderIntentionData;
@@ -75,6 +77,10 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             List<Alarm> alarms;
 
             reminderIntentionData.clear();
+            // We need to get the editionMode here, as this can be called before
+            // a new Factory is created with the updated value
+            editionMode = QuickReminderWidgetProvider.getWidgetSharedPref(appWidgetId)
+                    .getBoolean(QuickReminderWidgetProvider.EDITION_MODE, false);
 
             initialTime = QRWApp.getInitialTime(every30);
             LocalDateTime endTime = initialTime.plusHours(hours);
@@ -84,57 +90,68 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 rowsForHour = hours + 1;
             }
 
-            // Add rows for custom values first (10 minutes from now, 30 minutes from now, etc)
             firstTimeRow = 0;
-            if (customValue1 > 0) {
-                firstTimeRow++;
-                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue1), null));
-            }
-            if (customValue2 > 0) {
-                firstTimeRow++;
-                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue2), null));
-            }
-            if (customValue3 > 0) {
-                firstTimeRow++;
-                reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue3), null));
-            }
+            if (!editionMode) {
+                // Add rows for custom values first (10 minutes from now, 30 minutes from now, etc)
+                if (customValue1 > 0) {
+                    firstTimeRow++;
+                    reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue1), null));
+                }
+                if (customValue2 > 0) {
+                    firstTimeRow++;
+                    reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue2), null));
+                }
+                if (customValue3 > 0) {
+                    firstTimeRow++;
+                    reminderIntentionData.add(new ReminderIntentionData(Duration.standardMinutes(customValue3), null));
+                }
 
-            // The base of the range for the alarms is set to 1 minute in the future
-            // so in case that the TimeSync Service runs before the Notification Service
-            // we don't get the alarm that the Notification Service is supposed to clear
-            LocalDateTime alarmBase = Utils.getNow()
-                    .plusMinutes(1)
-                    .withSecondOfMinute(0)
-                    .withMillisOfSecond(0);
-            alarms = Alarm.getBetweenDatesSync(alarmBase, endTime);
-            int alarmWeLeftOff = 0;
-            int alarmIndex;
-            // Normal times and custom set alarms
-            // (There shouldn't be alarms after the normal times, as we are
-            // filtering by those times)
-            for (int timeRowIndex = 0; timeRowIndex < rowsForHour; timeRowIndex++) {
-                LocalDateTime timeForTimeRow = getTimeForTimeRow(timeRowIndex);
-                boolean timeWasAdded = false;
-                for (alarmIndex = alarmWeLeftOff; alarmIndex < alarms.size(); alarmIndex++) {
-                    alarmWeLeftOff = alarmIndex;
-                    Alarm alarm = alarms.get(alarmIndex);
-                    if (alarm.getDateTime().isEqual(timeForTimeRow)) {
-                        // Normally set alarm
-                        reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, alarm));
-                        alarmWeLeftOff = alarmIndex + 1;
-                        timeWasAdded = true;
-                        break;
-                    } else if (alarm.getDateTime().isBefore(timeForTimeRow)) {
-                        // Alarm set via custom value
-                        reminderIntentionData.add(new ReminderIntentionData(alarm.getDateTime(), alarm));
-                        alarmWeLeftOff = alarmIndex + 1;
-                    } else {
-                        // This alarm will be set later
-                        break;
+                // The base of the range for the alarms is set to 1 minute in the future
+                // so in case that the TimeSync Service runs before the Notification Service
+                // we don't get the alarm that the Notification Service is supposed to clear
+                LocalDateTime alarmBase = Utils.getNow()
+                        .plusMinutes(1)
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0);
+                alarms = Alarm.getBetweenDatesSync(alarmBase, endTime);
+                int alarmWeLeftOff = 0;
+                int alarmIndex;
+                // Normal times and custom set alarms
+                // (There shouldn't be alarms after the normal times, as we are
+                // filtering by those times)
+                for (int timeRowIndex = 0; timeRowIndex < rowsForHour; timeRowIndex++) {
+                    LocalDateTime timeForTimeRow = getTimeForTimeRow(timeRowIndex);
+                    boolean timeWasAdded = false;
+                    for (alarmIndex = alarmWeLeftOff; alarmIndex < alarms.size(); alarmIndex++) {
+                        alarmWeLeftOff = alarmIndex;
+                        Alarm alarm = alarms.get(alarmIndex);
+                        if (alarm.getDateTime().isEqual(timeForTimeRow)) {
+                            // Normally set alarm
+                            reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, alarm));
+                            alarmWeLeftOff = alarmIndex + 1;
+                            timeWasAdded = true;
+                            break;
+                        } else if (alarm.getDateTime().isBefore(timeForTimeRow)) {
+                            // Alarm set via custom value
+                            reminderIntentionData.add(new ReminderIntentionData(alarm.getDateTime(), alarm));
+                            alarmWeLeftOff = alarmIndex + 1;
+                        } else {
+                            // This alarm will be set later
+                            break;
+                        }
+                    }
+                    if (!timeWasAdded) {
+                        reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, null));
                     }
                 }
-                if (!timeWasAdded) {
-                    reminderIntentionData.add(new ReminderIntentionData(timeForTimeRow, null));
+            } else {
+                LocalDateTime alarmBase = Utils.getNow()
+                        .plusMinutes(1)
+                        .withSecondOfMinute(0)
+                        .withMillisOfSecond(0);
+                alarms = Alarm.getNextsSync(alarmBase);
+                for (Alarm alarm : alarms) {
+                    reminderIntentionData.add(new ReminderIntentionData(alarm.getDateTime(), alarm));
                 }
             }
 
@@ -175,7 +192,6 @@ public class QuickReminderWidgetService extends RemoteViewsService {
 
             ReminderIntentionData currentReminderIntentionData = reminderIntentionData.get(row);
 
-            Bundle extras = new Bundle();
             if (currentReminderIntentionData.getTime() != null) {
                 itemView.setTextViewText(R.id.item_text,
                         currentReminderIntentionData.getTime().toString(QRWApp.timeFormatter));
@@ -195,8 +211,12 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 } else {
                     itemView.setViewVisibility(R.id.note_link, View.GONE);
                 }
-                // First row and each row for new dates get the date printed
-                if (currentReminderIntentionData.getTime().getMillisOfDay() == 0 ||
+                // If we have a row before this one, that is a time row
+                // and that date is not the same, or
+                if (row > firstTimeRow && reminderIntentionData.get(row - 1).getTime() != null &&
+                        !reminderIntentionData.get(row - 1).getTime().toLocalDate().equals(
+                                currentReminderIntentionData.getTime().toLocalDate()) ||
+                        // If it's the first row
                         row == firstTimeRow) {
                     itemView.setViewVisibility(R.id.date_row, View.VISIBLE);
                     itemView.setTextViewText(R.id.date_row, currentReminderIntentionData.getTime().toString(QRWApp.dateFormatter));
@@ -212,14 +232,26 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 itemView.setViewVisibility(R.id.date_row, View.GONE);
             }
 
-            Intent intent = new Intent();
-            extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
-                    Parcels.wrap(currentReminderIntentionData));
-            extras.putBoolean(ReminderIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
-            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            intent.putExtras(extras);
-            itemView.setOnClickFillInIntent(R.id.clickeable_row,
-                    intent);
+            if (!editionMode) {
+                itemView.setImageViewResource(R.id.note_link, R.drawable.ic_event_note_black_24dp);
+
+                // Fill each alarm's intention to the intents
+                Intent intent = new Intent();
+                Bundle extras = new Bundle();
+                extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
+                        Parcels.wrap(currentReminderIntentionData));
+                extras.putBoolean(ReminderIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
+                extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                intent.putExtras(extras);
+                itemView.setOnClickFillInIntent(R.id.clickeable_row,
+                        intent);
+            } else {
+                itemView.setImageViewResource(R.id.note_link, R.drawable.ic_create_black_24dp);
+
+                // Fill each edition intention to the intents
+                itemView.setOnClickFillInIntent(R.id.clickeable_row,
+                        ReminderEditionActivity.getIntentForEditionPart2(currentReminderIntentionData.getAlarm()));
+            }
 
             return itemView;
         }

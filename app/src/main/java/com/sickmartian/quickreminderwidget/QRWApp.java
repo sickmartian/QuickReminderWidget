@@ -153,6 +153,15 @@ public class QRWApp extends Application {
         return initialTime;
     }
 
+    public static void updateWidget(int widgetId) {
+        Context appContext = QRWApp.getAppContext();
+        int[] ids = {widgetId};
+        Intent updateIntent = new Intent();
+        updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
+        updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
+        appContext.sendBroadcast(updateIntent);
+    }
+
     public static void updateAllWidgets() {
         Context appContext = QRWApp.getAppContext();
         AppWidgetManager man = AppWidgetManager.getInstance(appContext);
