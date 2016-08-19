@@ -60,12 +60,14 @@
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/cancel_button"
+            android:textColor="@color/buttonTextColorForOldAPI"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:text="@string/reminder_edition_cancel"/>
         <Button
             android:id="@+id/done_button"
+            android:textColor="@color/buttonTextColorForOldAPI"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
