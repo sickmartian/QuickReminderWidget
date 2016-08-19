@@ -15,7 +15,7 @@
         android:minLines="5"
         android:gravity="top"
         android:inputType="textMultiLine"
-        android:hint="@string/alarm_note_field" />
+        android:hint="@string/reminder_note_field" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/sibling_horizontal_margin"
@@ -63,12 +63,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/alarm_edition_cancel"/>
+            android:text="@string/reminder_edition_cancel"/>
         <Button
             android:id="@+id/done_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/alarm_edition_save"/>
+            android:text="@string/reminder_edition_save"/>
     </LinearLayout>
 </LinearLayout>

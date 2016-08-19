@@ -1,12 +1,10 @@
 package com.sickmartian.quickreminderwidget;
 
-import android.app.AlarmManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
  * Created by ***REMOVED*** on 8/12/16.
@@ -23,11 +21,11 @@ public class EditionModeToggleReceiver extends BroadcastReceiver {
                 .edit()
                 .putBoolean(QuickReminderWidgetProvider.EDITION_MODE, !currentEditionMode)
                 .commit();
-        QRWApp.updateWidget(widgetId);
+        App.updateWidget(widgetId);
     }
 
     public static Intent getIntent(int widgetId, boolean currentEditionMode) {
-        Intent intent = new Intent(QRWApp.getAppContext(), EditionModeToggleReceiver.class);
+        Intent intent = new Intent(App.getAppContext(), EditionModeToggleReceiver.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         intent.putExtra(CURRENT_EDITION_MODE, currentEditionMode);
         return intent;

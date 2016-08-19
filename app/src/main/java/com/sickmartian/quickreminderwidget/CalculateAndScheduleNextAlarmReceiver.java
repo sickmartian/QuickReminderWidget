@@ -45,7 +45,7 @@ public class CalculateAndScheduleNextAlarmReceiver extends WakefulBroadcastRecei
     }
 
     public static void sendBroadcast() {
-        Intent intent = new Intent(QRWApp.getAppContext(), CalculateAndScheduleNextAlarmReceiver.class);
-        QRWApp.getAppContext().sendBroadcast(intent);
+        Intent intent = new Intent(App.getAppContext(), CalculateAndScheduleNextAlarmReceiver.class);
+        App.getAppContext().sendBroadcast(intent);
     }
 }

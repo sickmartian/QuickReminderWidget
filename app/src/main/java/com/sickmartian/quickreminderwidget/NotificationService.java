@@ -49,8 +49,8 @@ public class NotificationService extends IntentService {
                 // Update widget if we just removed a custom alarm
                 // because the TimeSync is not gonna run for us
                 for (Alarm currentAlarm : currentAlarms) {
-                    if (currentAlarm.isCustomDateTime(QRWApp.isThereOneEvery30())) {
-                        QRWApp.updateAllWidgets();
+                    if (currentAlarm.isCustomDateTime(App.isThereOneEvery30())) {
+                        App.updateAllWidgets();
                         break;
                     }
                 }
@@ -81,13 +81,13 @@ public class NotificationService extends IntentService {
                     } else {
                         notificationBuilder.setContentText(
                                 String.format(getString(R.string.alarm_content_creation_title),
-                                        alarm.getCreationDateTime().toString(QRWApp.dateTimeFormatter))
+                                        alarm.getCreationDateTime().toString(App.dateTimeFormatter))
                         );
                     }
 
                     // Trigger notification
                     Notification notification = notificationBuilder.build();
-                    notificationManager.notify(NOTIFICATION, QRWApp.getNewNotificationId(), notification);
+                    notificationManager.notify(NOTIFICATION, App.getNewNotificationId(), notification);
                 }
             }
         } finally {

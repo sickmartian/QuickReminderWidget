@@ -4,7 +4,10 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.view.ContextThemeWrapper;
+import android.widget.Toast;
 
 import org.joda.time.LocalDateTime;
 
@@ -52,5 +55,18 @@ public class Utils {
                 onTimeSetListener,
                 hour, minute,
                 is24HourFormat);
+    }
+
+    public static void toastTo(final String toastMessage) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(App.getAppContext(),
+                        toastMessage,
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
     }
 }

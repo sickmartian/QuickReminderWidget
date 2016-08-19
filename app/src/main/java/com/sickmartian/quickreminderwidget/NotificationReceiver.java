@@ -18,7 +18,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
     }
 
     public static void sendBroadcast() {
-        Intent intent = new Intent(QRWApp.getAppContext(), NotificationReceiver.class);
-        QRWApp.getAppContext().sendBroadcast(intent);
+        Intent intent = new Intent(App.getAppContext(), NotificationReceiver.class);
+        App.getAppContext().sendBroadcast(intent);
     }
 }

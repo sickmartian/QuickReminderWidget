@@ -19,7 +19,7 @@ import timber.log.Timber;
 /**
  * Created by ***REMOVED*** on 8/12/16.
  */
-public class QAWProvider extends ContentProvider {
+public class Provider extends ContentProvider {
 
     private static final int ALARM_BY_TIME = 1;
     private static final int ALARMS_BETWEEN_TIMES = 2;
@@ -27,7 +27,7 @@ public class QAWProvider extends ContentProvider {
     private static final int NEXT_ALARMS = 4;
     private static final int LAST_ALARMS = 5;
     private static final int ALARMS_UP_TO = 6;
-    private QAWDBHelper DBHelper;
+    private com.sickmartian.quickreminderwidget.data.DBHelper DBHelper;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -62,7 +62,7 @@ public class QAWProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        DBHelper = new QAWDBHelper(getContext());
+        DBHelper = new DBHelper(getContext());
         return true;
     }
 
@@ -85,6 +85,21 @@ public class QAWProvider extends ContentProvider {
                         new String[]{dateFrom, dateTo},
                         null,
                         null,
+                        sortOrder == null ?
+                                Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_DATE_TIME + " asc" :
+                                sortOrder);
+                break;
+            }
+            case ALARM_BY_TIME: {
+                List<String> segments = uri.getPathSegments();
+                String dateTime = segments.get(2);
+                cursor = db.query(Alarm.TABLE_NAME,
+                        projection,
+                        "datetime(" + Alarm.Fields.ALARM_DATE_TIME + ") = datetime(?) ",
+                        new String[]{dateTime},
+                        null,
+                        null,
+                        // It's supposed to be just 1.. but well
                         sortOrder == null ?
                                 Alarm.TABLE_NAME + "." + Alarm.Fields.ALARM_DATE_TIME + " asc" :
                                 sortOrder);

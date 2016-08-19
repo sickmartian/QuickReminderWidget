@@ -3,9 +3,6 @@ package com.sickmartian.quickreminderwidget;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.Toast;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
@@ -50,37 +47,24 @@ public class ReminderIntentionService extends IntentService {
                         startActivity(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
                     } else {
                         final LocalDateTime finalAlarmTime = alarmTime;
-                        toastTo(String.format(QRWApp.getAppContext().getString(R.string.alarm_created_for),
-                                finalAlarmTime.toString(QRWApp.dateTimeFormatter)));
+                        Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
+                                finalAlarmTime.toString(App.dateTimeFormatter)));
                     }
                 } else {
-                    toastTo(QRWApp.getAppContext().getString(R.string.alarm_couldnt_be_created));
+                    Utils.toastTo(App.getAppContext().getString(R.string.reminder_not_created_exists));
                 }
             } else {
                 intentionData.getAlarm().deleteSync();
-                toastTo(String.format(QRWApp.getAppContext().getString(R.string.alarm_deleted_for),
-                        intentionData.getTime().toString(QRWApp.dateTimeFormatter)));
+                Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_deleted_for),
+                        intentionData.getTime().toString(App.dateTimeFormatter)));
             }
 
-            QRWApp.updateAllWidgets();
+            App.updateAllWidgets();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
         } finally {
             ReminderIntentionReceiver.completeWakefulIntent(intent);
         }
 
-    }
-
-    public void toastTo(final String toastMessage) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(QRWApp.getAppContext(),
-                        toastMessage,
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
     }
 
 }

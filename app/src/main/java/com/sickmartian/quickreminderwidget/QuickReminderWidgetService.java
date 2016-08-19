@@ -82,7 +82,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             editionMode = QuickReminderWidgetProvider.getWidgetSharedPref(appWidgetId)
                     .getBoolean(QuickReminderWidgetProvider.EDITION_MODE, false);
 
-            initialTime = QRWApp.getInitialTime(every30);
+            initialTime = App.getInitialTime(every30);
             LocalDateTime endTime = initialTime.plusHours(hours);
             if (every30) {
                 rowsForHour = hours * 2 + 1;
@@ -165,7 +165,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             if (timeRow > 0) {
                 // Return the time
                 if (every30) {
-                    return initialTime.plusMinutes(QRWApp.HALF_HOUR_MINUTES * (timeRow));
+                    return initialTime.plusMinutes(App.HALF_HOUR_MINUTES * (timeRow));
                 } else {
                     return initialTime.plusHours(timeRow );
                 }
@@ -187,24 +187,24 @@ public class QuickReminderWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int row) {
-            RemoteViews itemView = new RemoteViews(QRWApp.getAppContext().getPackageName(),
+            RemoteViews itemView = new RemoteViews(App.getAppContext().getPackageName(),
                     R.layout.quick_widget_item_layout);
 
             ReminderIntentionData currentReminderIntentionData = reminderIntentionData.get(row);
 
             if (currentReminderIntentionData.getTime() != null) {
                 itemView.setTextViewText(R.id.item_text,
-                        currentReminderIntentionData.getTime().toString(QRWApp.timeFormatter));
+                        currentReminderIntentionData.getTime().toString(App.timeFormatter));
                 if (currentReminderIntentionData.getAlarm() != null) {
-                    itemView.setTextColor(R.id.item_text, QRWApp.activeColor);
+                    itemView.setTextColor(R.id.item_text, App.activeColor);
                     if (currentReminderIntentionData.getAlarm().getNote() != null) {
-                        itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.activeColor);
+                        itemView.setInt(R.id.note_link, "setColorFilter", App.activeColor);
                     } else {
-                        itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.inactiveColor);
+                        itemView.setInt(R.id.note_link, "setColorFilter", App.inactiveColor);
                     }
                 } else {
-                    itemView.setTextColor(R.id.item_text, QRWApp.inactiveColor);
-                    itemView.setInt(R.id.note_link, "setColorFilter", QRWApp.inactiveColor);
+                    itemView.setTextColor(R.id.item_text, App.inactiveColor);
+                    itemView.setInt(R.id.note_link, "setColorFilter", App.inactiveColor);
                 }
                 if (possibilityToAddNote) {
                     itemView.setViewVisibility(R.id.note_link, View.VISIBLE);
@@ -219,7 +219,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                         // If it's the first row
                         row == firstTimeRow) {
                     itemView.setViewVisibility(R.id.date_row, View.VISIBLE);
-                    itemView.setTextViewText(R.id.date_row, currentReminderIntentionData.getTime().toString(QRWApp.dateFormatter));
+                    itemView.setTextViewText(R.id.date_row, currentReminderIntentionData.getTime().toString(App.dateFormatter));
                 } else {
                     itemView.setViewVisibility(R.id.date_row, View.GONE);
                 }
@@ -227,7 +227,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 itemView.setTextViewText(R.id.item_text,
                         String.format(getString(R.string.custom_value_format),
                                 Long.toString(currentReminderIntentionData.getDuration().getStandardMinutes())));
-                itemView.setTextColor(R.id.item_text, QRWApp.inactiveColor);
+                itemView.setTextColor(R.id.item_text, App.inactiveColor);
                 itemView.setViewVisibility(R.id.note_link, View.GONE);
                 itemView.setViewVisibility(R.id.date_row, View.GONE);
             }

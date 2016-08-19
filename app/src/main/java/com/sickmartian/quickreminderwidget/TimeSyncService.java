@@ -26,7 +26,7 @@ public class TimeSyncService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             Timber.d("TimeSyncService starting");
-            LocalDateTime nextTime = QRWApp.getInitialTime(QRWApp.isThereOneEvery30());
+            LocalDateTime nextTime = App.getInitialTime(App.isThereOneEvery30());
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent timeSyncIntent = new Intent(this, TimeSyncReceiver.class);
@@ -34,7 +34,7 @@ public class TimeSyncService extends IntentService {
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
                     TimeSyncService.REQUEST_CODE, timeSyncIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             // If we are disabling, disable
-            if (intent.getBooleanExtra(AND_DISABLE, !QRWApp.areThereWidgets())) {
+            if (intent.getBooleanExtra(AND_DISABLE, !App.areThereWidgets())) {
                 Timber.i("Disabling TimeSync");
                 alarmManager.cancel(timeSyncIntentPI);
             } else {
@@ -53,7 +53,7 @@ public class TimeSyncService extends IntentService {
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {
                 Timber.i("Updating Widgets");
-                QRWApp.updateAllWidgets();
+                App.updateAllWidgets();
             }
         } finally {
             Timber.d("TimeSyncService ending");

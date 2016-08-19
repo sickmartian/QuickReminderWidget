@@ -70,7 +70,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                             ? View.VISIBLE :View.GONE);
 
             final Snackbar snackbar = Snackbar.make(rootLayout,
-                    String.format(getString(R.string.alarm_created_for), alarm.getDateTime().toString(QRWApp.dateTimeFormatter)),
+                    String.format(getString(R.string.reminder_created_for), alarm.getDateTime().toString(App.dateTimeFormatter)),
                     Snackbar.LENGTH_SHORT);
             imDismissingIt = false;
             snackbar.setAction("Edit", new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
     }
 
     public static Intent getIntentForEditionOfJustCreatedAlarm(Alarm alarm) {
-        Intent intent = new Intent(QRWApp.getAppContext(), ReminderEditionActivity.class);
+        Intent intent = new Intent(App.getAppContext(), ReminderEditionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         intent.putExtra(JUST_CREATED, true);
@@ -136,7 +136,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
     }
 
     public static Intent getIntentForCreation() {
-        Intent intent = new Intent(QRWApp.getAppContext(), ReminderEditionActivity.class);
+        Intent intent = new Intent(App.getAppContext(), ReminderEditionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JUST_CREATED, false);
         return intent;
@@ -170,7 +170,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.reminder_edition_dialog);
-            setTitle(R.string.alarm_edition_title);
+            setTitle(R.string.reminder_edition_title);
 
             alarmNote = (EditText) findViewById(R.id.alarm_note);
             Button save = (Button) findViewById(R.id.done_button);
@@ -259,21 +259,48 @@ public class ReminderEditionActivity extends AppCompatActivity {
             this.oldAlarmDT = oldAlarmDT;
         }
 
+        public void createOrMerge(Alarm alarm, boolean isNew) {
+            boolean createdOk = alarm.createSync();
+            // If we couldn't create it (presumably because there is another one
+            // for the same time already) but we have a note, we try to merge
+            // the note to the existing alarm
+            if (!createdOk && alarm.getNote() != null) {
+                Alarm oldAlarm = Alarm.getSync(alarm.getDateTime());
+                if (oldAlarm != null) {
+                    String oldNote = oldAlarm.getNote();
+                    if (oldNote != null) {
+                        oldAlarm.setNote(oldNote.concat("\n").concat(alarm.getNote()));
+                    } else {
+                        oldAlarm.setNote(alarm.getNote());
+                    }
+                    oldAlarm.modifySync();
+                    Utils.toastTo(App.getAppContext().getString(R.string.reminder_fused));
+                } else {
+                    Utils.toastTo(App.getAppContext().getString(R.string.reminder_not_created));
+                }
+            }
+            // If new and created fine (no message of fusing or so) show it
+            if (createdOk && isNew) {
+                Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
+                        alarm.getDateTime().toString(App.dateTimeFormatter)));
+            }
+            // Recalculate next alarm
+            CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             if (isNew) {
-                alarm.createSync();
-                CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
+                createOrMerge(alarm, isNew);
             } else {
                 if (oldAlarmDT == null) {
                     alarm.modifySync();
                 } else {
                     alarm.deleteSync(oldAlarmDT);
-                    alarm.createSync();
-                    CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
+                    createOrMerge(alarm, isNew);
                 }
             }
-            QRWApp.updateAllWidgets();
+            App.updateAllWidgets();
             return null;
         }
     }
@@ -289,7 +316,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             alarm.deleteSync();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
-            QRWApp.updateAllWidgets();
+            App.updateAllWidgets();
             return null;
         }
     }

@@ -9,10 +9,10 @@ import com.sickmartian.quickreminderwidget.data.model.Alarm;
 /**
  * Created by ***REMOVED*** on 8/12/16.
  */
-public class QAWDBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "qaw.db";
     public static final int CURRENT_VERSION = 1;
-    public QAWDBHelper(Context context) {
+    public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, CURRENT_VERSION);
     }
 

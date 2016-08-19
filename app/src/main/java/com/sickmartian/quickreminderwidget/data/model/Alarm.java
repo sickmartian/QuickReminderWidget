@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 
-import com.sickmartian.quickreminderwidget.QRWApp;
+import com.sickmartian.quickreminderwidget.App;
 import com.sickmartian.quickreminderwidget.Utils;
 
 import org.joda.time.LocalDateTime;
@@ -159,7 +159,7 @@ public class Alarm {
         ArrayList<Alarm> result = new ArrayList<Alarm>();
         final long token = Binder.clearCallingIdentity();
         try {
-            Cursor cursor = QRWApp.getAppContext().getContentResolver()
+            Cursor cursor = App.getAppContext().getContentResolver()
                     .query(getAlarmBetweenTimes(from, to), projection, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -179,7 +179,7 @@ public class Alarm {
         Alarm alarm = null;
         final long token = Binder.clearCallingIdentity();
         try {
-            Cursor cursor = QRWApp.getAppContext().getContentResolver()
+            Cursor cursor = App.getAppContext().getContentResolver()
                     .query(getNextAlarm(now), projection, null, null, null);
             if (cursor != null) {
                 if (cursor.getCount() > 0 && cursor.moveToFirst()) {
@@ -199,7 +199,7 @@ public class Alarm {
         ArrayList<Alarm> result = new ArrayList<Alarm>();
         final long token = Binder.clearCallingIdentity();
         try {
-            Cursor cursor = QRWApp.getAppContext().getContentResolver()
+            Cursor cursor = App.getAppContext().getContentResolver()
                     .query(getNextAlarms(now), projection, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -219,7 +219,7 @@ public class Alarm {
         ArrayList<Alarm> result = new ArrayList<Alarm>();
         final long token = Binder.clearCallingIdentity();
         try {
-            Cursor cursor = QRWApp.getAppContext().getContentResolver()
+            Cursor cursor = App.getAppContext().getContentResolver()
                     .query(getLatestsAlarms(now), projection, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -235,11 +235,31 @@ public class Alarm {
         return result;
     }
 
+    public static Alarm getSync(LocalDateTime alarmTime) {
+        Alarm alarm = null;
+        final long token = Binder.clearCallingIdentity();
+        try {
+            Cursor cursor = App.getAppContext().getContentResolver()
+                    .query(getAlarmByTime(alarmTime), projection, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        alarm = new Alarm(cursor);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
+        return alarm;
+    }
+
     public boolean createSync() {
         Uri newUri = null;
         final long token = Binder.clearCallingIdentity();
         try {
-            newUri = QRWApp.getAppContext().getContentResolver()
+            newUri = App.getAppContext().getContentResolver()
                     .insert(getAlarmByTime(dateTime), getContentValues());
         } finally {
             Binder.restoreCallingIdentity(token);
@@ -250,7 +270,7 @@ public class Alarm {
     public void modifySync() {
         final long token = Binder.clearCallingIdentity();
         try {
-            QRWApp.getAppContext().getContentResolver()
+            App.getAppContext().getContentResolver()
                     .update(getAlarmByTime(dateTime), getContentValues(), null, null);
         } finally {
             Binder.restoreCallingIdentity(token);
@@ -272,7 +292,7 @@ public class Alarm {
     public void deleteSync(LocalDateTime localDateTime) {
         final long token = Binder.clearCallingIdentity();
         try {
-            QRWApp.getAppContext().getContentResolver()
+            App.getAppContext().getContentResolver()
                     .delete(getAlarmByTime(localDateTime), null, null);
         } finally {
             Binder.restoreCallingIdentity(token);
@@ -286,7 +306,7 @@ public class Alarm {
     public static void deleteUpTo(LocalDateTime alarmTime) {
         final long token = Binder.clearCallingIdentity();
         try {
-            QRWApp.getAppContext().getContentResolver()
+            App.getAppContext().getContentResolver()
                     .delete(getAlarmsUpTo(alarmTime), null, null);
         } finally {
             Binder.restoreCallingIdentity(token);
