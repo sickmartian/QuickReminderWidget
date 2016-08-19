@@ -38,6 +38,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
     private static final String ALARM = "ALARM";
     private static final String JUST_CREATED = "JUST_CREATED";
+    private static final String IS_RECREATION = "IS_RECREATION";
     private boolean imDismissingIt;
 
     @Override
@@ -57,10 +58,13 @@ public class ReminderEditionActivity extends AppCompatActivity {
         });
 
         boolean justCreated;
+        final boolean isRecreation;
         if (savedInstanceState == null) {
             justCreated = getIntent().getBooleanExtra(JUST_CREATED, true);
+            isRecreation = getIntent().getBooleanExtra(IS_RECREATION, false);
         } else {
             justCreated = savedInstanceState.getBoolean(JUST_CREATED, false);
+            isRecreation = savedInstanceState.getBoolean(IS_RECREATION, false);
         }
 
         // If we are showing to the user that the alarm was created, prepare the snackbar
@@ -79,7 +83,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     imDismissingIt = true;
                     snackbar.dismiss();
 
-                    triggerEditionDialog(alarm);
+                    triggerEditionDialog(alarm, isRecreation);
                 }
             });
             snackbar.setCallback(new Snackbar.Callback() {
@@ -95,7 +99,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         } else {
             // If we are creating a new alarm or editing one that wasn't just created
             // we can go directly to the edition dialog
-            triggerEditionDialog(alarm);
+            triggerEditionDialog(alarm, isRecreation);
         }
 
         LinearLayout baseLayout = (LinearLayout) findViewById(R.id.base_layout);
@@ -108,10 +112,10 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
     }
 
-    private void triggerEditionDialog(Alarm alarm) {
+    private void triggerEditionDialog(Alarm alarm, boolean isRecreation) {
         ContextThemeWrapper wrappedContext = new ContextThemeWrapper(ReminderEditionActivity.this,
                 R.style.AppTheme);
-        final AlarmEditionDialog editionDialog = new AlarmEditionDialog(wrappedContext, alarm);
+        final AlarmEditionDialog editionDialog = new AlarmEditionDialog(wrappedContext, alarm, isRecreation);
         editionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -132,6 +136,15 @@ public class ReminderEditionActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         intent.putExtra(JUST_CREATED, true);
+        return intent;
+    }
+
+    public static Intent getIntentForReCreation(Alarm alarm) {
+        Intent intent = new Intent(App.getAppContext(), ReminderEditionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
+        intent.putExtra(IS_RECREATION, true);
+        intent.putExtra(JUST_CREATED, false);
         return intent;
     }
 
@@ -161,9 +174,12 @@ public class ReminderEditionActivity extends AppCompatActivity {
         private DateFieldHandler alarmDateVH;
         private TimeFieldHandler alarmTimeVH;
 
-        protected AlarmEditionDialog(@NonNull Context context, @NonNull Alarm alarm) {
+        private boolean isRecreation;
+
+        protected AlarmEditionDialog(@NonNull Context context, @NonNull Alarm alarm, boolean isRecreation) {
             super(context);
             this.alarm = alarm;
+            this.isRecreation = isRecreation;
         }
 
         @Override
@@ -192,7 +208,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     }
 
                     // See if we have to create it
-                    if (alarm == null) {
+                    if (alarm == null || isRecreation) {
                         isNew = true;
                         alarm = Alarm.fromDateTime(newDateTime);
                     } else {
@@ -219,7 +235,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                 }
             });
             Button delete = (Button) findViewById(R.id.delete_button);
-            if (alarm != null) {
+            if (alarm != null && !isRecreation) {
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -239,7 +255,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                 alarmNote.setText(alarm.getNote());
                 initialDateTime = alarm.getDateTime();
             } else {
-                initialDateTime = Utils.getNow().withSecondOfMinute(0).withMillisOfSecond(0);
+                initialDateTime = App.getInitialTime(App.isThereOneEvery30());
             }
 
             alarmDateVH = new DateFieldHandler(getContext(), date, initialDateTime.toLocalDate());

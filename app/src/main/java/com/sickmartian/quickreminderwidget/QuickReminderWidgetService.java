@@ -154,10 +154,6 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                     reminderIntentionData.add(new ReminderIntentionData(alarm.getDateTime(), alarm));
                 }
             }
-
-            for (ReminderIntentionData aid : reminderIntentionData) {
-                Timber.i(aid.toString());
-            }
         }
 
         public LocalDateTime getTimeForTimeRow(int timeRow) {

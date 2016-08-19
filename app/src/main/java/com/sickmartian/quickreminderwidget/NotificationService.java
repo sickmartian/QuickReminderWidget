@@ -3,6 +3,7 @@ package com.sickmartian.quickreminderwidget;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -71,19 +72,19 @@ public class NotificationService extends IntentService {
                         .setGroup("QAWNotificationGroup")
                         .setCategory(Notification.CATEGORY_REMINDER);
 
-                // Customize with note or creation date for each
                 for (Alarm alarm : currentAlarms) {
+                    // Customize with note or creation date for each
                     if (alarm.getNote() != null) {
-                        notificationBuilder.setContentText(
-                                String.format(getString(R.string.alarm_content_note_title),
-                                        alarm.getNote())
-                        );
+                        String content = String.format(getString(R.string.alarm_content_note_title), alarm.getNote());
+                        notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
                     } else {
-                        notificationBuilder.setContentText(
-                                String.format(getString(R.string.alarm_content_creation_title),
-                                        alarm.getCreationDateTime().toString(App.dateTimeFormatter))
-                        );
+                        notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
+                                alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
                     }
+
+                    // Allow the user to re-create the alarm
+                    notificationBuilder.setContentIntent(PendingIntent.getActivity(getApplicationContext(),
+                            0, ReminderEditionActivity.getIntentForReCreation(alarm), PendingIntent.FLAG_UPDATE_CURRENT));
 
                     // Trigger notification
                     Notification notification = notificationBuilder.build();
