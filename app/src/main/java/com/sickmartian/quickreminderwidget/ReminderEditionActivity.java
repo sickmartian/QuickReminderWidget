@@ -250,9 +250,15 @@ public class ReminderEditionActivity extends AppCompatActivity {
             TextView date = (TextView) findViewById(R.id.alarm_date);
             TextView time = (TextView) findViewById(R.id.alarm_time);
 
-            LocalDateTime initialDateTime;
+            // Set old state
             if (alarm != null) {
                 alarmNote.setText(alarm.getNote());
+            }
+
+            // The exception is the time, in case that it's recreation, it would
+            // be in the past.. so, we set it as if it is a new reminder
+            LocalDateTime initialDateTime;
+            if (alarm != null && !isRecreation) {
                 initialDateTime = alarm.getDateTime();
             } else {
                 initialDateTime = App.getInitialTime(App.isThereOneEvery30());

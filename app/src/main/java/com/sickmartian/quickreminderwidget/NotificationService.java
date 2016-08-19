@@ -76,7 +76,8 @@ public class NotificationService extends IntentService {
                     // Customize with note or creation date for each
                     if (alarm.getNote() != null) {
                         String content = String.format(getString(R.string.alarm_content_note_title), alarm.getNote());
-                        notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+                        notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(content))
+                            .setContentText(content);
                     } else {
                         notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
                                 alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
