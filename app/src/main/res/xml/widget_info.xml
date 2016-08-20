@@ -7,6 +7,7 @@
     android:minResizeWidth="@dimen/widget_min_width"
     android:updatePeriodMillis="0"
     android:configure="com.sickmartian.quickreminderwidget.QuickReminderWidgetConfigurationActivity"
+    android:previewImage="@drawable/widget_preview"
     android:autoAdvanceViewId="@+id/quick_widget_list"
     android:initialLayout="@layout/quick_widget_layout"
     android:resizeMode="vertical|horizontal" />
