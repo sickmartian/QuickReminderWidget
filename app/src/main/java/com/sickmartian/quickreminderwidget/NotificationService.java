@@ -11,6 +11,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
@@ -84,8 +85,11 @@ public class NotificationService extends IntentService {
                     }
 
                     // Allow the user to re-create the alarm
-                    notificationBuilder.setContentIntent(PendingIntent.getActivity(getApplicationContext(),
-                            0, ReminderEditionActivity.getIntentForReCreation(alarm), PendingIntent.FLAG_UPDATE_CURRENT));
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                    stackBuilder.addParentStack(ReminderEditionActivity.class);
+                    stackBuilder.addNextIntent(ReminderEditionActivity.getIntentForReCreation(alarm));
+                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(3434, PendingIntent.FLAG_CANCEL_CURRENT);
+                    notificationBuilder.setContentIntent(pendingIntent);
 
                     // Trigger notification
                     Notification notification = notificationBuilder.build();
