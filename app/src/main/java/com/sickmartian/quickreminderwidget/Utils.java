@@ -20,7 +20,10 @@ public class Utils {
     }
 
     public static int getAppSmallIcon() {
-        int smallIcon = R.drawable.ic_alarm_on_black_24dp;
+        int smallIcon = R.drawable.ic_launcher;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            smallIcon = R.drawable.icon_outline;
+        }
         return smallIcon;
     }
 
