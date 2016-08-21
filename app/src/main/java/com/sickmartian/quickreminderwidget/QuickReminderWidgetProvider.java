@@ -125,9 +125,9 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             }
 
             widget.setOnClickPendingIntent(R.id.add_custom_reminder, PendingIntent.getActivity(context,
-                    0, ReminderEditionActivity.getIntentForCreation(), PendingIntent.FLAG_CANCEL_CURRENT));
+                    appWidgetId, ReminderEditionActivity.getIntentForCreation(), PendingIntent.FLAG_CANCEL_CURRENT));
             widget.setOnClickPendingIntent(R.id.toggle_edit_mode, PendingIntent.getBroadcast(context,
-                    0, EditionModeToggleReceiver.getIntent(appWidgetId, editionMode), PendingIntent.FLAG_CANCEL_CURRENT));
+                    appWidgetId, EditionModeToggleReceiver.getIntent(appWidgetId, editionMode), PendingIntent.FLAG_CANCEL_CURRENT));
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);
         }
