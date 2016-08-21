@@ -118,7 +118,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             } else {
                 // Each row triggers edition
                 PendingIntent clickPI = PendingIntent.getActivity(context, 7777,
-                        ReminderEditionActivity.getIntentForEditionPart1(context), PendingIntent.FLAG_CANCEL_CURRENT);
+                        ReminderEditionActivity.getIntentForEditionPart1(context), 0);
                 widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
 
                 widget.setInt(R.id.toggle_edit_mode, "setColorFilter", App.activeColor);

@@ -3,6 +3,7 @@ package com.sickmartian.quickreminderwidget;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -161,10 +162,11 @@ public class ReminderEditionActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static Intent getIntentForEditionPart2(Alarm alarm) {
+    public static Intent getIntentForEditionPart2(Alarm alarm, int appWidgetId) {
         Intent intent = new Intent();
         intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         intent.putExtra(JUST_CREATED, false);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         return intent;
     }
 

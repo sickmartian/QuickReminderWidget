@@ -246,7 +246,8 @@ public class QuickReminderWidgetService extends RemoteViewsService {
 
                 // Fill each edition intention to the intents
                 itemView.setOnClickFillInIntent(R.id.clickeable_row,
-                        ReminderEditionActivity.getIntentForEditionPart2(currentReminderIntentionData.getAlarm()));
+                        ReminderEditionActivity.getIntentForEditionPart2(currentReminderIntentionData.getAlarm(),
+                                appWidgetId));
             }
 
             return itemView;
