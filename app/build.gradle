@@ -31,7 +31,7 @@ android {
         applicationId "com.sickmartian.quickreminderwidget"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 4
+        versionCode 5
         versionName "1.0"
     }
     buildTypes {
