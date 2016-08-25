@@ -26,6 +26,14 @@ import timber.log.Timber;
  * Created by ***REMOVED*** on 8/11/16.
  */
 public class App extends Application {
+    public static final String CUSTOM_NOTIFICATION = "CUSTOM_NOTIFICATION";
+    public static final String CUSTOM_NOTIFICATION_VIBRATE = "CUSTOM_NOTIFICATION_VIBRATE";
+    public static final String CUSTOM_NOTIFICATION_LIGHTS = "CUSTOM_NOTIFICATION_LIGHTS";
+    public static final String CUSTOM_NOTIFICATION_SOUND = "CUSTOM_NOTIFICATION_SOUND";
+
+    public static final boolean DEFAULT_CUSTOM_NOTIFICATION = false;
+    public static final boolean DEFAULT_VIBRATE = true;
+    public static final boolean DEFAULT_LIGHT = true;
     public static final String DEFAULT_MORNING_TIME = "DEFAULT_MORNING_TIME";
     public static final String DEFAULT_NOON_TIME = "DEFAULT_NOON_TIME";
     public static final String DEFAULT_EVENING_TIME = "DEFAULT_EVENING_TIME";
@@ -102,7 +110,7 @@ public class App extends Application {
         return getSharedPreferences().getBoolean(ARE_THERE_WIDGETS, false);
     }
 
-    private static SharedPreferences getSharedPreferences() {
+    public static SharedPreferences getSharedPreferences() {
         if (sharedPreferences == null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getAppContext());
         }

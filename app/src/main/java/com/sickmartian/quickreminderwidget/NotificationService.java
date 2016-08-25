@@ -62,9 +62,7 @@ public class NotificationService extends IntentService {
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 int smallIcon = Utils.getAppSmallIcon();
-
-                Alarm firstAlarm = currentAlarms.get(0);
-                setupCustomNotification(this, firstAlarm.getSourceWidgetId(), notificationBuilder);
+                setupCustomNotification(this, notificationBuilder);
 
                 notificationBuilder.setContentTitle(getString(R.string.app_name))
                         .setSmallIcon(smallIcon)
@@ -102,17 +100,17 @@ public class NotificationService extends IntentService {
         }
     }
 
-    public static void setupCustomNotification(Context context, int widgetId, NotificationCompat.Builder notificationBuilder) {
-        SharedPreferences widgetPreferences = App.getWidgetSharedPref(widgetId);
-        if (widgetPreferences.getBoolean(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION, false)) {
+    public static void setupCustomNotification(Context context, NotificationCompat.Builder notificationBuilder) {
+        SharedPreferences widgetPreferences = App.getSharedPreferences();
+        if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION, false)) {
             int defaults = 0;
-            if (widgetPreferences.getBoolean(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION_VIBRATE, true)) {
+            if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_VIBRATE, true)) {
                 defaults |= Notification.DEFAULT_VIBRATE;
             }
-            if (widgetPreferences.getBoolean(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION_LIGHTS, true)) {
+            if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_LIGHTS, true)) {
                 defaults |= Notification.DEFAULT_LIGHTS;
             }
-            String notificationUriString = widgetPreferences.getString(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION_SOUND, null);
+            String notificationUriString = widgetPreferences.getString(App.CUSTOM_NOTIFICATION_SOUND, null);
             if (notificationUriString != null) {
                 // Check custom ringtone:
                 try {
