@@ -80,7 +80,7 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
             svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
             // Get preferences for the widget
-            SharedPreferences sharedPreferences = getWidgetSharedPref(appWidgetId);
+            SharedPreferences sharedPreferences = App.getWidgetSharedPref(appWidgetId);
             int customTime = sharedPreferences.getInt(CUSTOM_TIME_1, DEFAULT_CUSTOM_TIME_1);
             svcIntent.putExtra(CUSTOM_TIME_1, customTime);
             customTime = sharedPreferences.getInt(CUSTOM_TIME_2, DEFAULT_CUSTOM_TIME_2);
@@ -135,11 +135,6 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.quick_widget_list);
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-    }
-
-    public static SharedPreferences getWidgetSharedPref(int appWidgetId) {
-        return App.getAppContext().getSharedPreferences("WIDGET_" + appWidgetId,
-                Context.MODE_APPEND);
     }
 
 }

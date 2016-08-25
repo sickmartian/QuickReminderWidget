@@ -38,6 +38,7 @@ import org.parceler.Parcels;
 public class ReminderEditionActivity extends AppCompatActivity {
 
     private static final String ALARM = "ALARM";
+    private static final String TIME_FOR_CREATION = "TIME_FOR_CREATION";
     private static final String JUST_CREATED = "JUST_CREATED";
     private static final String IS_RECREATION = "IS_RECREATION";
     private boolean imDismissingIt;
@@ -67,6 +68,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
             justCreated = savedInstanceState.getBoolean(JUST_CREATED, false);
             isRecreation = savedInstanceState.getBoolean(IS_RECREATION, false);
         }
+        final LocalTime timeForCreate = (LocalTime) getIntent().getSerializableExtra(TIME_FOR_CREATION);
 
         // If we are showing to the user that the alarm was created, prepare the snackbar
         if (justCreated) {
@@ -84,7 +86,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     imDismissingIt = true;
                     snackbar.dismiss();
 
-                    triggerEditionDialog(alarm, isRecreation);
+                    triggerEditionDialog(alarm, isRecreation, timeForCreate);
                 }
             });
             snackbar.setCallback(new Snackbar.Callback() {
@@ -100,7 +102,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         } else {
             // If we are creating a new alarm or editing one that wasn't just created
             // we can go directly to the edition dialog
-            triggerEditionDialog(alarm, isRecreation);
+            triggerEditionDialog(alarm, isRecreation, timeForCreate);
         }
 
         LinearLayout baseLayout = (LinearLayout) findViewById(R.id.base_layout);
@@ -113,10 +115,10 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
     }
 
-    private void triggerEditionDialog(Alarm alarm, boolean isRecreation) {
+    private void triggerEditionDialog(Alarm alarm, boolean isRecreation, LocalTime timeForCreate) {
         ContextThemeWrapper wrappedContext = new ContextThemeWrapper(ReminderEditionActivity.this,
                 R.style.AppTheme);
-        final AlarmEditionDialog editionDialog = new AlarmEditionDialog(wrappedContext, alarm, isRecreation);
+        final AlarmEditionDialog editionDialog = new AlarmEditionDialog(wrappedContext, alarm, isRecreation, timeForCreate);
         editionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -156,6 +158,14 @@ public class ReminderEditionActivity extends AppCompatActivity {
         return intent;
     }
 
+    public static Intent getIntentForCreationWithTime(LocalTime creationTime) {
+        Intent intent = new Intent(App.getAppContext(), ReminderEditionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(TIME_FOR_CREATION, creationTime);
+        intent.putExtra(JUST_CREATED, false);
+        return intent;
+    }
+
     public static Intent getIntentForEditionPart1(Context context) {
         Intent intent = new Intent(context, ReminderEditionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -176,12 +186,17 @@ public class ReminderEditionActivity extends AppCompatActivity {
         private DateFieldHandler alarmDateVH;
         private TimeFieldHandler alarmTimeVH;
 
+        private LocalTime timeForCreate;
         private boolean isRecreation;
 
-        protected AlarmEditionDialog(@NonNull Context context, @NonNull Alarm alarm, boolean isRecreation) {
+        protected AlarmEditionDialog(@NonNull Context context,
+                                     @NonNull Alarm alarm,
+                                     boolean isRecreation,
+                                     LocalTime timeForCreate) {
             super(context);
             this.alarm = alarm;
             this.isRecreation = isRecreation;
+            this.timeForCreate = timeForCreate;
         }
 
         @Override
@@ -257,13 +272,28 @@ public class ReminderEditionActivity extends AppCompatActivity {
                 alarmNote.setText(alarm.getNote());
             }
 
-            // The exception is the time, in case that it's recreation, it would
-            // be in the past.. so, we set it as if it is a new reminder
             LocalDateTime initialDateTime;
+            // If we are editing an alarm (not recreating it!) we use that time
             if (alarm != null && !isRecreation) {
                 initialDateTime = alarm.getDateTime();
             } else {
-                initialDateTime = App.getInitialTime(App.isThereOneEvery30());
+                if (timeForCreate == null) {
+                    // No alarms without an specific time for creation and recreations
+                    // get the 'next slot' treatment
+                    initialDateTime = App.getInitialTime(App.isThereOneEvery30());
+                } else {
+                    // If we have a time, we use that
+                    LocalDateTime now = Utils.getNow();
+                    if (now.toLocalTime().isBefore(timeForCreate)) {
+                        initialDateTime = now;
+                    } else {
+                        initialDateTime = now.plusDays(1);
+                    }
+                    initialDateTime = initialDateTime.withTime(timeForCreate.getHourOfDay(),
+                            timeForCreate.getMinuteOfHour(),
+                            timeForCreate.getSecondOfMinute(),
+                            timeForCreate.getMillisOfSecond());
+                }
             }
 
             alarmDateVH = new DateFieldHandler(getContext(), date, initialDateTime.toLocalDate());
@@ -324,7 +354,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     createOrMerge(alarm, isNew);
                 }
             }
-            App.updateAllWidgets();
+            App.updateAllQuickReminderWidgets();
             return null;
         }
     }
@@ -340,7 +370,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             alarm.deleteSync();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
-            App.updateAllWidgets();
+            App.updateAllQuickReminderWidgets();
             return null;
         }
     }
@@ -398,47 +428,6 @@ public class ReminderEditionActivity extends AppCompatActivity {
             this.mChangeListener = mChangeListener;
         }
 
-    }
-
-    private static class TimeFieldHandler implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
-        private LocalTime mCurrentValue;
-        private final TextView mField;
-        private final Context mContext;
-        private boolean mIsDirty;
-
-        public TimeFieldHandler(Context context, TextView field, LocalTime localTime) {
-            mContext = context;
-            mField = field;
-            setAndShowNewDate(mField, localTime);
-            mField.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            LocalTime localTime = getCurrentValue();
-            Utils.getTimePickerDialog(mContext, this,
-                    localTime.getHourOfDay(), localTime.getMinuteOfHour(),
-                    android.text.format.DateFormat.is24HourFormat(mContext)).show();
-        }
-
-        public void setAndShowNewDate(TextView customStartDate, LocalTime localTime) {
-            mCurrentValue = localTime;
-            customStartDate.setText(localTime.toString(DateTimeFormat.shortTime()));
-        }
-
-        public boolean isDirty() {
-            return mIsDirty;
-        }
-
-        public LocalTime getCurrentValue() {
-            return mCurrentValue;
-        }
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            setAndShowNewDate(mField, new LocalTime(hourOfDay, minute));
-            mIsDirty = true;
-        }
     }
 
 }

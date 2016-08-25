@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/widget_margin">
+    <ImageButton
+        android:id="@+id/bucket_morning"
+        android:src="@drawable/bucket_morning"
+        android:tint="@color/inactiveColor"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <ImageButton
+        android:id="@+id/bucket_noon"
+        android:src="@drawable/bucket_noon"
+        android:tint="@color/inactiveColor"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <ImageButton
+        android:id="@+id/bucket_evening"
+        android:src="@drawable/bucket_evening"
+        android:tint="@color/inactiveColor"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <ImageButton
+        android:id="@+id/bucket_night"
+        android:src="@drawable/bucket_night"
+        android:tint="@color/inactiveColor"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+</LinearLayout>

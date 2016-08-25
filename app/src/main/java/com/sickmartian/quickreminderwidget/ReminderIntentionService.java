@@ -59,7 +59,7 @@ public class ReminderIntentionService extends IntentService {
                         intentionData.getTime().toString(App.dateTimeFormatter)));
             }
 
-            App.updateAllWidgets();
+            App.updateAllQuickReminderWidgets();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
         } finally {
             ReminderIntentionReceiver.completeWakefulIntent(intent);

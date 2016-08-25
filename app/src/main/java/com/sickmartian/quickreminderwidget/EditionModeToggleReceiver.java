@@ -16,12 +16,12 @@ public class EditionModeToggleReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         boolean currentEditionMode = intent.getBooleanExtra(CURRENT_EDITION_MODE, false);
-        SharedPreferences widgetPrefs = QuickReminderWidgetProvider.getWidgetSharedPref(widgetId);
+        SharedPreferences widgetPrefs = App.getWidgetSharedPref(widgetId);
         widgetPrefs
                 .edit()
                 .putBoolean(QuickReminderWidgetProvider.EDITION_MODE, !currentEditionMode)
                 .commit();
-        App.updateWidget(widgetId);
+        App.updateQuickReminderWidget(widgetId);
     }
 
     public static Intent getIntent(int widgetId, boolean currentEditionMode) {

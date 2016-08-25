@@ -23,4 +23,6 @@
 
     <dimen name="sibling_horizontal_margin">8dp</dimen>
     <dimen name="sibling_big_horizontal_margin">16dp</dimen>
+    <dimen name="bucket_widget_height">40dp</dimen>
+    <dimen name="bucket_widget_min_height">40dp</dimen>
 </resources>

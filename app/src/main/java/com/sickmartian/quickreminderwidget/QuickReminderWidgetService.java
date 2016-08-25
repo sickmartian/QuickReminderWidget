@@ -79,7 +79,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
             reminderIntentionData.clear();
             // We need to get the editionMode here, as this can be called before
             // a new Factory is created with the updated value
-            editionMode = QuickReminderWidgetProvider.getWidgetSharedPref(appWidgetId)
+            editionMode = App.getWidgetSharedPref(appWidgetId)
                     .getBoolean(QuickReminderWidgetProvider.EDITION_MODE, false);
 
             initialTime = App.getInitialTime(every30);

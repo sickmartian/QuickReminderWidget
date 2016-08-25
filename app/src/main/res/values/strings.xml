@@ -1,5 +1,6 @@
 <resources>
     <string translatable="false" name="custom_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE</string>
+    <string translatable="false" name="custom_bucket_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEB</string>
 
     <string name="app_name">Quick Reminder Widget</string>
     <string name="reminder_created_for">Reminder set for %1$s</string>
@@ -39,4 +40,12 @@
     <string name="alarm_content_creation_title">Scheduled: %1$s</string>
     <string name="reminder_in_the_past">This reminder is in the past, can\'t be saved</string>
     <string name="alarm_edition_delete">Delete</string>
+    <string name="bucket_widget_noon_switch">Show noon:</string>
+    <string name="bucket_widget_noon_value">Time for noon:</string>
+    <string name="bucket_widget_morning_switch">Show morning:</string>
+    <string name="bucket_widget_morning_value">Time for morning:</string>
+    <string name="bucket_widget_evening_switch">Show evening:</string>
+    <string name="bucket_widget_evening_value">Time for evening:</string>
+    <string name="bucket_widget_night_switch">Show night:</string>
+    <string name="bucket_widget_night_value">Time for night:</string>
 </resources>

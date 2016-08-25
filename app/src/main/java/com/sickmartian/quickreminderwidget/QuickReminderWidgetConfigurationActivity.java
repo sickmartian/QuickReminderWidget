@@ -167,7 +167,7 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
                     }
                 }
 
-                QuickReminderWidgetProvider.getWidgetSharedPref(appWidgetId)
+                App.getWidgetSharedPref(appWidgetId)
                         .edit()
                         .putInt(QuickReminderWidgetProvider.HOURS, hoursInt)
                         .putBoolean(QuickReminderWidgetProvider.EVERY_30, every30.isChecked())
@@ -182,7 +182,7 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
                         .commit();
 
                 // Update widget
-                App.updateAllWidgets();
+                App.updateAllQuickReminderWidgets();
 
                 // Say the widget was created
                 Intent resultValue = new Intent(App.getAppContext(), QuickReminderWidgetProvider.class);

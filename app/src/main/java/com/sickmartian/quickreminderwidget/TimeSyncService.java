@@ -53,7 +53,7 @@ public class TimeSyncService extends IntentService {
 
             if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {
                 Timber.i("Updating Widgets");
-                App.updateAllWidgets();
+                App.updateAllQuickReminderWidgets();
             }
         } finally {
             Timber.d("TimeSyncService ending");

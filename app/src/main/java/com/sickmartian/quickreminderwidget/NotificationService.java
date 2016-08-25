@@ -52,7 +52,7 @@ public class NotificationService extends IntentService {
                 // because the TimeSync is not gonna run for us
                 for (Alarm currentAlarm : currentAlarms) {
                     if (currentAlarm.isCustomDateTime(App.isThereOneEvery30())) {
-                        App.updateAllWidgets();
+                        App.updateAllQuickReminderWidgets();
                         break;
                     }
                 }
@@ -103,7 +103,7 @@ public class NotificationService extends IntentService {
     }
 
     public static void setupCustomNotification(Context context, int widgetId, NotificationCompat.Builder notificationBuilder) {
-        SharedPreferences widgetPreferences = QuickReminderWidgetProvider.getWidgetSharedPref(widgetId);
+        SharedPreferences widgetPreferences = App.getWidgetSharedPref(widgetId);
         if (widgetPreferences.getBoolean(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION, false)) {
             int defaults = 0;
             if (widgetPreferences.getBoolean(QuickReminderWidgetProvider.CUSTOM_NOTIFICATION_VIBRATE, true)) {

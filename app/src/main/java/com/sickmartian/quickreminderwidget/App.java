@@ -26,6 +26,10 @@ import timber.log.Timber;
  * Created by ***REMOVED*** on 8/11/16.
  */
 public class App extends Application {
+    public static final String DEFAULT_MORNING_TIME = "DEFAULT_MORNING_TIME";
+    public static final String DEFAULT_NOON_TIME = "DEFAULT_NOON_TIME";
+    public static final String DEFAULT_EVENING_TIME = "DEFAULT_EVENING_TIME";
+    public static final String DEFAULT_NIGHT_TIME = "DEFAULT_NIGHT_TIME";
 
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
@@ -153,7 +157,16 @@ public class App extends Application {
         return initialTime;
     }
 
-    public static void updateWidget(int widgetId) {
+    public static void updateBucketWidget(int widgetId) {
+        Context appContext = App.getAppContext();
+        int[] ids = {widgetId};
+        Intent updateIntent = new Intent();
+        updateIntent.setAction(getAppContext().getString(R.string.custom_bucket_widget_update_action));
+        updateIntent.putExtra(BucketWidgetProvider.WIDGET_IDS_KEY, ids);
+        appContext.sendBroadcast(updateIntent);
+    }
+
+    public static void updateQuickReminderWidget(int widgetId) {
         Context appContext = App.getAppContext();
         int[] ids = {widgetId};
         Intent updateIntent = new Intent();
@@ -162,7 +175,7 @@ public class App extends Application {
         appContext.sendBroadcast(updateIntent);
     }
 
-    public static void updateAllWidgets() {
+    public static void updateAllQuickReminderWidgets() {
         Context appContext = App.getAppContext();
         AppWidgetManager man = AppWidgetManager.getInstance(appContext);
         int[] ids = man.getAppWidgetIds(
@@ -180,5 +193,10 @@ public class App extends Application {
         }
         getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
         return notificationId;
+    }
+
+    public static SharedPreferences getWidgetSharedPref(int appWidgetId) {
+        return App.getAppContext().getSharedPreferences("WIDGET_" + appWidgetId,
+                Context.MODE_APPEND);
     }
 }
