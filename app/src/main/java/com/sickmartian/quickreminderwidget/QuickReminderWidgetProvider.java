@@ -109,15 +109,15 @@ public class QuickReminderWidgetProvider extends AppWidgetProvider {
                 widget.setInt(R.id.toggle_edit_mode, "setColorFilter", App.inactiveColor);
             } else {
                 // Each row triggers edition
-                PendingIntent clickPI = PendingIntent.getActivity(context, 7777,
-                        ReminderEditionActivity.getIntentForEditionPart1(context), 0);
-                widget.setPendingIntentTemplate(R.id.quick_widget_list, clickPI);
+                widget.setPendingIntentTemplate(R.id.quick_widget_list,
+                        Utils.getPIInNewStack(ReminderEditionActivity.getIntentForEditionPart1(context),
+                                7777, 0));
 
                 widget.setInt(R.id.toggle_edit_mode, "setColorFilter", App.activeColor);
             }
 
-            widget.setOnClickPendingIntent(R.id.add_custom_reminder, PendingIntent.getActivity(context,
-                    appWidgetId, ReminderEditionActivity.getIntentForCreation(), PendingIntent.FLAG_CANCEL_CURRENT));
+            widget.setOnClickPendingIntent(R.id.add_custom_reminder,
+                    Utils.getPIInNewStack(ReminderEditionActivity.getIntentForCreation(), appWidgetId));
             widget.setOnClickPendingIntent(R.id.toggle_edit_mode, PendingIntent.getBroadcast(context,
                     appWidgetId, EditionModeToggleReceiver.getIntent(appWidgetId, editionMode), PendingIntent.FLAG_CANCEL_CURRENT));
 

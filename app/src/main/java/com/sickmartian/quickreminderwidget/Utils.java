@@ -1,11 +1,14 @@
 package com.sickmartian.quickreminderwidget;
 
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.view.ContextThemeWrapper;
 import android.widget.Toast;
 
@@ -71,5 +74,16 @@ public class Utils {
                         .show();
             }
         });
+    }
+
+    public static PendingIntent getPIInNewStack(Intent intent, int requestCode) {
+        return getPIInNewStack(intent, requestCode, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
+
+    public static PendingIntent getPIInNewStack(Intent intent, int requestCode, int flags) {
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getAppContext());
+        stackBuilder.addParentStack(ReminderEditionActivity.class);
+        stackBuilder.addNextIntent(intent);
+        return stackBuilder.getPendingIntent(requestCode, flags);
     }
 }

@@ -83,11 +83,9 @@ public class NotificationService extends IntentService {
                     }
 
                     // Allow the user to re-create the alarm
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                    stackBuilder.addParentStack(ReminderEditionActivity.class);
-                    stackBuilder.addNextIntent(ReminderEditionActivity.getIntentForReCreation(alarm));
-                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(3434, PendingIntent.FLAG_CANCEL_CURRENT);
-                    notificationBuilder.setContentIntent(pendingIntent);
+                    notificationBuilder.setContentIntent(
+                            Utils.getPIInNewStack(ReminderEditionActivity.getIntentForReCreation(alarm),
+                                    3434));
 
                     // Trigger notification
                     Notification notification = notificationBuilder.build();
