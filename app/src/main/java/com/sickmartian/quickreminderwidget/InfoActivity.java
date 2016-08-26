@@ -41,6 +41,8 @@ public class InfoActivity extends AppCompatActivity {
         privacy.setMovementMethod(LinkMovementMethod.getInstance());
         TextView icons = (TextView) findViewById(R.id.information_icons_line);
         icons.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView icons2 = (TextView) findViewById(R.id.information_icons_line2);
+        icons2.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public static Intent getIntentForShow() {

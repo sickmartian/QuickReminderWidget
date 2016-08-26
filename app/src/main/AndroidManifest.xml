@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider">
+        <receiver android:name="com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider"
+            android:label="@string/quick_reminder_widget_label">
             <intent-filter>
                 <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -51,7 +52,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.sickmartian.quickreminderwidget.BucketWidgetProvider">
+        <receiver android:name="com.sickmartian.quickreminderwidget.BucketWidgetProvider"
+            android:label="@string/bucket_widget_label">
             <intent-filter>
                 <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEB" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
