@@ -124,12 +124,6 @@ public class Alarm {
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
-    public int getSourceWidgetId() {
-        return sourceWidgetId;
-    }
-    public void setSourceWidgetId(int sourceWidgetId) {
-        this.sourceWidgetId = sourceWidgetId;
-    }
 
     public boolean isCustomDateTime(boolean every30) {
         if (every30) {

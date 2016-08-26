@@ -38,17 +38,14 @@ public class ReminderIntentionService extends IntentService {
                 }
                 assert alarmTime != null; // Either a duration or a time, if none something is really fishy
                 Alarm newAlarm = Alarm.fromDateTime(alarmTime);
-                int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-                newAlarm.setSourceWidgetId(widgetId);
                 boolean created = newAlarm.createSync();
 
                 if (created) {
                     if (intent.getBooleanExtra(ReminderIntentionReceiver.AND_OFFER_EDITION, false)) {
                         startActivity(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
                     } else {
-                        final LocalDateTime finalAlarmTime = alarmTime;
                         Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
-                                finalAlarmTime.toString(App.dateTimeFormatter)));
+                                alarmTime.toString(App.dateTimeFormatter)));
                     }
                 } else {
                     Utils.toastTo(App.getAppContext().getString(R.string.reminder_not_created_exists));
