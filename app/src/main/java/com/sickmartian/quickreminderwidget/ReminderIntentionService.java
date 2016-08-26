@@ -3,6 +3,8 @@ package com.sickmartian.quickreminderwidget;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
@@ -42,7 +44,11 @@ public class ReminderIntentionService extends IntentService {
 
                 if (created) {
                     if (intent.getBooleanExtra(ReminderIntentionReceiver.AND_OFFER_EDITION, false)) {
-                        startActivity(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getAppContext());
+                        stackBuilder.addParentStack(ReminderEditionActivity.class);
+                        stackBuilder.addNextIntent(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
+                        Intent newActivityIntent = stackBuilder.getIntents()[0];
+                        startActivity(newActivityIntent);
                     } else {
                         Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
                                 alarmTime.toString(App.dateTimeFormatter)));

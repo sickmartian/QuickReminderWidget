@@ -1,9 +1,12 @@
 package com.sickmartian.quickreminderwidget;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -106,6 +111,47 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        try {
+            MenuItem menuItem;
+            int i = 0;
+            while (i < 100) {
+                menuItem = menu.getItem(i);
+                setMenuIconColor(this, menuItem, R.color.inactiveColor);
+                i++;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+
+        }
+
+        return true;
+    }
+
+    public static void setMenuIconColor(Activity activity, MenuItem menuItem, int color) {
+        if (activity != null) {
+            Drawable newIcon = menuItem.getIcon();
+            newIcon.mutate().setColorFilter(activity.getResources().getColor(color),
+                    PorterDuff.Mode.SRC_IN);
+            menuItem.setIcon(newIcon);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.info_menu_item: {
+                startActivity(InfoActivity.getIntentForShow());
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

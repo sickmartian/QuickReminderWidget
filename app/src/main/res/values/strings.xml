@@ -48,4 +48,9 @@
     <string name="bucket_widget_evening_value">Time for evening:</string>
     <string name="bucket_widget_night_switch">Show night:</string>
     <string name="bucket_widget_night_value">Time for night:</string>
+
+    <string name="information_feedback_line_html">For feedback and questions email us at <a href="mailto:quick.reminder.widget@sickmartian.com">quick.reminder.widget@sickmartian.com</a></string>
+    <string name="information_privacy_line_html">Check our privacy policy <a href="http://sickmartian.com/assets/Trackendar_Mobile_Privacy_Policy.pdf">following this link</a></string>
+    <string name="information_icons_line_html">Most icons are <a href="https://www.google.com/design/icons/">material design icons</a></string>
+    <string name="info_activity_label">About</string>
 </resources>

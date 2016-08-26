@@ -94,6 +94,10 @@
             android:exported="false"
             android:syncable="false" />
 
+        <activity android:name=".InfoActivity"
+            android:label="@string/info_activity_label">
+        </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="a4de958ab7ef1c180b8bd0c6c85f739d96b18cd5" />
