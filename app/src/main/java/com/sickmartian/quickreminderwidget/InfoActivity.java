@@ -43,6 +43,8 @@ public class InfoActivity extends AppCompatActivity {
         icons.setMovementMethod(LinkMovementMethod.getInstance());
         TextView icons2 = (TextView) findViewById(R.id.information_icons_line2);
         icons2.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView icons3 = (TextView) findViewById(R.id.information_icons_line3);
+        icons3.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public static Intent getIntentForShow() {

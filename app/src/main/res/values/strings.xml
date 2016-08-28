@@ -52,7 +52,8 @@
     <string name="information_feedback_line_html">For feedback and questions email us at <a href="mailto:quick.reminder.widget@sickmartian.com">quick.reminder.widget@sickmartian.com</a></string>
     <string name="information_privacy_line_html">Check our privacy policy <a href="http://sickmartian.com/assets/Trackendar_Mobile_Privacy_Policy.pdf">following this link</a></string>
     <string name="information_icons_line_html">Action icons are <a href="https://www.google.com/design/icons/">material design icons</a></string>
-    <string name="information_icons2_line_html">Pars of the application icon and the weather icons on the \'Time of day\' widget are by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
+    <string name="information_icons2_line_html">Parts of the application icon are by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
+    <string name="information_icons3_line_html">Time of Day widget icons by <a href="https://www.behance.net/mmiglesias">Marcela Iglesias</a></string>
     <string name="info_activity_label">About</string>
     <string name="quick_reminder_widget_label">Reminder List</string>
     <string name="bucket_widget_label">Time of day</string>
