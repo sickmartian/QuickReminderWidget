@@ -36,17 +36,29 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
     private int appWidgetId;
 
     int[] customValueCorrespondingValues = new int[]{
-            QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME, 1, 5, 15, 30, 45, 60, 90
+            QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME,
+            1, 5, 10, 15,
+            20, 25, 30, 35,
+            40, 45, 60, 90,
+            120, 180, 240
     };
     int[] customValueCorrespondingNames = new int[]{
             R.string.custom_values_disabled_label,
             R.string.custom_values_1_label,
             R.string.custom_values_5_label,
+            R.string.custom_values_10_label,
             R.string.custom_values_15_label,
+            R.string.custom_values_20_label,
+            R.string.custom_values_25_label,
             R.string.custom_values_30_label,
+            R.string.custom_values_35_label,
+            R.string.custom_values_40_label,
             R.string.custom_values_45_label,
             R.string.custom_values_60_label,
             R.string.custom_values_90_label,
+            R.string.custom_values_120_label,
+            R.string.custom_values_180_label,
+            R.string.custom_values_240_label
     };
 
     Toolbar toolbar;
