@@ -82,14 +82,16 @@ public class NotificationService extends IntentService {
                                 alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
                     }
 
+                    int notificationId = App.getNewNotificationId();
+
                     // Allow the user to re-create the alarm
                     notificationBuilder.setContentIntent(
                             Utils.getPIInNewStack(ReminderEditionActivity.getIntentForReCreation(alarm),
-                                    3434));
+                                    notificationId * -1));
 
                     // Trigger notification
                     Notification notification = notificationBuilder.build();
-                    notificationManager.notify(NOTIFICATION, App.getNewNotificationId(), notification);
+                    notificationManager.notify(NOTIFICATION, notificationId, notification);
                 }
             }
         } finally {
