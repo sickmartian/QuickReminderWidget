@@ -102,7 +102,7 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
         customValue2Button.setOnClickListener(new ValueButtonClickHandler(this, customValue2Button, customValue2));
         customValue3Button.setOnClickListener(new ValueButtonClickHandler(this, customValue3Button, customValue3));
 
-        saveFAB.setOnClickListener(this.savePressedClickListener);
+        saveFAB.setOnClickListener(this.getFABSaveListener());
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -214,45 +214,47 @@ public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity 
         return Snackbar.make(rootLayout, text, duration);
     }
 
-    protected View.OnClickListener savePressedClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int hoursInt = -1;
-            if (hours.length() == 0) {
-                showErrorText(getString(R.string.widget_configuration_hour_missing));
-                return;
-            } else {
-                try {
-                    hoursInt = Integer.valueOf(hours.getText().toString());
-                } catch (Exception e) {
-                    showErrorText(getString(R.string.widget_configuration_hour_invalid));
+    protected View.OnClickListener getFABSaveListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hoursInt = -1;
+                if (hours.length() == 0) {
+                    showErrorText(getString(R.string.widget_configuration_hour_missing));
                     return;
+                } else {
+                    try {
+                        hoursInt = Integer.valueOf(hours.getText().toString());
+                    } catch (Exception e) {
+                        showErrorText(getString(R.string.widget_configuration_hour_invalid));
+                        return;
+                    }
+                    if (hoursInt > 168) {
+                        showErrorText(getString(R.string.widget_configuration_hour_above_max));
+                        return;
+                    }
                 }
-                if (hoursInt > 168) {
-                    showErrorText(getString(R.string.widget_configuration_hour_above_max));
-                    return;
-                }
+
+                App.getWidgetSharedPref(appWidgetId)
+                        .edit()
+                        .putInt(QuickReminderWidgetProvider.HOURS, hoursInt)
+                        .putBoolean(QuickReminderWidgetProvider.EVERY_30, every30.isChecked())
+                        .putBoolean(QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE, notes.isChecked())
+                        .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_1, customValue1.getValue())
+                        .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_2, customValue2.getValue())
+                        .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_3, customValue3.getValue())
+                        .commit();
+
+                // Update widget
+                App.updateAllQuickReminderWidgets();
+
+                // Say the widget was created
+                Intent resultValue = new Intent(App.getAppContext(), QuickReminderWidgetProvider.class);
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                setResult(RESULT_OK, resultValue);
+                finish();
             }
-
-            App.getWidgetSharedPref(appWidgetId)
-                    .edit()
-                    .putInt(QuickReminderWidgetProvider.HOURS, hoursInt)
-                    .putBoolean(QuickReminderWidgetProvider.EVERY_30, every30.isChecked())
-                    .putBoolean(QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE, notes.isChecked())
-                    .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_1, customValue1.getValue())
-                    .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_2, customValue2.getValue())
-                    .putInt(QuickReminderWidgetProvider.CUSTOM_TIME_3, customValue3.getValue())
-                    .commit();
-
-            // Update widget
-            App.updateAllQuickReminderWidgets();
-
-            // Say the widget was created
-            Intent resultValue = new Intent(App.getAppContext(), QuickReminderWidgetProvider.class);
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            setResult(RESULT_OK, resultValue);
-            finish();
-        }
-    };
+        };
+    }
 
 }

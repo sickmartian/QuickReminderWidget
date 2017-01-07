@@ -178,21 +178,6 @@ public class ReminderEditionActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static Intent getIntentForEditionWithIntention(Context context,
-                                                          ReminderIntentionData currentReminderIntentionData,
-                                                          int appWidgetId) {
-        // Fill each alarm's intention to the intents
-        Intent intent = new Intent(context, ReminderEditionActivity.class);
-        Bundle extras = new Bundle();
-        extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
-                Parcels.wrap(currentReminderIntentionData));
-        extras.putBoolean(JUST_CREATED, false);
-        extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(extras);
-        return intent;
-    }
-
     public static class AlarmEditionDialog extends Dialog {
         private Alarm alarm;
         private EditText alarmNote;

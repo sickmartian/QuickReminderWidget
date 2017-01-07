@@ -83,4 +83,5 @@
     <string name="bucket_widget_label">Time of day</string>
     <string name="alarm_edition_action">Edit</string>
     <string name="widget_edition_show_plus_label">Show \'Add\' button</string>
+    <string name="custom_values_widget_label">Pronto</string>
 </resources>

@@ -70,9 +70,9 @@
         </activity>
 
         <receiver android:name="com.sickmartian.quickreminderwidget.CustomValuesWidgetProvider"
-            android:label="@string/bucket_widget_label">
+            android:label="@string/custom_values_widget_label">
             <intent-filter>
-                <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEB" />
+                <action android:name="com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEC" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"

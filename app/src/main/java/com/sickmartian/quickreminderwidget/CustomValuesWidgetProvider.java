@@ -1,5 +1,6 @@
 package com.sickmartian.quickreminderwidget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -16,7 +17,9 @@ import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.CU
 import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1;
 import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2;
 import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_POSSIBILITY_TO_ADD_NOTE;
 import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE;
 
 /**
  * Created by ***REMOVED*** on 8/9/16.
@@ -47,61 +50,59 @@ public class CustomValuesWidgetProvider extends AppWidgetProvider {
 
             SharedPreferences widgetPrefs = App.getWidgetSharedPref(appWidgetId);
 
-            // Set if there is at least one widget set to every30
-            // so we know what a normal or custom alarm is and when we have
-            // to manually update widgets
             boolean showPlus = widgetPrefs.getBoolean(SHOW_PLUS, DEFAULT_SHOW_PLUS);
-
-            int augAppWidgetId = appWidgetId + 1;
-
-            int customValue1 = widgetPrefs.getInt(CUSTOM_TIME_1, DEFAULT_CUSTOM_TIME_1);
-            if (customValue1 != DISABLED_CUSTOM_TIME) {
-                ReminderIntentionData currentReminderIntentionData = new ReminderIntentionData(Duration.standardMinutes(customValue1), null);
-                widget.setOnClickPendingIntent(R.id.custom_value_1_button,
-                        Utils.getPIInNewStack(ReminderEditionActivity.getIntentForEditionWithIntention(context,
-                                currentReminderIntentionData, appWidgetId),
-                                ( ( NUMBER_OF_BUTTONS * ( augAppWidgetId - 1 ) ) + 1 ) * -1));
-                widget.setTextViewText(R.id.custom_value_1_button,
-                        CustomAlarmTimeValue.getCustomValueShortLabel((int) currentReminderIntentionData.getDuration().getStandardMinutes()));
-                widget.setTextColor(R.id.custom_value_1_button, App.inactiveColor);
-                widget.setViewVisibility(R.id.custom_value_1_button, View.VISIBLE);
+            if (!showPlus) {
+                widget.setViewVisibility(R.id.add_custom_reminder, View.GONE);
             } else {
-                widget.setViewVisibility(R.id.custom_value_1_button, View.GONE);
+                widget.setOnClickPendingIntent(R.id.add_custom_reminder,
+                        Utils.getPIInNewStack(ReminderEditionActivity.getIntentForCreation(), appWidgetId));
+                widget.setViewVisibility(R.id.add_custom_reminder, View.VISIBLE);
             }
+
+            boolean possibilityToAddNote = widgetPrefs.getBoolean(POSSIBILITY_TO_ADD_NOTE,
+                    DEFAULT_POSSIBILITY_TO_ADD_NOTE);
+
+            // Helper to calculate notification id
+            int customValue1 = widgetPrefs.getInt(CUSTOM_TIME_1, DEFAULT_CUSTOM_TIME_1);
+            setupButton(context, widget, possibilityToAddNote, appWidgetId,
+                    1, R.id.custom_value_1_button, customValue1);
 
             int customValue2 = widgetPrefs.getInt(CUSTOM_TIME_2, DEFAULT_CUSTOM_TIME_2);
-            if (customValue2 != DISABLED_CUSTOM_TIME) {
-                ReminderIntentionData currentReminderIntentionData = new ReminderIntentionData(Duration.standardMinutes(customValue2), null);
-                widget.setOnClickPendingIntent(R.id.custom_value_2_button,
-                        Utils.getPIInNewStack(ReminderEditionActivity.getIntentForEditionWithIntention(context,
-                                currentReminderIntentionData, appWidgetId),
-                                ( ( NUMBER_OF_BUTTONS * ( augAppWidgetId - 1 ) ) + 2 ) * -1));
-                widget.setTextViewText(R.id.custom_value_2_button,
-                        CustomAlarmTimeValue.getCustomValueShortLabel((int) currentReminderIntentionData.getDuration().getStandardMinutes()));
-                widget.setTextColor(R.id.custom_value_2_button, App.inactiveColor);
-                widget.setViewVisibility(R.id.custom_value_2_button, View.VISIBLE);
-            } else {
-                widget.setViewVisibility(R.id.custom_value_2_button, View.GONE);
-            }
+            setupButton(context, widget, possibilityToAddNote, appWidgetId,
+                    2, R.id.custom_value_2_button, customValue2);
 
             int customValue3 = widgetPrefs.getInt(CUSTOM_TIME_3, DEFAULT_CUSTOM_TIME_3);
-            if (customValue3 != DISABLED_CUSTOM_TIME) {
-                ReminderIntentionData currentReminderIntentionData = new ReminderIntentionData(Duration.standardMinutes(customValue3), null);
-                widget.setOnClickPendingIntent(R.id.custom_value_3_button,
-                        Utils.getPIInNewStack(ReminderEditionActivity.getIntentForEditionWithIntention(context,
-                                currentReminderIntentionData, appWidgetId),
-                                ( ( NUMBER_OF_BUTTONS * ( augAppWidgetId - 1 ) ) + 3 ) * -1));
-                widget.setTextViewText(R.id.custom_value_3_button,
-                        CustomAlarmTimeValue.getCustomValueShortLabel((int) currentReminderIntentionData.getDuration().getStandardMinutes()));
-                widget.setTextColor(R.id.custom_value_3_button, App.inactiveColor);
-                widget.setViewVisibility(R.id.custom_value_3_button, View.VISIBLE);
-            } else {
-                widget.setViewVisibility(R.id.custom_value_3_button, View.GONE);
-            }
+            setupButton(context, widget, possibilityToAddNote, appWidgetId,
+                    3, R.id.custom_value_3_button, customValue3);
 
             appWidgetManager.updateAppWidget(appWidgetId, widget);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    private void setupButton(Context context, RemoteViews widget, boolean possibilityToAddNote, int appWidgetId,
+                             int buttonCountInWidget, int buttonControlId, int customValueForTime) {
+        if (customValueForTime != DISABLED_CUSTOM_TIME) {
+            // Get parameter to schedule alarm
+            ReminderIntentionData currentReminderIntentionData = new ReminderIntentionData(Duration.standardMinutes(customValueForTime), null);
+            // Unique request code for this widget button
+            int augAppWidgetId = appWidgetId + 1;
+            int requestCode = ( ( ( NUMBER_OF_BUTTONS * ( augAppWidgetId - 1 ) ) + buttonCountInWidget ) * -1);
+            // Setup pending intent for action
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                    requestCode, ReminderIntentionReceiver.getIntentForIntention(context,
+                            currentReminderIntentionData, possibilityToAddNote, appWidgetId, requestCode),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            widget.setOnClickPendingIntent(buttonControlId, pendingIntent);
+
+            // Layout
+            widget.setTextViewText(buttonControlId,
+                    CustomAlarmTimeValue.getCustomValueShortLabel((int) currentReminderIntentionData.getDuration().getStandardMinutes()));
+            widget.setTextColor(buttonControlId, App.inactiveColor);
+            widget.setViewVisibility(buttonControlId, View.VISIBLE);
+        } else {
+            widget.setViewVisibility(buttonControlId, View.GONE);
+        }
     }
 
 }
