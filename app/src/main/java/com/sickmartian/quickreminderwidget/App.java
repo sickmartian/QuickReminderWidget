@@ -13,13 +13,13 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 
-import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -163,6 +163,15 @@ public class App extends Application {
         }
 
         return initialTime;
+    }
+
+    public static void updateCustomValuesWidget(int widgetId) {
+        Context appContext = App.getAppContext();
+        int[] ids = {widgetId};
+        Intent updateIntent = new Intent();
+        updateIntent.setAction(getAppContext().getString(R.string.custom_values_widget_update_action));
+        updateIntent.putExtra(BucketWidgetProvider.WIDGET_IDS_KEY, ids);
+        appContext.sendBroadcast(updateIntent);
     }
 
     public static void updateBucketWidget(int widgetId) {

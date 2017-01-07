@@ -2,7 +2,6 @@ package com.sickmartian.quickreminderwidget;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,7 +20,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
@@ -177,6 +175,21 @@ public class ReminderEditionActivity extends AppCompatActivity {
         intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         intent.putExtra(JUST_CREATED, false);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        return intent;
+    }
+
+    public static Intent getIntentForEditionWithIntention(Context context,
+                                                          ReminderIntentionData currentReminderIntentionData,
+                                                          int appWidgetId) {
+        // Fill each alarm's intention to the intents
+        Intent intent = new Intent(context, ReminderEditionActivity.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
+                Parcels.wrap(currentReminderIntentionData));
+        extras.putBoolean(JUST_CREATED, false);
+        extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtras(extras);
         return intent;
     }
 

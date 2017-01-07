@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/widget_margin">
+    <ImageButton
+        android:id="@+id/add_custom_reminder"
+        android:src="@drawable/ic_add_black_24dp"
+        android:tint="@color/inactiveColor"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/custom_value_1_button"
+        android:gravity="center"
+        android:textColor="@color/dividerColor"
+        android:textSize="@dimen/widget_row_text_size"
+        android:text="10h"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/custom_value_2_button"
+        android:gravity="center"
+        android:textColor="@color/dividerColor"
+        android:textSize="@dimen/widget_row_text_size"
+        android:text="100'"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/custom_value_3_button"
+        android:gravity="center"
+        android:textColor="@color/dividerColor"
+        android:textSize="@dimen/widget_row_text_size"
+        android:text="10'"
+        android:background="?android:selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+</LinearLayout>

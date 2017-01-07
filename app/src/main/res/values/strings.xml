@@ -1,6 +1,7 @@
 <resources>
     <string translatable="false" name="custom_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATE</string>
     <string translatable="false" name="custom_bucket_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEB</string>
+    <string translatable="false" name="custom_values_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEC</string>
 
     <string name="app_name">Quick Reminder Widget</string>
     <string name="reminder_created_for">Reminder set{0,choice,0#|1# for tomorrow|1&lt; for {1,date}} at {1,time}</string>
@@ -81,4 +82,5 @@
     <string name="quick_reminder_widget_label">Reminder List</string>
     <string name="bucket_widget_label">Time of day</string>
     <string name="alarm_edition_action">Edit</string>
+    <string name="widget_edition_show_plus_label">Show \'Add\' button</string>
 </resources>
