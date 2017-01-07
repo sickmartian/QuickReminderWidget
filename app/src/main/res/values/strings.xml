@@ -3,8 +3,8 @@
     <string translatable="false" name="custom_bucket_widget_update_action">com.sickmartian.quickreminderwidget.action.APPWIDGET_UPDATEB</string>
 
     <string name="app_name">Quick Reminder Widget</string>
-    <string name="reminder_created_for">Reminder set for %1$s</string>
-    <string name="reminder_deleted_for">Reminder for %1$s was deleted</string>
+    <string name="reminder_created_for">Reminder set{0,choice,0#|1# for tomorrow|1&lt; for {1,date}} at {1,time}</string>
+    <string name="reminder_deleted_for">Reminder{0,choice,0#|1# for tomorrow|1&lt; for {1,date}} at {1,time} deleted</string>
 
     <string name="reminder_edition_save">Save</string>
     <string name="reminder_edition_cancel">Cancel</string>
@@ -30,15 +30,30 @@
     <string name="custom_values_40_label">40 Minutes</string>
     <string name="custom_values_45_label">45 Minutes</string>
     <string name="custom_values_60_label">1 Hour</string>
-    <string name="custom_values_90_label">90 Minutes</string>
+    <string name="custom_values_90_label">1 ½ Hours</string>
     <string name="custom_values_120_label">2 Hours</string>
     <string name="custom_values_180_label">3 Hours</string>
     <string name="custom_values_240_label">4 Hours</string>
+    <string name="custom_values_disabled_label_short">NA</string>
+    <string name="custom_values_1_label_short">1\'</string>
+    <string name="custom_values_5_label_short">5\'</string>
+    <string name="custom_values_10_label_short">10\'</string>
+    <string name="custom_values_15_label_short">15\'</string>
+    <string name="custom_values_20_label_short">20\'</string>
+    <string name="custom_values_25_label_short">25\'</string>
+    <string name="custom_values_30_label_short">30\'</string>
+    <string name="custom_values_35_label_short">35\'</string>
+    <string name="custom_values_40_label_short">40\'</string>
+    <string name="custom_values_45_label_short">45\'</string>
+    <string name="custom_values_60_label_short">1 h</string>
+    <string name="custom_values_90_label_short">1½ hs</string>
+    <string name="custom_values_120_label_short">2 hs</string>
+    <string name="custom_values_180_label_short">3 hs</string>
+    <string name="custom_values_240_label_short">4 hs</string>
     <string name="widget_configuration_title">Widget Settings</string>
     <string name="widget_configuration_hour_missing">Enter a value for the hours</string>
     <string name="widget_configuration_hour_invalid">Enter a valid number of hours</string>
     <string name="widget_configuration_hour_above_max">The value for hours is too big. Select up to 168 hours.</string>
-    <string name="custom_value_format">In %1$s\'</string>
     <string name="notification_label">Notifications</string>
     <string name="notification_vibrate_label">Vibrate:</string>
     <string name="notification_custom_label">Use custom notification:</string>
@@ -65,4 +80,5 @@
     <string name="info_activity_label">About</string>
     <string name="quick_reminder_widget_label">Reminder List</string>
     <string name="bucket_widget_label">Time of day</string>
+    <string name="alarm_edition_action">Edit</string>
 </resources>

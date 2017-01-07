@@ -221,8 +221,7 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 }
             } else if (currentReminderIntentionData.getDuration() != null) {
                 itemView.setTextViewText(R.id.item_text,
-                        String.format(getString(R.string.custom_value_format),
-                                Long.toString(currentReminderIntentionData.getDuration().getStandardMinutes())));
+                        CustomAlarmTimeValue.getCustomValueShortLabel((int) currentReminderIntentionData.getDuration().getStandardMinutes()));
                 itemView.setTextColor(R.id.item_text, App.inactiveColor);
                 itemView.setViewVisibility(R.id.note_link, View.GONE);
                 itemView.setViewVisibility(R.id.date_row, View.GONE);

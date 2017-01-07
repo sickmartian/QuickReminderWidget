@@ -77,10 +77,10 @@ public class ReminderEditionActivity extends AppCompatActivity {
                             ? View.VISIBLE :View.GONE);
 
             final Snackbar snackbar = Snackbar.make(rootLayout,
-                    String.format(getString(R.string.reminder_created_for), alarm.getDateTime().toString(App.dateTimeFormatter)),
+                    Utils.getRemindedCreatedForMessage(alarm.getDateTime()),
                     Snackbar.LENGTH_SHORT);
             imDismissingIt = false;
-            snackbar.setAction("Edit", new View.OnClickListener() {
+            snackbar.setAction(R.string.alarm_edition_action, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     imDismissingIt = true;
@@ -335,8 +335,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
             }
             // If new and created fine (no message of fusing or so) show it
             if (createdOk && isNew) {
-                Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
-                        alarm.getDateTime().toString(App.dateTimeFormatter)));
+                Utils.toastTo(Utils.getRemindedCreatedForMessage(alarm.getDateTime()));
             }
             // Recalculate next alarm
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();

@@ -50,16 +50,14 @@ public class ReminderIntentionService extends IntentService {
                         Intent newActivityIntent = stackBuilder.getIntents()[0];
                         startActivity(newActivityIntent);
                     } else {
-                        Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_created_for),
-                                alarmTime.toString(App.dateTimeFormatter)));
+                        Utils.toastTo(Utils.getRemindedCreatedForMessage(alarmTime));
                     }
                 } else {
                     Utils.toastTo(App.getAppContext().getString(R.string.reminder_not_created_exists));
                 }
             } else {
                 intentionData.getAlarm().deleteSync();
-                Utils.toastTo(String.format(App.getAppContext().getString(R.string.reminder_deleted_for),
-                        intentionData.getTime().toString(App.dateTimeFormatter)));
+                Utils.toastTo(Utils.getRemindedDeletedForMessage(intentionData.getTime()));
             }
 
             App.updateAllQuickReminderWidgets();

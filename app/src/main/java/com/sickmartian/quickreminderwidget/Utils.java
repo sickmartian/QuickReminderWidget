@@ -12,7 +12,13 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.view.ContextThemeWrapper;
 import android.widget.Toast;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+
+import java.text.MessageFormat;
 
 /**
  * Created by ***REMOVED*** on 8/12/16.
@@ -86,4 +92,24 @@ public class Utils {
         stackBuilder.addNextIntent(intent);
         return stackBuilder.getPendingIntent(requestCode, flags);
     }
+
+    public static int calculateDaysUntil(LocalDateTime until) {
+        return new Duration(
+                LocalDate.now().toDateTime(LocalTime.MIDNIGHT, DateTimeZone.UTC).getMillis(),
+                until.withTime(0, 0, 0, 0).toDateTime(DateTimeZone.UTC).getMillis())
+                    .toStandardDays().getDays();
+    }
+
+    public static String getRemindedCreatedForMessage(LocalDateTime dateTime) {
+        int daysUntil = calculateDaysUntil(dateTime);
+        return MessageFormat.format(App.getAppContext().getString(R.string.reminder_created_for),
+                daysUntil, dateTime.toDate());
+    }
+
+    public static String getRemindedDeletedForMessage(LocalDateTime dateTime) {
+        int daysUntil = calculateDaysUntil(dateTime);
+        return MessageFormat.format(App.getAppContext().getString(R.string.reminder_deleted_for),
+                daysUntil, dateTime.toDate());
+    }
+
 }
