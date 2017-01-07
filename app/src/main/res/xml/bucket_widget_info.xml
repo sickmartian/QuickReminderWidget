@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="@dimen/widget_width"
     android:minHeight="@dimen/bucket_widget_height"
-    android:minResizeWidth="@dimen/widget_min_width"
+    android:minResizeWidth="@dimen/single_row_widget_min_width"
     android:minResizeHeight="@dimen/bucket_widget_min_height"
     android:updatePeriodMillis="0"
     android:previewImage="@drawable/bucket_widget_preview"

@@ -3,6 +3,7 @@
     <dimen name="widget_margin">0dp</dimen>
     <dimen name="widget_width">110dp</dimen>
     <dimen name="widget_height">220dp</dimen>
+    <dimen name="single_row_widget_min_width">40dp</dimen>
     <dimen name="widget_min_width">110dp</dimen>
     <dimen name="widget_min_height">180dp</dimen>
 
