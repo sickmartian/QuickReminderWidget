@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "qaw.db";

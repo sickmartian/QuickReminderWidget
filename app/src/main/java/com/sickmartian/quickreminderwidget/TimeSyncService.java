@@ -11,7 +11,7 @@ import org.joda.time.LocalDateTime;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/11/16.
+ * Created by sickmartian on 8/11/16.
  */
 public class TimeSyncService extends IntentService {
     private static final int REQUEST_CODE = 5656;

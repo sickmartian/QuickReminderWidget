@@ -23,7 +23,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/11/16.
+ * Created by sickmartian on 8/11/16.
  */
 public class App extends Application {
     public static final String CUSTOM_NOTIFICATION = "CUSTOM_NOTIFICATION";

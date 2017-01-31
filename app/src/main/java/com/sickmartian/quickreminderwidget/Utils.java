@@ -21,7 +21,7 @@ import org.joda.time.LocalTime;
 import java.text.MessageFormat;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 public class Utils {
     public static LocalDateTime getNow() {

@@ -1,7 +1,7 @@
 package com.sickmartian.quickreminderwidget;
 
 /**
- * Created by ***REMOVED*** on 1/6/17.
+ * Created by sickmartian on 1/6/17.
  */
 
 public class CustomAlarmTimeValue {

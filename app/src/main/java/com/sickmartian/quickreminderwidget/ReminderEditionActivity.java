@@ -31,7 +31,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.parceler.Parcels;
 
 /**
- * Created by ***REMOVED*** on 8/14/16.
+ * Created by sickmartian on 8/14/16.
  */
 public class ReminderEditionActivity extends AppCompatActivity {
 

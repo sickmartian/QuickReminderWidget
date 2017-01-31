@@ -12,7 +12,7 @@ import android.widget.RemoteViews;
 import org.joda.time.LocalTime;
 
 /**
- * Created by ***REMOVED*** on 8/9/16.
+ * Created by sickmartian on 8/9/16.
  */
 public class BucketWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_IDS_KEY ="WIDGET_IDS_KEY";

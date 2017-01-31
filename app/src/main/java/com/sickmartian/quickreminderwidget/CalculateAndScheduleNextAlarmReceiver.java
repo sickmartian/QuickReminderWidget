@@ -11,7 +11,7 @@ import java.util.TimeZone;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/13/16.
+ * Created by sickmartian on 8/13/16.
  */
 public class CalculateAndScheduleNextAlarmReceiver extends WakefulBroadcastReceiver {
 

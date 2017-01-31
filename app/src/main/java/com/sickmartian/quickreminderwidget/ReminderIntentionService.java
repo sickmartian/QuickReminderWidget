@@ -14,7 +14,7 @@ import org.parceler.Parcels;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/14/16.
+ * Created by sickmartian on 8/14/16.
  */
 public class ReminderIntentionService extends IntentService {
     public ReminderIntentionService() {

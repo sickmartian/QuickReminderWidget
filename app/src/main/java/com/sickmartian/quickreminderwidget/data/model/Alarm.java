@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 @Parcel
 public class Alarm {

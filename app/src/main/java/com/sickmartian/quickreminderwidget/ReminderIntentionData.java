@@ -9,7 +9,7 @@ import org.parceler.Parcel;
 import java.io.Serializable;
 
 /**
- * Created by ***REMOVED*** on 8/13/16.
+ * Created by sickmartian on 8/13/16.
  */
 @Parcel
 public class ReminderIntentionData {

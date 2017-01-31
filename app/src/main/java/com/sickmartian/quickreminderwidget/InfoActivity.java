@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 /**
- * Created by ***REMOVED*** on 8/15/16.
+ * Created by sickmartian on 8/15/16.
  */
 public class InfoActivity extends AppCompatActivity {
     Toolbar toolbar;

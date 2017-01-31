@@ -9,7 +9,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import org.parceler.Parcels;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 public class ReminderIntentionReceiver extends WakefulBroadcastReceiver {
     public static final String ALARM_INTENTION_DATA = "ALARM_INTENTION_DATA";

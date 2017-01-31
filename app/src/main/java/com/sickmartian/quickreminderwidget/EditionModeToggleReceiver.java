@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 public class EditionModeToggleReceiver extends BroadcastReceiver {
     private static final String CURRENT_EDITION_MODE = "CURRENT_EDITION_MODE";

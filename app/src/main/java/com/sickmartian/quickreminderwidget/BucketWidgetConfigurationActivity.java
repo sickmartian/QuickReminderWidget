@@ -29,7 +29,7 @@ import android.widget.TextView;
 import org.joda.time.LocalTime;
 
 /**
- * Created by ***REMOVED*** on 8/15/16.
+ * Created by sickmartian on 8/15/16.
  */
 public class BucketWidgetConfigurationActivity extends AppCompatActivity {
     private int appWidgetId;

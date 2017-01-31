@@ -33,7 +33,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 /**
- * Created by ***REMOVED*** on 8/15/16.
+ * Created by sickmartian on 8/15/16.
  */
 public class MainActivity extends AppCompatActivity {
     private static final int SOUND_REQUEST_CODE = 3443;

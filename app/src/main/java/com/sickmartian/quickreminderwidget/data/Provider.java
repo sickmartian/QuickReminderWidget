@@ -17,7 +17,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/12/16.
+ * Created by sickmartian on 8/12/16.
  */
 public class Provider extends ContentProvider {
 

@@ -18,7 +18,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Created by ***REMOVED*** on 8/9/16.
+ * Created by sickmartian on 8/9/16.
  */
 public class QuickReminderWidgetService extends RemoteViewsService {
     @Override

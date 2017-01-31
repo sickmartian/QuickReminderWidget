@@ -22,7 +22,7 @@ import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DI
 import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.POSSIBILITY_TO_ADD_NOTE;
 
 /**
- * Created by ***REMOVED*** on 8/9/16.
+ * Created by sickmartian on 8/9/16.
  */
 public class CustomValuesWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_IDS_KEY ="WIDGET_IDS_KEY";

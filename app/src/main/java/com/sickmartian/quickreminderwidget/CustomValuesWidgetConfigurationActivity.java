@@ -10,7 +10,7 @@ import android.widget.Switch;
 import static android.view.View.GONE;
 
 /**
- * Created by ***REMOVED*** on 1/7/17.
+ * Created by sickmartian on 1/7/17.
  */
 
 public class CustomValuesWidgetConfigurationActivity extends QuickReminderWidgetConfigurationActivity {

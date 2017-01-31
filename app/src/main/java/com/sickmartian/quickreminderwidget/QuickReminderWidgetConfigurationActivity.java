@@ -28,7 +28,7 @@ import static com.sickmartian.quickreminderwidget.CustomAlarmTimeValue.customVal
 import static com.sickmartian.quickreminderwidget.CustomAlarmTimeValue.customValueCorrespondingValues;
 
 /**
- * Created by ***REMOVED*** on 8/15/16.
+ * Created by sickmartian on 8/15/16.
  */
 public class QuickReminderWidgetConfigurationActivity extends AppCompatActivity {
     static final int SOUND_REQUEST_CODE = 3443;
