@@ -1,0 +1,2 @@
+# QuickReminderWidget
+QuickReminderWidget Android App
