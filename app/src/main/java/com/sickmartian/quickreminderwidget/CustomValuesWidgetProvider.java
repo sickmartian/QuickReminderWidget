@@ -33,6 +33,7 @@ public class CustomValuesWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra(WIDGET_IDS_KEY)) {
+            //noinspection ConstantConditions
             int[] ids = intent.getExtras().getIntArray(WIDGET_IDS_KEY);
             this.onUpdate(context, AppWidgetManager.getInstance(context), ids);
         } else {

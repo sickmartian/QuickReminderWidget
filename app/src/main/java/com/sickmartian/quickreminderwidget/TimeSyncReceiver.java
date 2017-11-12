@@ -1,5 +1,6 @@
 package com.sickmartian.quickreminderwidget;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -9,7 +10,7 @@ import timber.log.Timber;
 /**
  * Created by sickmartian on 8/11/16.
  */
-public class TimeSyncReceiver extends WakefulBroadcastReceiver {
+public class TimeSyncReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -27,7 +28,8 @@ public class TimeSyncReceiver extends WakefulBroadcastReceiver {
             service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
             service.putExtra(TimeSyncService.AND_DISABLE, !App.areThereWidgets());
         }
-        startWakefulService(context, service);
+
+        context.startService(service);
     }
 
     public static void sendBroadcast(boolean andUpdateWidgets, boolean andDisable) {

@@ -102,7 +102,6 @@ public class NotificationService extends IntentService {
             }
         } finally {
             Timber.d("NotificationService ending");
-            NotificationReceiver.completeWakefulIntent(intent);
         }
     }
 

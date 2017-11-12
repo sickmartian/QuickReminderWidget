@@ -45,6 +45,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
                 Alarm nextAlarm = Alarm.getNextSync(now);
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                assert alarmManager != null;
                 Intent notificationIntent = new Intent(this, NotificationReceiver.class);
                 if (nextAlarm != null) {
                     DateTime alarmTime = nextAlarm.getDateTime().toDateTime();
@@ -81,11 +82,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
             }
         } finally {
             Timber.d("CalculateAndScheduleNextAlarmService ending");
-            if (intent != null) {
-                CalculateAndScheduleNextAlarmReceiver.completeWakefulIntent(intent);
-            }
         }
-
     }
 }
 

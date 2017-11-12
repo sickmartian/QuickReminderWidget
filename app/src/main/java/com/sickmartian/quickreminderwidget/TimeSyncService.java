@@ -29,6 +29,8 @@ public class TimeSyncService extends IntentService {
             LocalDateTime nextTime = App.getInitialTime(App.isThereOneEvery30());
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            assert alarmManager != null;
+
             Intent timeSyncIntent = new Intent(this, TimeSyncReceiver.class);
             timeSyncIntent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
@@ -57,7 +59,6 @@ public class TimeSyncService extends IntentService {
             }
         } finally {
             Timber.d("TimeSyncService ending");
-            TimeSyncReceiver.completeWakefulIntent(intent);
         }
     }
 }

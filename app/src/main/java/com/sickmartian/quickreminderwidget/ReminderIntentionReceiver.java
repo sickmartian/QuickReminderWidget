@@ -1,6 +1,7 @@
 package com.sickmartian.quickreminderwidget;
 
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import org.parceler.Parcels;
 /**
  * Created by sickmartian on 8/12/16.
  */
-public class ReminderIntentionReceiver extends WakefulBroadcastReceiver {
+public class ReminderIntentionReceiver extends BroadcastReceiver {
     public static final String ALARM_INTENTION_DATA = "ALARM_INTENTION_DATA";
     public static final String AND_OFFER_EDITION = "AND_OFFER_EDITION";
 
@@ -35,6 +36,6 @@ public class ReminderIntentionReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, ReminderIntentionService.class);
         serviceIntent.putExtras(intent);
-        startWakefulService(context, serviceIntent);
+        context.startService(serviceIntent);
     }
 }
