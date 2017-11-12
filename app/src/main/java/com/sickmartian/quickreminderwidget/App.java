@@ -39,10 +39,12 @@ public class App extends Application {
     public static final String DEFAULT_EVENING_TIME = "DEFAULT_EVENING_TIME";
     public static final String DEFAULT_NIGHT_TIME = "DEFAULT_NIGHT_TIME";
 
+    public static final String NOTIFICATION_CHANNEL_CREATED = "NOTIFICATION_CHANNEL_CREATED";
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
     private static final String ARE_THERE_30M_WIDGETS = "ARE_THERE_30M_WIDGETS";
+    public static final String NOTIFICATION_CHANNEL_ID = "QAWNWNotificationChannel";
     private static Context context;
     public static DateTimeFormatter timeFormatter;
     public static DateTimeFormatter dateFormatter;
@@ -168,7 +170,7 @@ public class App extends Application {
     public static void updateCustomValuesWidget(int widgetId) {
         Context appContext = App.getAppContext();
         int[] ids = {widgetId};
-        Intent updateIntent = new Intent();
+        Intent updateIntent = new Intent(appContext, CustomValuesWidgetProvider.class);
         updateIntent.setAction(getAppContext().getString(R.string.custom_values_widget_update_action));
         updateIntent.putExtra(BucketWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
@@ -177,7 +179,7 @@ public class App extends Application {
     public static void updateBucketWidget(int widgetId) {
         Context appContext = App.getAppContext();
         int[] ids = {widgetId};
-        Intent updateIntent = new Intent();
+        Intent updateIntent = new Intent(appContext, BucketWidgetProvider.class);
         updateIntent.setAction(getAppContext().getString(R.string.custom_bucket_widget_update_action));
         updateIntent.putExtra(BucketWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
@@ -186,7 +188,7 @@ public class App extends Application {
     public static void updateQuickReminderWidget(int widgetId) {
         Context appContext = App.getAppContext();
         int[] ids = {widgetId};
-        Intent updateIntent = new Intent();
+        Intent updateIntent = new Intent(appContext, QuickReminderWidgetProvider.class);
         updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
         updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
@@ -197,7 +199,7 @@ public class App extends Application {
         AppWidgetManager man = AppWidgetManager.getInstance(appContext);
         int[] ids = man.getAppWidgetIds(
                 new ComponentName(appContext, QuickReminderWidgetProvider.class));
-        Intent updateIntent = new Intent();
+        Intent updateIntent = new Intent(appContext, QuickReminderWidgetProvider.class);
         updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
         updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);

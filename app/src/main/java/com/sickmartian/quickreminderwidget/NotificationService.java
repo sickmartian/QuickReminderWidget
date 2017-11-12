@@ -2,6 +2,7 @@ package com.sickmartian.quickreminderwidget;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -58,25 +61,28 @@ public class NotificationService extends IntentService {
                 }
 
                 // Start with the notification, one for each alarm
-                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, App.NOTIFICATION_CHANNEL_ID);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                assert notificationManager != null;
 
                 int smallIcon = Utils.getAppSmallIcon();
-                setupCustomNotification(this, notificationBuilder);
+                setupCustomNotification(this, notificationManager, notificationBuilder);
 
                 notificationBuilder.setContentTitle(getString(R.string.app_name))
                         .setSmallIcon(smallIcon)
                         .setColor(getResources().getColor(R.color.colorPrimary))
                         .setAutoCancel(true)
-                        .setGroup("QAWNotificationGroup")
-                        .setCategory(Notification.CATEGORY_REMINDER);
+                        .setGroup("QAWNotificationGroup");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    notificationBuilder.setCategory(Notification.CATEGORY_REMINDER);
+                }
 
                 for (Alarm alarm : currentAlarms) {
                     // Customize with note or creation date for each
                     if (alarm.getNote() != null) {
                         String content = String.format(getString(R.string.alarm_content_note_title), alarm.getNote());
                         notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(content))
-                            .setContentText(content);
+                                .setContentText(content);
                     } else {
                         notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
                                 alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
@@ -100,38 +106,51 @@ public class NotificationService extends IntentService {
         }
     }
 
-    public static void setupCustomNotification(Context context, NotificationCompat.Builder notificationBuilder) {
+    public static void setupCustomNotification(Context context, NotificationManager notificationManager, NotificationCompat.Builder notificationBuilder) {
         SharedPreferences widgetPreferences = App.getSharedPreferences();
-        if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION, false)) {
-            int defaults = 0;
-            if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_VIBRATE, true)) {
-                defaults |= Notification.DEFAULT_VIBRATE;
-            }
-            if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_LIGHTS, true)) {
-                defaults |= Notification.DEFAULT_LIGHTS;
-            }
-            String notificationUriString = widgetPreferences.getString(App.CUSTOM_NOTIFICATION_SOUND, null);
-            if (notificationUriString != null) {
-                // Check custom ringtone:
-                try {
-                    RingtoneManager rm = new RingtoneManager(context);
-                    rm.setType(RingtoneManager.TYPE_NOTIFICATION);
-                    Uri loadedRingtoneUri = Uri.parse(notificationUriString);
-                    Ringtone tone = RingtoneManager.getRingtone(context, loadedRingtoneUri);
-                    if (tone != null) {
-                        notificationBuilder.setSound(loadedRingtoneUri);
-                    } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                !widgetPreferences.getBoolean(App.NOTIFICATION_CHANNEL_CREATED, false)) {
+            createChannelIfNeeded(context, notificationManager);
+        } else {
+            if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION, false)) {
+                int defaults = 0;
+                if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_VIBRATE, true)) {
+                    defaults |= Notification.DEFAULT_VIBRATE;
+                }
+                if (widgetPreferences.getBoolean(App.CUSTOM_NOTIFICATION_LIGHTS, true)) {
+                    defaults |= Notification.DEFAULT_LIGHTS;
+                }
+                String notificationUriString = widgetPreferences.getString(App.CUSTOM_NOTIFICATION_SOUND, null);
+                if (notificationUriString != null) {
+                    // Check custom ringtone:
+                    try {
+                        RingtoneManager rm = new RingtoneManager(context);
+                        rm.setType(RingtoneManager.TYPE_NOTIFICATION);
+                        Uri loadedRingtoneUri = Uri.parse(notificationUriString);
+                        Ringtone tone = RingtoneManager.getRingtone(context, loadedRingtoneUri);
+                        if (tone != null) {
+                            notificationBuilder.setSound(loadedRingtoneUri);
+                        } else {
+                            defaults |= Notification.DEFAULT_SOUND;
+                        }
+                    } catch (Exception e) {
                         defaults |= Notification.DEFAULT_SOUND;
                     }
-                } catch (Exception e) {
+                } else {
                     defaults |= Notification.DEFAULT_SOUND;
                 }
+                notificationBuilder.setDefaults(defaults);
             } else {
-                defaults |= Notification.DEFAULT_SOUND;
+                notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
             }
-            notificationBuilder.setDefaults(defaults);
-        } else {
-            notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static void createChannelIfNeeded(Context context, NotificationManager notificationManager) {
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(App.NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.app_name), importance);
+        notificationManager.createNotificationChannel(channel);
     }
 }
