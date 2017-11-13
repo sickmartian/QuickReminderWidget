@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/custom_values_label"
+        android:text="@string/custom_values_label"
+        android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/custom_values_container"
+        android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/custom_value_1_button"
+            app:layout_widthPercent="80%"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/custom_value_2_button"
+            app:layout_widthPercent="80%"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/custom_value_1_button"
+            android:layout_marginTop="@dimen/sibling_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/custom_value_3_button"
+            app:layout_widthPercent="80%"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/custom_value_2_button"
+            android:layout_marginTop="@dimen/sibling_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </android.support.percent.PercentRelativeLayout>
+</LinearLayout>
