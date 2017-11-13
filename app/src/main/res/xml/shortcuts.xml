@@ -18,7 +18,7 @@
     <shortcut
         android:shortcutId="general_configuration"
         android:enabled="true"
-        android:icon="@drawable/bucket_evening"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:shortcutShortLabel="@string/general_configuration_short_label"
         android:shortcutLongLabel="@string/general_configuration_long_label"
         android:shortcutDisabledMessage="@string/general_configuration_disabled_message">

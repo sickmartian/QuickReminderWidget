@@ -92,6 +92,8 @@
         </receiver>
         <service android:name="com.sickmartian.quickreminderwidget.TimeSyncService" />
 
+        <service android:name="com.sickmartian.quickreminderwidget.SnoozeService" />
+
         <receiver android:name=".EditionModeToggleReceiver"/>
         <receiver android:name=".ReminderIntentionReceiver"/>
         <service android:name=".ReminderIntentionService" />

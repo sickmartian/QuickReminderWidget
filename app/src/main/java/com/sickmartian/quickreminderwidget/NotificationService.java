@@ -11,17 +11,23 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import org.joda.time.LocalDateTime;
+import org.parceler.Parcels;
 
 import java.util.List;
 
 import timber.log.Timber;
+
+import static com.sickmartian.quickreminderwidget.App.SNOOZE_1;
+import static com.sickmartian.quickreminderwidget.App.SNOOZE_2;
+import static com.sickmartian.quickreminderwidget.App.SNOOZE_3;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3;
 
 /**
  * Created by sickmartian on 8/13/16.
@@ -77,6 +83,9 @@ public class NotificationService extends IntentService {
                 }
 
                 for (Alarm alarm : currentAlarms) {
+                    int notificationId = App.getNewNotificationId();
+                    setupActions(this, alarm, notificationId, notificationBuilder);
+
                     // Customize with note or creation date for each
                     if (alarm.getNote() != null) {
                         String content = String.format(getString(R.string.alarm_content_note_title), alarm.getNote());
@@ -86,8 +95,6 @@ public class NotificationService extends IntentService {
                         notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
                                 alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
                     }
-
-                    int notificationId = App.getNewNotificationId();
 
                     // Allow the user to re-create the alarm
                     notificationBuilder.setContentIntent(
@@ -102,6 +109,44 @@ public class NotificationService extends IntentService {
         } finally {
             Timber.d("NotificationService ending");
         }
+    }
+
+    private void setupActions(Context context, Alarm alarm, int notificationId,
+                              NotificationCompat.Builder notificationBuilder) {
+        SharedPreferences sharedPref = App.getSharedPreferences();
+
+        int snooze1 = sharedPref.getInt(SNOOZE_1, DEFAULT_CUSTOM_TIME_1);
+        if (snooze1 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
+            setupSnooze(context, alarm, notificationId, notificationBuilder,
+                    snooze1, SnoozeService.SNOOZE_1_REQ_CODE);
+        }
+
+        int snooze2 = sharedPref.getInt(SNOOZE_2, DEFAULT_CUSTOM_TIME_2);
+        if (snooze2 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
+            setupSnooze(context, alarm, notificationId, notificationBuilder,
+                    snooze2, SnoozeService.SNOOZE_2_REQ_CODE);
+        }
+
+        int snooze3 = sharedPref.getInt(SNOOZE_3, DEFAULT_CUSTOM_TIME_3);
+        if (snooze3 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
+            setupSnooze(context, alarm, notificationId, notificationBuilder,
+                    snooze3, SnoozeService.SNOOZE_3_REQ_CODE);
+        }
+    }
+
+    private void setupSnooze(Context context, Alarm alarm, int notificationId,
+                             NotificationCompat.Builder notificationBuilder, int snoozeMinutes, int reqCode) {
+        Intent int1 = new Intent(context, SnoozeService.class);
+        int1.putExtra(SnoozeService.ALARM_PARAMETER, Parcels.wrap(alarm));
+        int1.putExtra(SnoozeService.NOTIFICATION_ID, notificationId);
+        int1.putExtra(SnoozeService.REQUESTED_SNOOZE, reqCode);
+        PendingIntent snooze1Intent = PendingIntent.getService(context,
+                reqCode,
+                int1,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        notificationBuilder.addAction(R.drawable.ic_alarm_on_black_24dp,
+                CustomAlarmTimeValue.getCustomValueShortLabel(snoozeMinutes),
+                snooze1Intent);
     }
 
     public static void setupCustomNotification(Context context, NotificationManager notificationManager, NotificationCompat.Builder notificationBuilder) {

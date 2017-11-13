@@ -39,12 +39,13 @@ public class App extends Application {
     public static final String DEFAULT_EVENING_TIME = "DEFAULT_EVENING_TIME";
     public static final String DEFAULT_NIGHT_TIME = "DEFAULT_NIGHT_TIME";
 
-    public static final String NOTIFICATION_CHANNEL_CREATED = "NOTIFICATION_CHANNEL_CREATED";
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
     private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
     private static final String ARE_THERE_30M_WIDGETS = "ARE_THERE_30M_WIDGETS";
-    public static final String NOTIFICATION_CHANNEL_ID = "QAWNWNotificationChannel";
+    public static final String SNOOZE_1 = "SNOOZE_1";
+    public static final String SNOOZE_2 = "SNOOZE_2";
+    public static final String SNOOZE_3 = "SNOOZE_3";
     private static Context context;
     public static DateTimeFormatter timeFormatter;
     public static DateTimeFormatter dateFormatter;

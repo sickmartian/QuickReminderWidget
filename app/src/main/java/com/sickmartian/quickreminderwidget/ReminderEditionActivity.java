@@ -300,7 +300,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
     }
 
-    private static class SaveAndUpdateWidgetAsyncTask extends AsyncTask<Void, Void, Void>{
+    public static class SaveAndUpdateWidgetAsyncTask extends AsyncTask<Void, Void, Void>{
         Alarm alarm;
         boolean isNew;
         LocalDateTime oldAlarmDT;
