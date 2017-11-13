@@ -20,12 +20,30 @@ import static com.sickmartian.quickreminderwidget.CustomAlarmTimeValue.customVal
  * Created by sickmartian on 8/15/16.
  */
 public class CustomAlarmTimeFragment extends Fragment {
+    private static final String CUSTOM_VALUE_1 = "CUSTOM_VALUE_1";
+    private static final String CUSTOM_VALUE_2 = "CUSTOM_VALUE_2";
+    private static final String CUSTOM_VALUE_3 = "CUSTOM_VALUE_3";
     Button customValue1Button;
     Button customValue2Button;
     Button customValue3Button;
 
     public static CustomAlarmTimeFragment getInstance() {
-        return new CustomAlarmTimeFragment();
+        CustomAlarmTimeFragment fragment = new CustomAlarmTimeFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static CustomAlarmTimeFragment getInstance(int customValue1,
+                                                      int customValue2,
+                                                      int customValue3) {
+        CustomAlarmTimeFragment fragment = new CustomAlarmTimeFragment();
+        Bundle args = new Bundle();
+        args.putInt(CUSTOM_VALUE_1, customValue1);
+        args.putInt(CUSTOM_VALUE_2, customValue2);
+        args.putInt(CUSTOM_VALUE_3, customValue3);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     class ValueHolder {
@@ -56,16 +74,20 @@ public class CustomAlarmTimeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        customValue1Button = (Button) view.findViewById(R.id.custom_value_1_button);
-        customValue2Button = (Button) view.findViewById(R.id.custom_value_2_button);
-        customValue3Button = (Button) view.findViewById(R.id.custom_value_3_button);
+        Bundle args = getArguments();
+        customValue1.setValue(args.getInt(CustomAlarmTimeFragment.CUSTOM_VALUE_1,
+                QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1));
+        customValue2.setValue(args.getInt(CustomAlarmTimeFragment.CUSTOM_VALUE_2,
+                QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2));
+        customValue3.setValue(args.getInt(CustomAlarmTimeFragment.CUSTOM_VALUE_3,
+                QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3));
 
-        customValue1Button.setText(R.string.custom_values_5_label);
-        customValue1.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1);
-        customValue2Button.setText(R.string.custom_values_15_label);
-        customValue2.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2);
-        customValue3Button.setText(R.string.custom_values_disabled_label);
-        customValue3.setValue(QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3);
+        customValue1Button = (Button) view.findViewById(R.id.custom_value_1_button);
+        customValue1Button.setText(CustomAlarmTimeValue.getCustomValueName(customValue1.getValue()));
+        customValue2Button = (Button) view.findViewById(R.id.custom_value_2_button);
+        customValue2Button.setText(CustomAlarmTimeValue.getCustomValueName(customValue2.getValue()));
+        customValue3Button = (Button) view.findViewById(R.id.custom_value_3_button);
+        customValue3Button.setText(CustomAlarmTimeValue.getCustomValueName(customValue3.getValue()));
         showOrHideButtons();
         customValue1Button.setOnClickListener(new ValueButtonClickHandler(getActivity(),
                 customValue1Button, customValue1));

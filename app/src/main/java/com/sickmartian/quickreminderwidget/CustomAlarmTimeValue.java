@@ -52,18 +52,31 @@ public class CustomAlarmTimeValue {
     };
 
     public static String getCustomValueShortLabel(int minutes) {
-        int foundIndex = -1;
-        for (int i = 0; i < customValueCorrespondingValues.length; i++) {
-            if (customValueCorrespondingValues[i] == minutes) {
-                foundIndex = i;
-                break;
-            }
-        }
+        int foundIndex = findIndexOf(minutes);
         if (foundIndex > 0) {
             return App.getAppContext().getString(customValueCorrespondingShort[foundIndex]);
         } else {
             return "";
         }
+    }
+
+    public static String getCustomValueName(int minutes) {
+        int foundIndex = findIndexOf(minutes);
+        if (foundIndex >= 0) {
+            return App.getAppContext().getString(customValueCorrespondingNames[foundIndex]);
+        } else {
+            return "";
+        }
+    }
+
+    private static int findIndexOf(int minutes) {
+        for (int i = 0; i < customValueCorrespondingValues.length; i++) {
+            if (customValueCorrespondingValues[i] == minutes) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 }

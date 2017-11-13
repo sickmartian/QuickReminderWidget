@@ -1,10 +1,9 @@
 package com.sickmartian.quickreminderwidget;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -12,25 +11,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
+
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_1;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_2;
+import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DEFAULT_CUSTOM_TIME_3;
 
 /**
  * Created by sickmartian on 8/15/16.
@@ -49,10 +43,29 @@ public class MainActivity extends AppCompatActivity {
 
     String ringtoneSelectedValue;
 
+    protected CustomAlarmTimeFragment customAlarmTimeFragment;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        if (savedInstanceState == null) {
+            SharedPreferences sharedPref = App.getSharedPreferences();
+            customAlarmTimeFragment = CustomAlarmTimeFragment.getInstance(
+                    sharedPref.getInt(App.SNOOZE_1, DEFAULT_CUSTOM_TIME_1),
+                    sharedPref.getInt(App.SNOOZE_2, DEFAULT_CUSTOM_TIME_2),
+                    sharedPref.getInt(App.SNOOZE_3, DEFAULT_CUSTOM_TIME_3)
+            );
+            getSupportFragmentManager().beginTransaction().add(R.id.custom_alarm_fragment_container,
+                    customAlarmTimeFragment,
+                    CustomAlarmTimeFragment.class.toString()
+            ).commit();
+        } else {
+            customAlarmTimeFragment = (CustomAlarmTimeFragment) getSupportFragmentManager()
+                    .findFragmentByTag(CustomAlarmTimeFragment.class.toString());
+        }
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // Set toolbar and navigation
@@ -98,13 +111,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         saveFAB.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ApplySharedPref")
             @Override
             public void onClick(View view) {
+                CustomAlarmTimeFragment.Times times = customAlarmTimeFragment.getTimes();
+
                 App.getSharedPreferences()
                         .edit()
                         .putBoolean(App.CUSTOM_NOTIFICATION, customNotification.isChecked())
                         .putBoolean(App.CUSTOM_NOTIFICATION_VIBRATE, vibrate.isChecked())
                         .putBoolean(App.CUSTOM_NOTIFICATION_LIGHTS, light.isChecked())
+                        .putInt(App.SNOOZE_1, times.getV1())
+                        .putInt(App.SNOOZE_2, times.getV2())
+                        .putInt(App.SNOOZE_3, times.getV3())
                         .putString(App.CUSTOM_NOTIFICATION_SOUND, ringtoneSelectedValue)
                         .commit();
 
@@ -202,20 +221,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startActivityForResult(intent, SOUND_REQUEST_CODE);
-    }
-
-    protected void showErrorText(String errorText) {
-        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-        snackbarText.append(errorText).setSpan(new ForegroundColorSpan(
-                        ActivityCompat.getColor(this, R.color.colorAccent)),
-                0, errorText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        getSnackbar(snackbarText, Snackbar.LENGTH_LONG).show();
-    }
-
-    public Snackbar getSnackbar(CharSequence text, int duration) {
-        CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
-        assert rootLayout != null;
-        return Snackbar.make(rootLayout, text, duration);
     }
 
 }
