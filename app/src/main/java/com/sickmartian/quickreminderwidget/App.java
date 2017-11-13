@@ -40,8 +40,6 @@ public class App extends Application {
     public static final String DEFAULT_NIGHT_TIME = "DEFAULT_NIGHT_TIME";
 
     private static final String ARE_THERE_WIDGETS = "ARE_THERE_WIDGETS";
-    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
     private static final String ARE_THERE_30M_WIDGETS = "ARE_THERE_30M_WIDGETS";
     public static final String SNOOZE_1 = "SNOOZE_1";
     public static final String SNOOZE_2 = "SNOOZE_2";
@@ -204,15 +202,6 @@ public class App extends Application {
         updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
         updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
-    }
-
-    public static int getNewNotificationId() {
-        int notificationId = getSharedPreferences().getInt(NOTIFICATION_ID, NOTIFICATION_ID_INITIAL_VALUE);
-        if (notificationId == Integer.MAX_VALUE) {
-            notificationId = NOTIFICATION_ID_INITIAL_VALUE;
-        }
-        getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
-        return notificationId;
     }
 
     public static SharedPreferences getWidgetSharedPref(int appWidgetId) {

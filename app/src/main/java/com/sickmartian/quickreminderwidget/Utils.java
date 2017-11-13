@@ -28,6 +28,12 @@ public class Utils {
         return LocalDateTime.now();
     }
 
+    public static LocalDateTime saneNowPlusDurationForAlarms(Duration duration) {
+        return Utils.getNow().plus(duration)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
+    }
+
     public static int getAppSmallIcon() {
         int smallIcon = R.drawable.ic_launcher;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -335,6 +335,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
             if (createdOk && isNew) {
                 Utils.toastTo(Utils.getRemindedCreatedForMessage(alarm.getDateTime()));
             }
+
             // Recalculate next alarm
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
         }

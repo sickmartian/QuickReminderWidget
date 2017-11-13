@@ -85,10 +85,6 @@
     <string name="widget_edition_show_plus_label">Show \'Add\' button</string>
     <string name="custom_values_widget_label">Pronto</string>
 
-    <string name="general_configuration_short_label">Configure</string>
-    <string name="general_configuration_long_label">Configure</string>
-    <string name="general_configuration_disabled_message">Configure (disabled)</string>
-
     <string name="create_reminder_short_label">Create</string>
     <string name="create_reminder_long_label">Create Reminder</string>
     <string name="create_reminder_disabled_message">Create (disabled)</string>

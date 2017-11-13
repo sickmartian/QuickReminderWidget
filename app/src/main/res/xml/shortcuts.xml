@@ -8,24 +8,12 @@
         android:shortcutLongLabel="@string/create_reminder_long_label"
         android:shortcutDisabledMessage="@string/create_reminder_disabled_message">
         <intent
-            android:action="android.intent.action.MAIN"
+            android:action=".ReminderEditionActivity"
+            android:launchMode="singleInstance"
             android:targetPackage="com.sickmartian.quickreminderwidget"
             android:targetClass="com.sickmartian.quickreminderwidget.ReminderEditionActivity">
             <extra android:name="JUST_CREATED" android:value="false" />
         </intent>
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
-    <shortcut
-        android:shortcutId="general_configuration"
-        android:enabled="true"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:shortcutShortLabel="@string/general_configuration_short_label"
-        android:shortcutLongLabel="@string/general_configuration_long_label"
-        android:shortcutDisabledMessage="@string/general_configuration_disabled_message">
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetPackage="com.sickmartian.quickreminderwidget"
-            android:targetClass="com.sickmartian.quickreminderwidget.MainActivity" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>

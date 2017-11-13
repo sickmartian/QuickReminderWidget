@@ -83,7 +83,7 @@ public class NotificationService extends IntentService {
                 }
 
                 for (Alarm alarm : currentAlarms) {
-                    int notificationId = App.getNewNotificationId();
+                    int notificationId = getUniqueId();
                     setupActions(this, alarm, notificationId, notificationBuilder);
 
                     // Customize with note or creation date for each
@@ -114,34 +114,30 @@ public class NotificationService extends IntentService {
     private void setupActions(Context context, Alarm alarm, int notificationId,
                               NotificationCompat.Builder notificationBuilder) {
         SharedPreferences sharedPref = App.getSharedPreferences();
-
         int snooze1 = sharedPref.getInt(SNOOZE_1, DEFAULT_CUSTOM_TIME_1);
         if (snooze1 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
-            setupSnooze(context, alarm, notificationId, notificationBuilder,
-                    snooze1, SnoozeService.SNOOZE_1_REQ_CODE);
+            setupSnooze(context, alarm, notificationId, notificationBuilder, snooze1);
         }
 
         int snooze2 = sharedPref.getInt(SNOOZE_2, DEFAULT_CUSTOM_TIME_2);
         if (snooze2 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
-            setupSnooze(context, alarm, notificationId, notificationBuilder,
-                    snooze2, SnoozeService.SNOOZE_2_REQ_CODE);
+            setupSnooze(context, alarm, notificationId, notificationBuilder, snooze2);
         }
 
         int snooze3 = sharedPref.getInt(SNOOZE_3, DEFAULT_CUSTOM_TIME_3);
         if (snooze3 != QuickReminderWidgetProvider.DISABLED_CUSTOM_TIME) {
-            setupSnooze(context, alarm, notificationId, notificationBuilder,
-                    snooze3, SnoozeService.SNOOZE_3_REQ_CODE);
+            setupSnooze(context, alarm, notificationId, notificationBuilder, snooze3);
         }
     }
 
     private void setupSnooze(Context context, Alarm alarm, int notificationId,
-                             NotificationCompat.Builder notificationBuilder, int snoozeMinutes, int reqCode) {
+                             NotificationCompat.Builder notificationBuilder, int snoozeMinutes) {
         Intent int1 = new Intent(context, SnoozeService.class);
         int1.putExtra(SnoozeService.ALARM_PARAMETER, Parcels.wrap(alarm));
-        int1.putExtra(SnoozeService.NOTIFICATION_ID, notificationId);
-        int1.putExtra(SnoozeService.REQUESTED_SNOOZE, reqCode);
+        int1.putExtra(NOTIFICATION_ID, notificationId);
+        int1.putExtra(SnoozeService.REQUESTED_SNOOZE, snoozeMinutes);
         PendingIntent snooze1Intent = PendingIntent.getService(context,
-                reqCode,
+                getUniqueId(),
                 int1,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         notificationBuilder.addAction(R.drawable.ic_alarm_on_black_24dp,
@@ -182,5 +178,16 @@ public class NotificationService extends IntentService {
         } else {
             notificationBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
+    }
+
+    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+    private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
+    private static int getUniqueId() {
+        int notificationId = App.getSharedPreferences().getInt(NOTIFICATION_ID, NOTIFICATION_ID_INITIAL_VALUE);
+        if (notificationId == Integer.MAX_VALUE) {
+            notificationId = NOTIFICATION_ID_INITIAL_VALUE;
+        }
+        App.getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
+        return notificationId;
     }
 }
