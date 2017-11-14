@@ -26,7 +26,11 @@
 
         <activity android:name=".ReminderEditionActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/AppTheme.HiddenActivityForPopup" />
+            android:theme="@style/AppTheme.HiddenActivityForPopup">
+            <intent-filter>
+                <action android:name="com.sickmartian.quickreminderwidget.action.CREATE_BY_SHORTCUT" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".QuickReminderWidgetConfigurationActivity"
             android:excludeFromRecents="true">

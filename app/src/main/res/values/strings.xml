@@ -95,5 +95,4 @@
 
     <string name="create_reminder_short_label">Create</string>
     <string name="create_reminder_long_label">Create Reminder</string>
-    <string name="create_reminder_disabled_message">Create (disabled)</string>
 </resources>
