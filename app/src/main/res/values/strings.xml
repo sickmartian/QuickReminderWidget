@@ -35,6 +35,10 @@
     <string name="custom_values_120_label">2 Hours</string>
     <string name="custom_values_180_label">3 Hours</string>
     <string name="custom_values_240_label">4 Hours</string>
+    <string name="custom_values_360_label">6 Hours</string>
+    <string name="custom_values_720_label">12 Hours</string>
+    <string name="custom_values_1440_label">1 Day</string>
+    <string name="custom_values_2880_label">2 Days</string>
     <string name="custom_values_disabled_label_short">NA</string>
     <string name="custom_values_1_label_short">1\'</string>
     <string name="custom_values_5_label_short">5\'</string>
@@ -51,6 +55,10 @@
     <string name="custom_values_120_label_short">2 hs</string>
     <string name="custom_values_180_label_short">3 hs</string>
     <string name="custom_values_240_label_short">4 hs</string>
+    <string name="custom_values_360_label_short">6 hs</string>
+    <string name="custom_values_720_label_short">12 hs</string>
+    <string name="custom_values_1440_label_short">1D</string>
+    <string name="custom_values_2880_label_short">2D</string>
     <string name="widget_configuration_title">Widget Settings</string>
     <string name="widget_configuration_hour_missing">Enter a value for the hours</string>
     <string name="widget_configuration_hour_invalid">Enter a valid number of hours</string>
