@@ -140,7 +140,7 @@ public class NotificationService extends IntentService {
                 getUniqueId(),
                 int1,
                 PendingIntent.FLAG_CANCEL_CURRENT);
-        notificationBuilder.addAction(R.drawable.ic_alarm_on_black_24dp,
+        notificationBuilder.addAction(R.drawable.ic_snooze_black_24dp,
                 CustomAlarmTimeValue.getCustomValueShortLabel(snoozeMinutes),
                 snooze1Intent);
     }
