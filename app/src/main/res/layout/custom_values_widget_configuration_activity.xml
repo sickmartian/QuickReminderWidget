@@ -83,9 +83,18 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/custom_values_label"
+                    android:text="@string/custom_values_label"
+                    android:layout_below="@id/notes_container"
+                    android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <FrameLayout
                     android:id="@+id/custom_alarm_fragment_container"
-                    android:layout_below="@id/notes_container"
+                    android:layout_below="@id/custom_values_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

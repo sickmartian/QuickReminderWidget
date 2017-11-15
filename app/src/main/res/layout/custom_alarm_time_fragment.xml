@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/custom_values_label"
-        android:text="@string/custom_values_label"
-        android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
-        android:textSize="16sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <android.support.percent.PercentRelativeLayout
         android:id="@+id/custom_values_container"
         android:layout_marginTop="@dimen/sibling_big_horizontal_margin"
