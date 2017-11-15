@@ -24,12 +24,18 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
+        <activity android:name=".ReminderEditionActivityForShortcut"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.sickmartian.quickreminderwidget.action.CREATE_BY_SHORTCUT" />
+                <action android:name="com.sickmartian.quickreminderwidget.action.EDIT_BY_SHORTCUT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".ReminderEditionActivity"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.HiddenActivityForPopup">
-            <intent-filter>
-                <action android:name="com.sickmartian.quickreminderwidget.action.CREATE_BY_SHORTCUT" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".QuickReminderWidgetConfigurationActivity"

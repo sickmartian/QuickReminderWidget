@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -36,6 +37,7 @@ import org.parceler.Parcels;
 public class ReminderEditionActivity extends AppCompatActivity {
 
     private static final String ALARM = "ALARM";
+    private static final String ALARM_FROM_SHORTCUT = "ALARM_FROM_SHORTCUT_OMFG";
     private static final String TIME_FOR_CREATION = "TIME_FOR_CREATION";
     private static final String JUST_CREATED = "JUST_CREATED";
     private static final String IS_RECREATION = "IS_RECREATION";
@@ -46,7 +48,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder_edition_activity);
 
-        final Alarm alarm = Parcels.unwrap(getIntent().getParcelableExtra(ALARM));
+        final Alarm alarm = determineAlarmFromIntent(getIntent());
 
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
         assert rootLayout != null;
@@ -75,7 +77,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                             ? View.VISIBLE :View.GONE);
 
             final Snackbar snackbar = Snackbar.make(rootLayout,
-                    Utils.getRemindedCreatedForMessage(alarm.getDateTime()),
+                    Utils.getFormattedMessageForDate(alarm.getDateTime(), R.string.reminder_created_for),
                     Snackbar.LENGTH_SHORT);
             imDismissingIt = false;
             snackbar.setAction(R.string.alarm_edition_action, new View.OnClickListener() {
@@ -113,6 +115,21 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
     }
 
+    private Alarm determineAlarmFromIntent(Intent intent) {
+        Alarm alarm = null;
+        Parcelable alarmPar = intent.getParcelableExtra(ALARM);
+        if (alarmPar != null) {
+            alarm = Parcels.unwrap(alarmPar);
+        } else {
+            String serializedAlarm = intent.getStringExtra(ALARM_FROM_SHORTCUT);
+            if (serializedAlarm != null) {
+                alarm = Alarm.fromSerializedString(serializedAlarm);
+            }
+        }
+
+        return alarm;
+    }
+
     private void triggerEditionDialog(Alarm alarm, boolean isRecreation, LocalTime timeForCreate) {
         ContextThemeWrapper wrappedContext = new ContextThemeWrapper(ReminderEditionActivity.this,
                 R.style.AppTheme);
@@ -145,6 +162,15 @@ public class ReminderEditionActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(ReminderEditionActivity.ALARM, Parcels.wrap(alarm));
         intent.putExtra(IS_RECREATION, true);
+        intent.putExtra(JUST_CREATED, false);
+        return intent;
+    }
+
+    public static Intent getIntentForEditionInShortcut(Alarm alarm) {
+        Intent intent = new Intent(App.getAppContext(), ReminderEditionActivityForShortcut.class);
+        intent.setAction("com.sickmartian.quickreminderwidget.action.EDIT_BY_SHORTCUT");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(ReminderEditionActivity.ALARM_FROM_SHORTCUT, alarm.serializeToString());
         intent.putExtra(JUST_CREATED, false);
         return intent;
     }
@@ -333,7 +359,8 @@ public class ReminderEditionActivity extends AppCompatActivity {
             }
             // If new and created fine (no message of fusing or so) show it
             if (createdOk && isNew) {
-                Utils.toastTo(Utils.getRemindedCreatedForMessage(alarm.getDateTime()));
+                Utils.toastTo(Utils.getFormattedMessageForDate(alarm.getDateTime(),
+                        R.string.reminder_created_for));
             }
 
             // Recalculate next alarm

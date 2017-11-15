@@ -34,6 +34,7 @@ import static com.sickmartian.quickreminderwidget.QuickReminderWidgetProvider.DE
  */
 public class NotificationService extends IntentService {
     public static final String NOTIFICATION = "ALARM_NOTIFICATION";
+    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
 
     public NotificationService() {
         super(NotificationService.class.toString());
@@ -83,17 +84,17 @@ public class NotificationService extends IntentService {
                 }
 
                 for (Alarm alarm : currentAlarms) {
-                    int notificationId = getUniqueId();
+                    int notificationId = Utils.getSharedUniqueId();
                     setupActions(this, alarm, notificationId, notificationBuilder);
 
                     // Customize with note or creation date for each
-                    if (alarm.getNote() != null) {
+                    if (alarm.getNote() == null || alarm.getNote().isEmpty()) {
+                        notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
+                                alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
+                    } else {
                         String content = String.format(getString(R.string.alarm_content_note_title), alarm.getNote());
                         notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                                 .setContentText(content);
-                    } else {
-                        notificationBuilder.setContentText(String.format(getString(R.string.alarm_content_creation_title),
-                                alarm.getCreationDateTime().toString(App.dateTimeFormatter)));
                     }
 
                     // Allow the user to re-create the alarm
@@ -137,7 +138,7 @@ public class NotificationService extends IntentService {
         int1.putExtra(NOTIFICATION_ID, notificationId);
         int1.putExtra(SnoozeService.REQUESTED_SNOOZE, snoozeMinutes);
         PendingIntent snooze1Intent = PendingIntent.getService(context,
-                getUniqueId(),
+                Utils.getSharedUniqueId(),
                 int1,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         notificationBuilder.addAction(R.drawable.ic_snooze_black_24dp,
@@ -180,14 +181,4 @@ public class NotificationService extends IntentService {
         }
     }
 
-    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
-    private static int getUniqueId() {
-        int notificationId = App.getSharedPreferences().getInt(NOTIFICATION_ID, NOTIFICATION_ID_INITIAL_VALUE);
-        if (notificationId == Integer.MAX_VALUE) {
-            notificationId = NOTIFICATION_ID_INITIAL_VALUE;
-        }
-        App.getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
-        return notificationId;
-    }
 }

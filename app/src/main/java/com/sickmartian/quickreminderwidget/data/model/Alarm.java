@@ -26,9 +26,26 @@ public class Alarm {
 
     public Alarm(Cursor cursor) {
         dateTime = LocalDateTime.parse(cursor.getString(0));
-        creationDateTime =LocalDateTime.parse(cursor.getString(1));
+        creationDateTime = LocalDateTime.parse(cursor.getString(1));
         note = cursor.getString(2);
         sourceWidgetId = cursor.getInt(3);
+    }
+
+    public static Alarm fromSerializedString(String serializedString) {
+        String[] serializedAlarmSections = serializedString.split(";");
+        Alarm alarm = new Alarm();
+        alarm.dateTime = LocalDateTime.parse(serializedAlarmSections[0]);
+        alarm.creationDateTime = serializedAlarmSections[1].isEmpty() ? null : LocalDateTime.parse(serializedAlarmSections[1]);
+        alarm.note = serializedAlarmSections[2];
+        alarm.sourceWidgetId = Integer.parseInt(serializedAlarmSections[3]);
+        return alarm;
+    }
+
+    public String serializeToString() {
+        return dateTime.toString() + ";" +
+                (creationDateTime == null ? "" : creationDateTime.toString()) + ";" +
+                (note == null ? "" : note) + ";" +
+                Integer.toString(sourceWidgetId);
     }
 
     public class Fields {

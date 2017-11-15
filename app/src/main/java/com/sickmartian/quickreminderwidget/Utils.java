@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.StringRes;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.view.ContextThemeWrapper;
 import android.widget.Toast;
@@ -106,16 +107,22 @@ public class Utils {
                     .toStandardDays().getDays();
     }
 
-    public static String getRemindedCreatedForMessage(LocalDateTime dateTime) {
-        int daysUntil = calculateDaysUntil(dateTime);
-        return MessageFormat.format(App.getAppContext().getString(R.string.reminder_created_for),
-                daysUntil, dateTime.toDate());
+    public static String getFormattedMessageForDate(LocalDateTime localDateTime,
+                                                    @StringRes int stringRed) {
+        int daysUntil = calculateDaysUntil(localDateTime);
+        return MessageFormat.format(App.getAppContext().getString(stringRed),
+                daysUntil, localDateTime.toDate());
     }
 
-    public static String getRemindedDeletedForMessage(LocalDateTime dateTime) {
-        int daysUntil = calculateDaysUntil(dateTime);
-        return MessageFormat.format(App.getAppContext().getString(R.string.reminder_deleted_for),
-                daysUntil, dateTime.toDate());
+    private static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+    private static final int NOTIFICATION_ID_INITIAL_VALUE = -1;
+    public static int getSharedUniqueId() {
+        int notificationId = App.getSharedPreferences().getInt(NOTIFICATION_ID, NOTIFICATION_ID_INITIAL_VALUE);
+        if (notificationId == Integer.MAX_VALUE) {
+            notificationId = NOTIFICATION_ID_INITIAL_VALUE;
+        }
+        App.getSharedPreferences().edit().putInt(NOTIFICATION_ID, ++notificationId).commit();
+        return notificationId;
     }
 
 }

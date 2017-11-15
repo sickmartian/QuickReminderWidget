@@ -8,7 +8,7 @@
         <intent
             android:action="com.sickmartian.quickreminderwidget.action.CREATE_BY_SHORTCUT"
             android:targetPackage="com.sickmartian.quickreminderwidget"
-            android:targetClass="com.sickmartian.quickreminderwidget.ReminderEditionActivity">
+            android:targetClass="com.sickmartian.quickreminderwidget.ReminderEditionActivityForShortcut">
             <extra android:name="JUST_CREATED" android:value="false" />
         </intent>
         <categories android:name="android.shortcut.conversation" />

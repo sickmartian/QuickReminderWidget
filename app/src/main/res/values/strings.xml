@@ -95,4 +95,7 @@
 
     <string name="create_reminder_short_label">Create</string>
     <string name="create_reminder_long_label">Create Reminder</string>
+
+    <string name="edit_shortcut_action_long">Edit reminder {0,choice,0#|0&lt;{1,date,short}/}{1,time,short}</string>
+    <string name="edit_shortcut_action_short">{0,choice,0#|0&lt;{1,date,short}/}{1,time,short}</string>
 </resources>
