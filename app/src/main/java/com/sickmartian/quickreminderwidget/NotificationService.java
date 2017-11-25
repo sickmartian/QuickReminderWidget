@@ -57,11 +57,11 @@ public class NotificationService extends IntentService {
                 Alarm lastAlarm = currentAlarms.get(currentAlarms.size() - 1);
                 Alarm.deleteUpTo(lastAlarm.getDateTime());
 
-                // Update widget if we just removed a custom alarm
+                // Update presentation if we just removed a custom alarm
                 // because the TimeSync is not gonna run for us
                 for (Alarm currentAlarm : currentAlarms) {
                     if (currentAlarm.isCustomDateTime(App.isThereOneEvery30())) {
-                        App.updateAllQuickReminderWidgets();
+                        App.updatePresentation();
                         break;
                     }
                 }

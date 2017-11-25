@@ -3,7 +3,6 @@ package com.sickmartian.quickreminderwidget;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.WakefulBroadcastReceiver;
 
 import timber.log.Timber;
 
@@ -20,12 +19,12 @@ public class TimeSyncReceiver extends BroadcastReceiver {
         }
         Intent service = new Intent(context, TimeSyncService.class);
         if (intent != null) {
-            service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS,
-                    intent.getBooleanExtra(TimeSyncService.AND_UPDATE_WIDGETS, true));
+            service.putExtra(TimeSyncService.AND_UPDATE_PRESENTATION,
+                    intent.getBooleanExtra(TimeSyncService.AND_UPDATE_PRESENTATION, true));
             service.putExtra(TimeSyncService.AND_DISABLE,
                     intent.getBooleanExtra(TimeSyncService.AND_DISABLE, !App.areThereWidgets()));
         } else {
-            service.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
+            service.putExtra(TimeSyncService.AND_UPDATE_PRESENTATION, true);
             service.putExtra(TimeSyncService.AND_DISABLE, !App.areThereWidgets());
         }
 
@@ -34,7 +33,7 @@ public class TimeSyncReceiver extends BroadcastReceiver {
 
     public static void sendBroadcast(boolean andUpdateWidgets, boolean andDisable) {
         Intent intent = new Intent(App.getAppContext(), TimeSyncReceiver.class);
-        intent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, andUpdateWidgets);
+        intent.putExtra(TimeSyncService.AND_UPDATE_PRESENTATION, andUpdateWidgets);
         intent.putExtra(TimeSyncService.AND_DISABLE, andDisable);
         App.getAppContext().sendBroadcast(intent);
     }

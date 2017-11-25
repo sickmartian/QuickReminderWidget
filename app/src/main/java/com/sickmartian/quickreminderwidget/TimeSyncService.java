@@ -15,7 +15,7 @@ import timber.log.Timber;
  */
 public class TimeSyncService extends IntentService {
     private static final int REQUEST_CODE = 5656;
-    public static final String AND_UPDATE_WIDGETS = "AND_UPDATE_WIDGETS";
+    public static final String AND_UPDATE_PRESENTATION = "AND_UPDATE_PRESENTATION";
     public static final String AND_DISABLE = "AND_DISABLE";
 
     public TimeSyncService() {
@@ -32,7 +32,7 @@ public class TimeSyncService extends IntentService {
             assert alarmManager != null;
 
             Intent timeSyncIntent = new Intent(this, TimeSyncReceiver.class);
-            timeSyncIntent.putExtra(TimeSyncService.AND_UPDATE_WIDGETS, true);
+            timeSyncIntent.putExtra(TimeSyncService.AND_UPDATE_PRESENTATION, true);
             PendingIntent timeSyncIntentPI = PendingIntent.getBroadcast(this,
                     TimeSyncService.REQUEST_CODE, timeSyncIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             // If we are disabling, disable
@@ -53,9 +53,9 @@ public class TimeSyncService extends IntentService {
                 }
             }
 
-            if (intent.getBooleanExtra(AND_UPDATE_WIDGETS, false)) {
+            if (intent.getBooleanExtra(AND_UPDATE_PRESENTATION, false)) {
                 Timber.i("Updating Widgets");
-                App.updateAllQuickReminderWidgets();
+                App.updatePresentation();
             }
         } finally {
             Timber.d("TimeSyncService ending");

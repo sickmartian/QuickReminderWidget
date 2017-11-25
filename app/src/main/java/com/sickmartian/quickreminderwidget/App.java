@@ -6,18 +6,28 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
@@ -202,6 +212,42 @@ public class App extends Application {
         updateIntent.setAction(getAppContext().getString(R.string.custom_widget_update_action));
         updateIntent.putExtra(QuickReminderWidgetProvider.WIDGET_IDS_KEY, ids);
         appContext.sendBroadcast(updateIntent);
+    }
+
+    public static void updatePresentation() {
+        updateAllQuickReminderWidgets();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            handleShortcuts(App.getAppContext());
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private static void handleShortcuts(Context context) {
+        ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
+        assert shortcutManager != null;
+
+        List<Alarm> nextAlarms = Alarm.getNextsSync(LocalDateTime.now());
+        if (nextAlarms.isEmpty()) {
+            shortcutManager.removeAllDynamicShortcuts();
+            return;
+        }
+
+        List<ShortcutInfo> shortcuts = new ArrayList<>();
+        for (Alarm nextAlarm : nextAlarms) {
+            shortcuts.add(new ShortcutInfo.Builder(context, nextAlarm.getDateTime().toString())
+                    .setShortLabel(Utils.getFormattedMessageForDate(nextAlarm.getDateTime(),
+                            R.string.edit_shortcut_action_short))
+                    .setLongLabel(Utils.getFormattedMessageForDate(nextAlarm.getDateTime(),
+                            R.string.edit_shortcut_action_long))
+                    .setIcon(Icon.createWithResource(context, R.drawable.ic_create_black_24dp))
+                    .setIntent(ReminderEditionActivity.getIntentForEditionInShortcut(nextAlarm))
+                    .build());
+            if (shortcuts.size() == 3) {
+                break;
+            }
+        }
+
+        shortcutManager.setDynamicShortcuts(shortcuts);
     }
 
     public static SharedPreferences getWidgetSharedPref(int appWidgetId) {

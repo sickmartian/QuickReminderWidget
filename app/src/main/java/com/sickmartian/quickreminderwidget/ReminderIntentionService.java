@@ -55,7 +55,7 @@ public class ReminderIntentionService extends IntentService {
             Utils.toastTo(Utils.getFormattedMessageForDate(intentionData.getTime(), R.string.reminder_deleted_for));
         }
 
-        App.updateAllQuickReminderWidgets();
+        App.updatePresentation();
         CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
     }
 

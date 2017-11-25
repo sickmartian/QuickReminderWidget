@@ -379,7 +379,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
                     createOrMerge(alarm, isNew);
                 }
             }
-            App.updateAllQuickReminderWidgets();
+            App.updatePresentation();
             return null;
         }
     }
@@ -395,7 +395,7 @@ public class ReminderEditionActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             alarm.deleteSync();
             CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
-            App.updateAllQuickReminderWidgets();
+            App.updatePresentation();
             return null;
         }
     }
