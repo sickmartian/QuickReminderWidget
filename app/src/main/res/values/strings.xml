@@ -100,4 +100,5 @@
     <string name="edit_shortcut_action_short">{0,choice,0#|0&lt;{1,date,short} @ }{1,time,short}</string>
 
     <string name="custom_snooze_label">Custom snooze</string>
+    <string name="alarm_falls_into_dst">Alarm can\'t be created as it will fall under DST gap</string>
 </resources>

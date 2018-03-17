@@ -13,13 +13,17 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.view.ContextThemeWrapper;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
+import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import java.text.MessageFormat;
+
+import timber.log.Timber;
 
 /**
  * Created by sickmartian on 8/12/16.
@@ -27,12 +31,6 @@ import java.text.MessageFormat;
 public class Utils {
     public static LocalDateTime getNow() {
         return LocalDateTime.now();
-    }
-
-    public static LocalDateTime saneNowPlusDurationForAlarms(Duration duration) {
-        return Utils.getNow().plus(duration)
-                .withSecondOfMinute(0)
-                .withMillisOfSecond(0);
     }
 
     public static int getAppSmallIcon() {
@@ -125,4 +123,55 @@ public class Utils {
         return notificationId;
     }
 
+    /**
+     * Adds duration to 'now' and sets the seconds and millis to 0.
+     * If the duration falls in a DST gap, it moves it until it's out of the gap in 30' intervals
+     * so:
+     * If we are on 01:34AM and the plus is of 30 minutes with the gap at 1AM of 1 hour
+     * it's moved from 02:34AM to 02:04AM
+     * If we are on 12:30AM and the plus is of 30 minutes with the gap at 1AM of 30 minutes
+     * it's moved from 01:00AM to 01:30AM
+     * @param duration duration to add to now
+     * @return safely adjusted local date time for alarms
+     */
+    public static LocalDateTime saneNowPlusDurationForAlarms(Duration duration) {
+        LocalDateTime proposedLDT = Utils.getNow().plus(duration)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
+
+        while (DateTimeZone.getDefault().isLocalDateTimeGap(proposedLDT)) {
+            proposedLDT = proposedLDT.plusMinutes(30);
+        }
+
+        return proposedLDT;
+    }
+
+    /**
+     * Convert a Local DT to a DT, if the Local DT is invalid because is on a DST gap
+     * move it to the next valid time
+     * @param localDateTime local date time
+     * @return UTC instant that corresponds to the local date time
+     */
+    public static DateTime convertLocalToDTSafely(LocalDateTime localDateTime) {
+        DateTime convertedDT = null;
+        try {
+            convertedDT = localDateTime.toDateTime();
+        } catch (IllegalInstantException e) {
+            boolean failed = true;
+            int iteration = 1;
+            while (failed) {
+                try {
+                    convertedDT = localDateTime.plusMinutes(30 * iteration).toDateTime();
+                    failed = false;
+                } catch (IllegalInstantException e2) {
+                    iteration++;
+                }
+            }
+
+            Timber.i("Converted date from "+ localDateTime + " to "
+                    + convertedDT + " because of DST gap");
+        }
+
+        return convertedDT;
+    }
 }

@@ -47,7 +47,7 @@ public class CalculateAndScheduleNextAlarmService extends IntentService {
 
                 Intent notificationIntent = new Intent(this, NotificationReceiver.class);
                 if (nextAlarm != null) {
-                    DateTime nextAlarmTime = nextAlarm.getDateTime().toDateTime();
+                    DateTime nextAlarmTime = Utils.convertLocalToDTSafely(nextAlarm.getDateTime());
                     Timber.i("Next Alarm: " + nextAlarmTime.toString());
                     PendingIntent notificationPendingIntent =
                             PendingIntent.getBroadcast(this,

@@ -10,9 +10,6 @@ import org.joda.time.LocalDateTime;
 
 import timber.log.Timber;
 
-/**
- * Created by sickmartian on 8/11/16.
- */
 public class TimeSyncService extends IntentService {
     private static final int REQUEST_CODE = 5656;
     public static final String AND_UPDATE_PRESENTATION = "AND_UPDATE_PRESENTATION";
@@ -42,14 +39,11 @@ public class TimeSyncService extends IntentService {
             } else {
                 // If not, we schedule the next call to this service
                 Timber.i("Placing TimeSync alarm for: " + nextTime.toString());
+                long nextMillis = Utils.convertLocalToDTSafely(nextTime).getMillis();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    alarmManager.setExact(AlarmManager.RTC,
-                            nextTime.toDateTime().getMillis(),
-                            timeSyncIntentPI);
+                    alarmManager.setExact(AlarmManager.RTC, nextMillis, timeSyncIntentPI);
                 } else {
-                    alarmManager.set(AlarmManager.RTC,
-                            nextTime.toDateTime().getMillis(),
-                            timeSyncIntentPI);
+                    alarmManager.set(AlarmManager.RTC, nextMillis, timeSyncIntentPI);
                 }
             }
 

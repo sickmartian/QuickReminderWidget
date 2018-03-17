@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.sickmartian.quickreminderwidget.data.model.Alarm;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -239,6 +240,12 @@ public class ReminderEditionActivity extends AppCompatActivity {
 
                     // Check that the new alarm is not in the past
                     LocalDateTime newDateTime = alarmDateVH.getCurrentValue().toLocalDateTime(alarmTimeVH.getCurrentValue());
+                    if (DateTimeZone.getDefault().isLocalDateTimeGap(newDateTime)) {
+                        Toast.makeText(getContext(), R.string.alarm_falls_into_dst,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     LocalDateTime now = Utils.getNow();
                     if (newDateTime.isBefore(now) ||
                             newDateTime.isEqual(now)) {
