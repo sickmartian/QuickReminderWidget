@@ -13,11 +13,11 @@ This is a small collection of widgets to easily set reminders.
 
 <img src="https://github.com/sickmartian/QuickReminderWidget/raw/master/app/src/main/res/drawable/custom_values_widget_preview.png" width="250px">
 
-##Contributing
+## Contributing
 All contributions are welcome, just try to stay in the spirit of the project:
 * Widgets should be customizable
 * Widgets should be resizeable to the minimum of the grid when possible
 * No more than one notification for an specified time
 
-##License
+## License
 [This is under GPLv3.](https://raw.githubusercontent.com/sickmartian/QuickReminderWidget/master/LICENSE)
