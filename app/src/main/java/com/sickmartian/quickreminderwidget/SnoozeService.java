@@ -33,7 +33,7 @@ public class SnoozeService extends IntentService {
         // Dismiss notification
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         assert notificationManager != null;
-        notificationManager.cancel(NotificationService.NOTIFICATION, intent.getIntExtra(NOTIFICATION_ID, -1));
+        notificationManager.cancel(NotificationReceiver.NOTIFICATION, intent.getIntExtra(NOTIFICATION_ID, -1));
 
         // Set alarm
         int snoozedTime = intent.getIntExtra(REQUESTED_SNOOZE, -1);

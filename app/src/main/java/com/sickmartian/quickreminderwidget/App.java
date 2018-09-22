@@ -1,6 +1,8 @@
 package com.sickmartian.quickreminderwidget;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -36,6 +38,8 @@ import timber.log.Timber;
  * Created by sickmartian on 8/11/16.
  */
 public class App extends Application {
+    public static final String REMINDER_NOTIFICATION_CHANNEL = "QRW_REMINDER_NOTIFICATION_CHANNEL";
+
     public static final String CUSTOM_NOTIFICATION = "CUSTOM_NOTIFICATION";
     public static final String CUSTOM_NOTIFICATION_VIBRATE = "CUSTOM_NOTIFICATION_VIBRATE";
     public static final String CUSTOM_NOTIFICATION_LIGHTS = "CUSTOM_NOTIFICATION_LIGHTS";
@@ -83,6 +87,22 @@ public class App extends Application {
 
         activeColor = App.getAppContext().getResources().getColor(R.color.activeColor);
         inactiveColor = App.getAppContext().getResources().getColor(R.color.inactiveColor);
+
+        registerNotificationChannel();
+    }
+
+    private void registerNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+            NotificationChannel channel = new NotificationChannel(REMINDER_NOTIFICATION_CHANNEL,
+                    getString(R.string.reminder_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(getString(R.string.reminder_channel_description));
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     public class CrashlyticsTree extends Timber.Tree {

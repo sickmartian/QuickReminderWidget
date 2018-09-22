@@ -101,4 +101,6 @@
 
     <string name="custom_snooze_label">Custom snooze</string>
     <string name="alarm_falls_into_dst">Alarm can\'t be created as it will fall under DST gap</string>
+    <string name="reminder_channel_name">Reminders</string>
+    <string name="reminder_channel_description">User set reminders</string>
 </resources>

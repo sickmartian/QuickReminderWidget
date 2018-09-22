@@ -5,9 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.WakefulBroadcastReceiver;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.sickmartian.quickreminderwidget.data.model.Alarm;
+
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.parceler.Parcels;
+
+import timber.log.Timber;
 
 /**
  * Created by sickmartian on 8/12/16.
@@ -34,8 +40,46 @@ public class ReminderIntentionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent serviceIntent = new Intent(context, ReminderIntentionService.class);
-        serviceIntent.putExtras(intent);
-        context.startService(serviceIntent);
+        final ReminderIntentionData intentionData =
+                Parcels.unwrap(intent.getParcelableExtra(ReminderIntentionReceiver.ALARM_INTENTION_DATA));
+
+        Timber.d("Received alarm intention: " + intentionData.toString());
+
+        if (intentionData.getAlarm() == null) {
+            LocalDateTime alarmTime = null;
+            if (intentionData.getTime() != null) {
+                alarmTime = intentionData.getTime();
+            } else if (intentionData.getDuration() != null) {
+                alarmTime = Utils.saneNowPlusDurationForAlarms(intentionData.getDuration());
+            }
+            assert alarmTime != null; // Either a duration or a time, if none something is really fishy
+
+            if (!DateTimeZone.getDefault().isLocalDateTimeGap(alarmTime)) {
+                Alarm newAlarm = Alarm.fromDateTime(alarmTime);
+                boolean created = newAlarm.createSync();
+
+                if (created) {
+                    if (intent.getBooleanExtra(ReminderIntentionReceiver.AND_OFFER_EDITION, false)) {
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getAppContext());
+                        stackBuilder.addParentStack(ReminderEditionActivity.class);
+                        stackBuilder.addNextIntent(ReminderEditionActivity.getIntentForEditionOfJustCreatedAlarm(newAlarm));
+                        Intent newActivityIntent = stackBuilder.getIntents()[0];
+                        context.startActivity(newActivityIntent);
+                    } else {
+                        Utils.toastTo(Utils.getFormattedMessageForDate(alarmTime, R.string.reminder_created_for));
+                    }
+                } else {
+                    Utils.toastTo(App.getAppContext().getString(R.string.reminder_not_created_exists));
+                }
+            } else {
+                Utils.toastTo(App.getAppContext().getString(R.string.alarm_falls_into_dst));
+            }
+        } else {
+            intentionData.getAlarm().deleteSync();
+            Utils.toastTo(Utils.getFormattedMessageForDate(intentionData.getTime(), R.string.reminder_deleted_for));
+        }
+
+        App.updatePresentation();
+        CalculateAndScheduleNextAlarmReceiver.sendBroadcast();
     }
 }

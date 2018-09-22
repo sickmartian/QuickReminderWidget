@@ -231,15 +231,12 @@ public class QuickReminderWidgetService extends RemoteViewsService {
                 itemView.setImageViewResource(R.id.note_link, R.drawable.ic_event_note_black_24dp);
 
                 // Fill each alarm's intention to the intents
-                Intent intent = new Intent();
                 Bundle extras = new Bundle();
                 extras.putParcelable(ReminderIntentionReceiver.ALARM_INTENTION_DATA,
                         Parcels.wrap(currentReminderIntentionData));
                 extras.putBoolean(ReminderIntentionReceiver.AND_OFFER_EDITION, possibilityToAddNote);
                 extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                intent.putExtras(extras);
-                itemView.setOnClickFillInIntent(R.id.clickeable_row,
-                        intent);
+                itemView.setOnClickFillInIntent(R.id.clickeable_row, new Intent().putExtras(extras));
             } else {
                 itemView.setImageViewResource(R.id.note_link, R.drawable.ic_create_black_24dp);
 
